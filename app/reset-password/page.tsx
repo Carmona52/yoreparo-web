@@ -24,12 +24,20 @@ export default function ResetPasswordPage() {
 
     useEffect(() => {
         const checkSession = async () => {
-            const { data, error } = await supabase.auth.getSession();
-            if (error || !data.session) {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session) {
                 setError('El enlace no es válido o ha expirado. Solicita un nuevo restablecimiento.');
             }
         };
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                console.log('Modo recuperación activado');
+            }
+        });
+
         checkSession();
+        return () => subscription.unsubscribe();
     }, []);
 
     const handleReset = async (e: React.FormEvent) => {
@@ -55,9 +63,8 @@ export default function ResetPasswordPage() {
         if (error) {
             setError(error.message);
         } else {
-            setMessage('Contraseña actualizada correctamente. Redirigiendo al inicio de sesión...');
+            setMessage('Contraseña actualizada correctamente. Por favor vuelva a la app');
             await supabase.auth.signOut();
-            setTimeout(() => router.push('/login'), 2000);
         }
         setLoading(false);
     };
@@ -80,6 +87,8 @@ export default function ResetPasswordPage() {
                         required
                         margin="normal"
                         value={password}
+                        error={password !== confirmPassword && confirmPassword !== ''}
+                        helperText={password !== confirmPassword && confirmPassword !== '' ? "Las contraseñas no coinciden" : ""}
                         onChange={(e) => setPassword(e.target.value)}
                         disabled={loading}
                         autoFocus
@@ -91,6 +100,8 @@ export default function ResetPasswordPage() {
                         required
                         margin="normal"
                         value={confirmPassword}
+                        error={password !== confirmPassword && confirmPassword !== ''}
+                        helperText={password !== confirmPassword && confirmPassword !== '' ? "Las contraseñas no coinciden" : ""}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         disabled={loading}
                     />
@@ -103,8 +114,7 @@ export default function ResetPasswordPage() {
                         fullWidth
                         variant="contained"
                         disabled={loading}
-                        sx={{ mt: 3, py: 1.2 }}
-                    >
+                        sx={{ mt: 3, py: 1.2 }}>
                         {loading ? <CircularProgress size={24} /> : 'Actualizar contraseña'}
                     </Button>
                 </Box>
