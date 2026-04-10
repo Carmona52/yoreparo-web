@@ -1,10 +1,10 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import {AppRouterCacheProvider} from '@mui/material-nextjs/v15-appRouter';
+import {AppRouterCacheProvider} from "@mui/material-nextjs/v15-appRouter";
+import {ThemeProvider} from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import {theme} from "@/theme/theme";
-import {ThemeProvider} from "@mui/system";
-
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -18,20 +18,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: "Yo Reparo",
-    description: "Pagina Web de Yo Reparo",
+    description: "Plataforma administrativa de Yo Reparo",
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
-        <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-        <body className="min-h-full flex flex-col">
+        <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
+        <body>
         <AppRouterCacheProvider options={{enableCssLayer: true}}>
-            <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </AppRouterCacheProvider></body>
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                {children}
+            </ThemeProvider>
+        </AppRouterCacheProvider>
+        </body>
         </html>
     );
 }

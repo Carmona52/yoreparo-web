@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
 
     const { pathname } = req.nextUrl;
 
-    const publicRoutes = ["/auth/login", "/auth/callback", "/auth/oauth", "/confirm-account", "/reset-password"];
+    const publicRoutes = ["/auth/login", "/auth/callback", "/auth/oauth", "/confirm-account", "/reset-password","/download"];
     const isPublicRoute = publicRoutes.some((r) => pathname.startsWith(r));
 
     if (pathname === "/" || isPublicRoute) {
