@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/libs/supabase';
+import { supabase } from '@/lib/supabase';
 import {
     Container,
     Paper,

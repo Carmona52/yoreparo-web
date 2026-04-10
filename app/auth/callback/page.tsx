@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/libs/supabase';
+import { supabase } from '@/lib/supabase';
 import { Container, CircularProgress, Typography, Box } from '@mui/material';
 
 export default function AuthCallbackPage() {

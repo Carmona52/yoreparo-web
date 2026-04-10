@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '@/libs/supabase'
+import { supabase } from '@/lib/supabase'
 
 function ConfirmAccountContent() {
     const router = useRouter()
