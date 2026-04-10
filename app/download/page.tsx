@@ -90,7 +90,7 @@ export default function DownloadPage() {
                             justifyContent: "center",
                         }}>
                         <Image
-                            src="/Logo.png"
+                            src="/logo.png"
                             alt="Yo Reparo"
                             width={180}
                             height={72}
