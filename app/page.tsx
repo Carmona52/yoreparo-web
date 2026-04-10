@@ -21,7 +21,7 @@ export default function Home() {
             if (session) {
                 router.replace("/dashboard");
             } else {
-                router.replace("/login");
+                router.replace("/auth/login");
             }
         }
 
