@@ -18,7 +18,7 @@ const APK_URL =
     "https://github.com/Carmona52/yoreparo-web/releases/download/App_movil/application-e5cd2aa6-cae2-4310-b7df-5f5fa7f87cfd.apk";
 
 const APK_VERSION = "1.0.0";
-const APK_SIZE = "180 MB";
+const APK_SIZE = "120 MB";
 
 const steps = [
     {
