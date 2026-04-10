@@ -11,6 +11,7 @@ function getAccessTokenFromCookies(req: NextRequest): string | null {
 
     try {
         const parsed = JSON.parse(decodeURIComponent(authCookie.value));
+
         return Array.isArray(parsed) ? parsed[0] : parsed?.access_token ?? null;
     } catch {
         return null;
@@ -21,19 +22,19 @@ export async function middleware(req: NextRequest) {
     const res = NextResponse.next();
     const { pathname } = req.nextUrl;
 
-    const publicRoutes = ["/login", "/auth/callback"];
+    const publicRoutes = ["/auth/login", "/auth/callback", "/auth/oauth"];
     const isPublicRoute = publicRoutes.some((r) => pathname.startsWith(r));
 
     if (pathname === "/" || isPublicRoute) {
         return res;
     }
 
+
     const accessToken = getAccessTokenFromCookies(req);
 
     if (!accessToken) {
         return NextResponse.redirect(new URL("/auth/login", req.url));
     }
-
     try {
         const supabase = createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,

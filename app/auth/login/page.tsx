@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
+import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function LoginPage() {
@@ -36,6 +37,20 @@ export default function LoginPage() {
             setLoading(false);
         } else {
             router.replace("/dashboard");
+        }
+    }
+
+    async function handleGoogleLogin() {
+        setLoading(true);
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: `${window.location.origin}/auth/oauth`,
+            },
+        });
+        if (error) {
+            setError(error.message);
+            setLoading(false);
         }
     }
 
@@ -97,6 +112,17 @@ export default function LoginPage() {
                         </Button>
                     </Box>
 
+                    <Divider sx={{ my: 3 }}>o</Divider>
+
+                    <Button
+                        variant="outlined"
+                        size="large"
+                        fullWidth
+                        onClick={handleGoogleLogin}
+                        disabled={loading}
+                    >
+                        Continuar con Google
+                    </Button>
                 </CardContent>
             </Card>
         </Box>
