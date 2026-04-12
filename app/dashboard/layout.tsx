@@ -16,17 +16,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
-import Avatar from "@mui/material/Avatar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
-// Icons
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BuildIcon from "@mui/icons-material/Build";
 import PeopleIcon from "@mui/icons-material/People";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -37,9 +34,8 @@ const DRAWER_MINI = 68;
 const navItems = [
     { label: "Dashboard",      icon: <DashboardIcon />,  href: "/dashboard" },
     { label: "Servicios",      icon: <BuildIcon />,       href: "/dashboard/servicios" },
+    { label: "Cotizaciones",    icon: <AssignmentIcon />,  href: "/dashboard/cotizaciones" },
     { label: "Técnicos",       icon: <PeopleIcon />,      href: "/dashboard/tecnicos" },
-    { label: "Solicitudes",    icon: <AssignmentIcon />,  href: "/dashboard/solicitudes" },
-    { label: "Reportes",       icon: <BarChartIcon />,    href: "/dashboard/reportes" },
 ];
 
 const bottomItems = [
@@ -74,8 +70,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             router.push(item.href);
                             if (isMobile) setMobileOpen(false);
                         }}
-                        sx={{ justifyContent: mini ? "center" : "flex-start", minHeight: 46, px: mini ? 1 : 2 }}
-                    >
+                        sx={{
+                            justifyContent: mini ? "center" : "flex-start",
+                            minHeight: 46,
+                            px: mini ? 1 : 2,
+                            borderRadius: 1.5
+                        }}>
                         <ListItemIcon sx={{ minWidth: mini ? 0 : 38, color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.6)" }}>
                             {item.icon}
                         </ListItemIcon>
@@ -93,41 +93,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const drawerContent = (
         <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-            {/* Header del drawer */}
             <Toolbar sx={{
                 minHeight: "64px !important",
                 px: collapsed && !isMobile ? 1 : 2,
                 justifyContent: collapsed && !isMobile ? "center" : "space-between",
                 borderBottom: "1px solid rgba(255,255,255,0.08)",
             }}>
+                {/* Logo y Nombre (Expandido o Móvil) */}
                 {(!collapsed || isMobile) && (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                        {/* Logo mark — círculo amarillo con Y */}
-                        <Box sx={{
-                            width: 34, height: 34, borderRadius: "50%",
-                            backgroundColor: "#FFD600",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            fontWeight: 900, fontSize: 16, color: "#1A1A2E",
-                            fontFamily: "var(--font-geist-sans), sans-serif",
-                            flexShrink: 0,
-                        }}>
-                            YR
-                        </Box>
+                        <Box
+                            component="img"
+                            src="/logo.png"
+                            alt="Yo Reparo Logo"
+                            sx={{ width: 34, height: 34, objectFit: "contain", flexShrink: 0 }}
+                        />
                         <Typography variant="h6" sx={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
                             Yo Reparo
                         </Typography>
                     </Box>
                 )}
+
+                {/* Logo solo (Colapsado) */}
                 {collapsed && !isMobile && (
-                    <Box sx={{
-                        width: 34, height: 34, borderRadius: "50%",
-                        backgroundColor: "#FFD600",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontWeight: 900, fontSize: 14, color: "#1A1A2E",
-                    }}>
-                        YR
-                    </Box>
+                    <Box
+                        component="img"
+                        src="/logo.png"
+                        alt="Yo Reparo Logo"
+                        sx={{ width: 34, height: 34, objectFit: "contain" }}
+                    />
                 )}
+
                 {!isMobile && (
                     <Tooltip title={collapsed ? "Expandir" : "Colapsar"} placement="right">
                         <IconButton onClick={() => setCollapsed(!collapsed)} size="small" sx={{ color: "rgba(255,255,255,0.5)", ml: collapsed ? 0 : 1 }}>
@@ -137,18 +133,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 )}
             </Toolbar>
 
-            {/* Nav principal */}
             <List sx={{ flex: 1, pt: 1.5, px: 0.5 }}>
                 {navItems.map((item) => <NavItem key={item.href} item={item} />)}
             </List>
 
             <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
 
-            {/* Nav inferior */}
             <List sx={{ pt: 1, pb: 1, px: 0.5 }}>
                 {bottomItems.map((item) => <NavItem key={item.href} item={item} />)}
 
-                {/* Logout */}
                 <ListItem disablePadding sx={{ px: 1, mt: 0.5 }}>
                     <Tooltip title={collapsed && !isMobile ? "Cerrar sesión" : ""} placement="right">
                         <ListItemButton
@@ -187,13 +180,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Avatar sx={{ width: 28, height: 28, bgcolor: "#FFD600", fontSize: 12, fontWeight: 900, color: "#1A1A2E" }}>YR</Avatar>
+                        <Box
+                            component="img"
+                            src="/logo.png"
+                            alt="Logo"
+                            sx={{ width: 28, height: 28, objectFit: "contain" }}
+                        />
                         <Typography variant="h6" fontWeight={700} fontSize={15} color="#1A1A2E">Yo Reparo</Typography>
                     </Box>
                 </Toolbar>
             </AppBar>
 
-            {/* Drawer móvil */}
+            {/* ... rest of the component (Drawers and Main) remains the same */}
             <Drawer
                 variant="temporary"
                 open={mobileOpen}
@@ -207,7 +205,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {drawerContent}
             </Drawer>
 
-            {/* Drawer desktop permanente */}
             <Drawer
                 variant="permanent"
                 sx={{
@@ -227,7 +224,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {drawerContent}
             </Drawer>
 
-            {/* Contenido principal */}
             <Box
                 component="main"
                 sx={{
