@@ -14,8 +14,7 @@ import SecurityIcon from "@mui/icons-material/Security";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-const APK_URL =
-    "https://github.com/Carmona52/yoreparo-web/releases/download/App_movil/application-b26f10e1-b7b5-405f-bc0f-8d55bfc8fa43.apk";
+const APK_URL = "https://github.com/Carmona52/yoreparo-web/releases/download/App_movil/application-20d1530d-bfe3-4f59-be81-2b76991a4037.apk";
 
 const APK_VERSION = "1.0.0";
 const APK_SIZE = "120 MB";

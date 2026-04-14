@@ -5,7 +5,7 @@ export type Servicios = {
     address:string,
     latitude:number,
     longitude:number,
-    workerId:string,
+    worker_id:string,
     created_by:string,
     status:string,
     created_at:string,

@@ -167,7 +167,7 @@ export default function CotizacionDetallePage() {
     }
 
     return (
-        <Box sx={{ maxWidth: 720, mx: "auto" }}>
+        <Box sx={{ maxWidth: screen, mx: "auto", marginX:2 }}>
             {/* Volver */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
                 <IconButton onClick={() => router.back()} size="small" sx={{ bgcolor: "rgba(0,0,0,0.05)" }}>
