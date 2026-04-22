@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { serviciosService, JobEstado } from "@/lib/data/servicios";
-import { Servicios } from "@/lib/types/servicios";
-import { User } from "@/lib/types/user";
+import {useEffect, useState} from "react";
+import {useParams, useRouter} from "next/navigation";
+import {createClient} from "@/lib/supabase/client";
+import {serviciosService, JobEstado} from "@/lib/data/servicios";
+import {Servicios} from "@/lib/types/servicios";
+import {User} from "@/lib/types/user";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -40,21 +40,21 @@ const ESTADOS: { value: JobEstado; label: string; color: string; bg: string; ico
         label: "Pendiente",
         color: "#E65100",
         bg: "rgba(245,124,0,0.12)",
-        icon: <HourglassEmptyIcon sx={{ fontSize: 18 }} />,
+        icon: <HourglassEmptyIcon sx={{fontSize: 18}}/>,
     },
     {
-        value: "En proceso",
+        value: "en proceso",
         label: "En proceso",
         color: "#1565C0",
         bg: "rgba(21,101,192,0.12)",
-        icon: <BuildCircleIcon sx={{ fontSize: 18 }} />,
+        icon: <BuildCircleIcon sx={{fontSize: 18}}/>,
     },
     {
-        value: "Finalizado",
+        value: "finalizado",
         label: "Finalizado",
         color: "#2E7D32",
         bg: "rgba(46,125,50,0.12)",
-        icon: <CheckCircleIcon sx={{ fontSize: 18 }} />,
+        icon: <CheckCircleIcon sx={{fontSize: 18}}/>,
     },
 ];
 
@@ -83,13 +83,13 @@ function SelectorEstado({
     const actual = getEstado(estadoActual);
 
     return (
-        <Card sx={{ borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", mb: 3 }}>
-            <CardContent sx={{ p: 3 }}>
+        <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)", mb: 3}}>
+            <CardContent sx={{p: 3}}>
                 <Typography variant="body2" fontWeight={700} mb={2}>
                     Estado del trabajo
                 </Typography>
 
-                <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
+                <Box sx={{display: "flex", gap: 1.5, flexWrap: "wrap"}}>
                     {ESTADOS.map((e) => {
                         const isActive = e.value.toLowerCase() === estadoActual?.toLowerCase();
                         return (
@@ -100,12 +100,13 @@ function SelectorEstado({
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
+                                        justifyContent:'space-between',
                                         gap: 1,
                                         px: 2,
                                         py: 1.2,
                                         border: "2px solid",
                                         borderColor: isActive ? e.color : "rgba(0,0,0,0.1)",
-                                        borderRadius: 3,
+                                        borderRadius: 1,
                                         bgcolor: isActive ? e.bg : "transparent",
                                         color: isActive ? e.color : "#5A5A72",
                                         cursor: isActive || loading ? "default" : "pointer",
@@ -121,12 +122,12 @@ function SelectorEstado({
                                         } : {},
                                     }}
                                 >
-                                    <Box sx={{ color: isActive ? e.color : "#5A5A72", display: "flex" }}>
+                                    <Box sx={{color: isActive ? e.color : "#5A5A72", display: "flex"}}>
                                         {e.icon}
                                     </Box>
                                     {e.label}
                                     {isActive && loading && (
-                                        <CircularProgress size={12} sx={{ color: e.color, ml: 0.5 }} />
+                                        <CircularProgress size={12} sx={{color: e.color, ml: 0.5}}/>
                                     )}
                                 </Box>
                             </Tooltip>
@@ -134,33 +135,36 @@ function SelectorEstado({
                     })}
                 </Box>
 
-                {/* Indicador de progreso visual */}
-                <Box sx={{ display: "flex", alignItems: "center", mt: 2.5, gap: 0 }}>
+                <Box sx={{display: "flex", alignItems: "center", mt: 2.5, gap: 0}}>
                     {ESTADOS.map((e, i) => {
                         const idx = ESTADOS.findIndex(
                             (x) => x.value.toLowerCase() === estadoActual?.toLowerCase()
                         );
                         const done = i <= idx;
                         return (
-                            <Box key={e.value} sx={{ display: "flex", alignItems: "center", flex: i < ESTADOS.length - 1 ? 1 : "none" }}>
+                            <Box key={e.value} sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                flex: i < ESTADOS.length - 1 ? 1 : "none"
+                            }}>
                                 <Box sx={{
                                     width: 10, height: 10, borderRadius: "50%",
                                     bgcolor: done ? e.color : "rgba(0,0,0,0.12)",
                                     flexShrink: 0,
                                     transition: "background 0.3s",
-                                }} />
+                                }}/>
                                 {i < ESTADOS.length - 1 && (
                                     <Box sx={{
                                         flex: 1, height: 2,
                                         bgcolor: done && i < idx ? ESTADOS[i + 1].color : "rgba(0,0,0,0.08)",
                                         transition: "background 0.3s",
-                                    }} />
+                                    }}/>
                                 )}
                             </Box>
                         );
                     })}
                 </Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 0.5 }}>
+                <Box sx={{display: "flex", justifyContent: "space-between", mt: 0.5}}>
                     {ESTADOS.map((e) => (
                         <Typography key={e.value} variant="caption" color="text.secondary" fontSize={10}>
                             {e.label}
@@ -174,7 +178,7 @@ function SelectorEstado({
 
 
 export default function ServicioDetallePage() {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const router = useRouter();
     const supabase = createClient();
 
@@ -192,7 +196,7 @@ export default function ServicioDetallePage() {
             .then(async (data) => {
                 setServicio(data);
                 if (data.worker_id) {
-                    const { data: perfil } = await supabase
+                    const {data: perfil} = await supabase
                         .from("profiles")
                         .select("*")
                         .eq("id", data.worker_id)
@@ -230,56 +234,53 @@ export default function ServicioDetallePage() {
                 });
             }
 
-            setServicio((prev) => prev ? { ...prev, status: nuevoEstado } : prev);
+            setServicio((prev) => prev ? {...prev, status: nuevoEstado} : prev);
         } catch {
-            setSnack({ open: true, msg: "Error al cambiar el estado", severity: "error" });
+            setSnack({open: true, msg: "Error al cambiar el estado", severity: "error"});
         } finally {
             setCambiandoEstado(false);
         }
     }
 
     if (loading) return (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
-            <CircularProgress sx={{ color: "#FFD600" }} />
+        <Box sx={{display: "flex", justifyContent: "center", mt: 8}}>
+            <CircularProgress sx={{color: "#FFD600"}}/>
         </Box>
     );
 
     if (error || !servicio) return (
-        <Alert severity="error" sx={{ mt: 2 }}>{error ?? "Servicio no encontrado"}</Alert>
+        <Alert severity="error" sx={{mt: 2}}>{error ?? "Servicio no encontrado"}</Alert>
     );
 
     const estado = getEstado(servicio.status);
 
     return (
-        <Box sx={{ maxWidth: screen, mx: "auto", marginX:2 }}>
+        <Box sx={{maxWidth: screen, mx: "auto", marginX: 2}}>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
-                <IconButton onClick={() => router.back()} size="small" sx={{ bgcolor: "rgba(0,0,0,0.05)" }}>
-                    <ArrowBackIcon fontSize="small" />
+            <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 3}}>
+                <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)"}}>
+                    <ArrowBackIcon fontSize="small"/>
                 </IconButton>
                 <Typography variant="body2" color="text.secondary" fontWeight={600}>
                     Detalle del Servicio
                 </Typography>
             </Box>
 
-            {/* ── Selector de estado ── */}
             <SelectorEstado
                 estadoActual={servicio.status}
                 onCambiar={handleCambiarEstado}
                 loading={cambiandoEstado}
             />
 
-            {/* ── Info principal ── */}
-            <Card sx={{ borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", mb: 3 }}>
-                <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+            <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)", mb: 3}}>
+                <CardContent sx={{p: 0, "&:last-child": {pb: 0}}}>
 
-                    {/* Imagen */}
                     {servicio.image_url ? (
                         <Box
                             component="img"
                             src={servicio.image_url}
                             alt={servicio.title}
-                            sx={{ width: "100%", height: 220, objectFit: "cover", borderRadius: "16px 16px 0 0" }}
+                            sx={{width: "100%", height: 220, objectFit: "cover", borderRadius: "16px 16px 0 0"}}
                         />
                     ) : (
                         <Box sx={{
@@ -288,28 +289,38 @@ export default function ServicioDetallePage() {
                             borderRadius: "16px 16px 0 0",
                             display: "flex", alignItems: "center", justifyContent: "center",
                         }}>
-                            <BuildCircleIcon sx={{ fontSize: 48, color: "rgba(255,214,0,0.35)" }} />
+                            <BuildCircleIcon sx={{fontSize: 48, color: "rgba(255,214,0,0.35)"}}/>
                         </Box>
                     )}
 
-                    <Box sx={{ p: 3 }}>
+                    <Box sx={{p: 3}}>
                         {/* Título + estado */}
-                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
+                        <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2}}>
                             <Typography variant="h5" fontWeight={800} color="text.primary" flex={1} pr={2}>
                                 {servicio.title}
                             </Typography>
                             <Chip
                                 label={estado.label}
-                                icon={<Box sx={{ color: `${estado.color} !important`, display: "flex", pl: 0.5 }}>{estado.icon}</Box>}
+                                icon={<Box sx={{
+                                    color: `${estado.color} !important`,
+                                    display: "flex",
+                                    pl: 0.5
+                                }}>{estado.icon}</Box>}
                                 size="small"
-                                sx={{ bgcolor: estado.bg, color: estado.color, fontWeight: 700, fontSize: 12, height: 28 }}
+                                sx={{
+                                    bgcolor: estado.bg,
+                                    color: estado.color,
+                                    fontWeight: 700,
+                                    fontSize: 12,
+                                    height: 28
+                                }}
                             />
                         </Box>
 
                         {/* Datos clave */}
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.2, mb: 2.5 }}>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <AttachMoneyIcon sx={{ fontSize: 17, color: "#2E7D32" }} />
+                        <Box sx={{display: "flex", flexDirection: "column", gap: 1.2, mb: 2.5}}>
+                            <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                                <AttachMoneyIcon sx={{fontSize: 17, color: "#2E7D32"}}/>
                                 <Typography variant="body2" color="text.secondary">
                                     Precio:&nbsp;
                                     <Typography component="span" variant="body2" fontWeight={700} color="text.primary">
@@ -319,14 +330,14 @@ export default function ServicioDetallePage() {
                                     </Typography>
                                 </Typography>
                             </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <LocationOnIcon sx={{ fontSize: 17, color: "#F57C00" }} />
+                            <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                                <LocationOnIcon sx={{fontSize: 17, color: "#F57C00"}}/>
                                 <Typography variant="body2" color="text.secondary">
                                     {servicio.address ?? "—"}
                                 </Typography>
                             </Box>
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <CalendarTodayIcon sx={{ fontSize: 16, color: "#1565C0" }} />
+                            <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                                <CalendarTodayIcon sx={{fontSize: 16, color: "#1565C0"}}/>
                                 <Typography variant="body2" color="text.secondary">
                                     Cita: {formatFecha(servicio.fecha_cita)}
                                 </Typography>
@@ -336,7 +347,7 @@ export default function ServicioDetallePage() {
                         {/* Descripción */}
                         {servicio.description && (
                             <>
-                                <Divider sx={{ mb: 2 }} />
+                                <Divider sx={{mb: 2}}/>
                                 <Typography variant="overline" color="text.secondary" display="block" mb={1}>
                                     Descripción
                                 </Typography>
@@ -349,15 +360,15 @@ export default function ServicioDetallePage() {
                         {/* Ir a cotización */}
                         {servicio.cotizacion_id && (
                             <>
-                                <Divider sx={{ my: 2.5 }} />
+                                <Divider sx={{my: 2.5}}/>
                                 <Button
                                     fullWidth variant="outlined" size="medium"
-                                    startIcon={<ReceiptIcon />}
+                                    startIcon={<ReceiptIcon/>}
                                     onClick={() => router.push(`/dashboard/cotizaciones/${servicio.cotizacion_id}`)}
                                     sx={{
-                                        borderRadius: 2.5, fontWeight: 700,
+                                        borderRadius: 1, fontWeight: 700,
                                         borderColor: "#FFD600", color: "#B8860B",
-                                        "&:hover": { bgcolor: "rgba(255,214,0,0.08)", borderColor: "#FFD600" },
+                                        "&:hover": {bgcolor: "rgba(255,214,0,0.08)", borderColor: "#FFD600"},
                                     }}
                                 >
                                     Ver cotización relacionada
@@ -369,14 +380,14 @@ export default function ServicioDetallePage() {
             </Card>
 
             {/* ── Técnico asignado ── */}
-            <Card sx={{ borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", mb: 3 }}>
-                <CardContent sx={{ p: 3 }}>
+            <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)", mb: 3}}>
+                <CardContent sx={{p: 3}}>
                     <Typography variant="body2" fontWeight={700} mb={2}>
                         Técnico asignado
                     </Typography>
 
                     {tecnico ? (
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
                             <Avatar sx={{
                                 width: 52, height: 52,
                                 bgcolor: "#FFD600", color: "#1A1A2E",
@@ -384,14 +395,21 @@ export default function ServicioDetallePage() {
                             }}>
                                 {tecnico.name?.charAt(0).toUpperCase() ?? "T"}
                             </Avatar>
-                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Box sx={{flex: 1, minWidth: 0}}>
                                 <Typography fontWeight={700} fontSize={15}>
                                     {tecnico.name}
                                 </Typography>
                                 <Chip
                                     label={tecnico.role}
                                     size="small"
-                                    sx={{ mt: 0.5, height: 20, fontSize: 10, fontWeight: 700, bgcolor: "rgba(255,214,0,0.15)", color: "#B8860B" }}
+                                    sx={{
+                                        mt: 0.5,
+                                        height: 20,
+                                        fontSize: 10,
+                                        fontWeight: 700,
+                                        bgcolor: "rgba(255,214,0,0.15)",
+                                        color: "#B8860B"
+                                    }}
                                 />
                             </Box>
                             {/* Notificar manualmente */}
@@ -404,17 +422,21 @@ export default function ServicioDetallePage() {
                                             servicio.title,
                                             servicio.status as JobEstado
                                         ).then(() =>
-                                            setSnack({ open: true, msg: "Notificación enviada al técnico", severity: "info" })
+                                            setSnack({
+                                                open: true,
+                                                msg: "Notificación enviada al técnico",
+                                                severity: "info"
+                                            })
                                         )
                                     }
-                                    sx={{ bgcolor: "rgba(255,214,0,0.12)", "&:hover": { bgcolor: "rgba(255,214,0,0.25)" } }}
+                                    sx={{bgcolor: "rgba(255,214,0,0.12)", "&:hover": {bgcolor: "rgba(255,214,0,0.25)"}}}
                                 >
-                                    <NotificationsActiveIcon sx={{ fontSize: 19, color: "#B8860B" }} />
+                                    <NotificationsActiveIcon sx={{fontSize: 19, color: "#B8860B"}}/>
                                 </IconButton>
                             </Tooltip>
                         </Box>
                     ) : (
-                        <Box sx={{ p: 2, bgcolor: "rgba(0,0,0,0.03)", borderRadius: 2, textAlign: "center" }}>
+                        <Box sx={{p: 2, bgcolor: "rgba(0,0,0,0.03)", borderRadius: 1, textAlign: "center"}}>
                             <Typography variant="body2" color="text.secondary">
                                 Sin técnico asignado
                             </Typography>
@@ -423,16 +445,16 @@ export default function ServicioDetallePage() {
 
                     {tecnico && (
                         <>
-                            <Divider sx={{ my: 2 }} />
-                            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <PhoneIcon sx={{ fontSize: 15, color: "#5A5A72" }} />
+                            <Divider sx={{my: 2}}/>
+                            <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
+                                <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                                    <PhoneIcon sx={{fontSize: 15, color: "#5A5A72"}}/>
                                     <Typography variant="body2" color="text.secondary">
                                         {tecnico.phone ?? "—"}
                                     </Typography>
                                 </Box>
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                    <EmailIcon sx={{ fontSize: 15, color: "#5A5A72" }} />
+                                <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                                    <EmailIcon sx={{fontSize: 15, color: "#5A5A72"}}/>
                                     <Typography variant="body2" color="text.secondary">
                                         {tecnico.email ?? "—"}
                                     </Typography>
@@ -447,13 +469,13 @@ export default function ServicioDetallePage() {
             <Snackbar
                 open={snack.open}
                 autoHideDuration={3500}
-                onClose={() => setSnack((s) => ({ ...s, open: false }))}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                onClose={() => setSnack((s) => ({...s, open: false}))}
+                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
             >
                 <Alert
                     severity={snack.severity}
-                    onClose={() => setSnack((s) => ({ ...s, open: false }))}
-                    sx={{ borderRadius: 3, fontWeight: 600 }}
+                    onClose={() => setSnack((s) => ({...s, open: false}))}
+                    sx={{borderRadius: 1, fontWeight: 600}}
                 >
                     {snack.msg}
                 </Alert>

@@ -99,28 +99,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 justifyContent: collapsed && !isMobile ? "center" : "space-between",
                 borderBottom: "1px solid rgba(255,255,255,0.08)",
             }}>
-                {/* Logo y Nombre (Expandido o Móvil) */}
                 {(!collapsed || isMobile) && (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5}}>
                         <Box
                             component="img"
                             src="/logo.png"
                             alt="Yo Reparo Logo"
                             sx={{ width: 34, height: 34, objectFit: "contain", flexShrink: 0 }}
                         />
-                        <Typography variant="h6" sx={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
+                        <Typography variant="h1" sx={{ color: "#fff", fontWeight: 700, fontSize: 20, lineHeight: 1.2 }}>
                             Yo Reparo
                         </Typography>
                     </Box>
                 )}
 
-                {/* Logo solo (Colapsado) */}
                 {collapsed && !isMobile && (
                     <Box
                         component="img"
                         src="/logo.png"
                         alt="Yo Reparo Logo"
-                        sx={{ width: 34, height: 34, objectFit: "contain" }}
+                        sx={{ width: 64, height: 64, objectFit: "contain" }}
                     />
                 )}
 
@@ -173,7 +171,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
 
-            {/* AppBar solo en móvil */}
             <AppBar position="fixed" elevation={0} sx={{ display: { md: "none" }, zIndex: (t) => t.zIndex.drawer + 1 }}>
                 <Toolbar sx={{ gap: 2 }}>
                     <IconButton edge="start" onClick={() => setMobileOpen(true)} sx={{ color: "#1A1A2E" }}>
@@ -184,14 +181,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             component="img"
                             src="/logo.png"
                             alt="Logo"
-                            sx={{ width: 28, height: 28, objectFit: "contain" }}
+                            sx={{ width: 34, height: 34, objectFit: "contain" }}
                         />
-                        <Typography variant="h6" fontWeight={700} fontSize={15} color="#1A1A2E">Yo Reparo</Typography>
+                        <Typography variant="h2" fontWeight={700} fontSize={20} color="#1A1A2E">Yo Reparo</Typography>
                     </Box>
                 </Toolbar>
             </AppBar>
 
-            {/* ... rest of the component (Drawers and Main) remains the same */}
             <Drawer
                 variant="temporary"
                 open={mobileOpen}

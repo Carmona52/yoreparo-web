@@ -40,7 +40,6 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
         <>
             <Card sx={{borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)"}}>
                 <CardContent sx={{p: 3}}>
-                    {/* Header */}
                     <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2}}>
                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                             <HandymanIcon sx={{fontSize: 18, color: "#5A5A72"}}/>
@@ -60,7 +59,6 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
                         </Button>
                     </Box>
 
-                    {/* Resumen chips */}
                     {herramientas.length > 0 && (
                         <Box sx={{display: "flex", gap: 1, mb: 2, flexWrap: "wrap"}}>
                             {(["Prestada", "Dañada", "Perdida"] as HerramientaEstado[])
@@ -68,20 +66,19 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
                                 .map((e) => (
                                     <Chip key={e}
                                           label={`${conteo[e]} ${e}${conteo[e] > 1 ? "s" : ""}`}
-                                          size="small"
+                                          size="medium"
                                           sx={{
                                               bgcolor: ESTILOS[e].bg,
                                               color: ESTILOS[e].color,
                                               fontWeight: 700,
                                               fontSize: 11,
-                                              height: 22
+                                              height: 22,
                                           }}
                                     />
                                 ))}
                         </Box>
                     )}
 
-                    {/* Lista o vacío */}
                     {herramientas.length === 0 ? (
                         <Box sx={{textAlign: "center", py: 4}}>
                             <HandymanIcon sx={{fontSize: 40, color: "rgba(0,0,0,0.12)", mb: 1}}/>

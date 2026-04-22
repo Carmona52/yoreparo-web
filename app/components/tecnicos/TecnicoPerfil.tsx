@@ -20,7 +20,7 @@ type Props = {
 export default function TecnicoPerfil({tecnico, stats}: Props) {
     return (
         <Card sx={{borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", mb: 3, overflow: "hidden"}}>
-            <Box sx={{bgcolor: "#1A1A2E", height: 64}}/>
+            <Box sx={{ height: 64}}/>
             <CardContent sx={{pt: 0, px: 3, pb: "24px !important"}}>
                 <Box sx={{display: "flex", alignItems: "flex-end", gap: 2, mt: "-36px", mb: 2}}>
                     <Avatar sx={{
@@ -33,7 +33,7 @@ export default function TecnicoPerfil({tecnico, stats}: Props) {
                         {tecnico.name?.charAt(0).toUpperCase() ?? "T"}
                     </Avatar>
                     <Box sx={{pb: 0.5}}>
-                        <Typography variant="h5" fontWeight={800} lineHeight={1.2}>
+                        <Typography variant="h5" fontWeight={800} lineHeight={1.2} >
                             {tecnico.name}
                         </Typography>
                         <Chip
@@ -63,7 +63,7 @@ export default function TecnicoPerfil({tecnico, stats}: Props) {
 
                 <Divider sx={{mb: 2}}/>
 
-                <Grid container spacing={1.5}>
+                <Grid container spacing={1.5} justifyContent={"center"} alignItems="center" >
                     {stats.map((s) => (
                         <Grid key={s.label} size={{xs: 6, sm: 3}}>
                             <Box sx={{textAlign: "center", bgcolor: s.bg, borderRadius: 2.5, py: 1.5}}>

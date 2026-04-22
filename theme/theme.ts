@@ -27,7 +27,7 @@ export const theme = createTheme({
     },
     typography: {
         fontFamily: "var(--font-geist-sans), sans-serif",
-        fontSize: 14,
+        fontSize: 16,
         h4: {fontWeight: 700, color: "#1A1A2E"},
         h5: {fontWeight: 700, color: "#1A1A2E"},
         h6: {fontWeight: 700, color: "#1A1A2E"},

@@ -74,13 +74,13 @@ export default function TecnicoTrabajos({trabajos}: { trabajos: Servicios[] }) {
                             return (
                                 <Card key={j.id} variant="outlined"
                                       sx={{
-                                          borderRadius: 3,
+                                          borderRadius: 2,
                                           cursor: "pointer",
                                           transition: "box-shadow 0.2s",
-                                          "&:hover": {boxShadow: "0 2px 8px rgba(0,0,0,0.08)"}
+                                          "&:hover": {boxShadow: "0 2px 8px rgba(0,0,0,0.08)"},
+                                          py:2
                                       }}
-                                      onClick={() => router.push(`/dashboard/servicios/${j.id}`)}
-                                >
+                                      onClick={() => router.push(`/dashboard/servicios/${j.id}`)}>
                                     <CardContent sx={{p: "14px 16px !important"}}>
                                         <Box sx={{
                                             display: "flex",

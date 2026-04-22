@@ -74,7 +74,6 @@ export default function TecnicoDetallePage() {
     );
 
     const stats = [
-        {label: "Trabajos", value: trabajos.length, color: "#1A1A2E", bg: "rgba(0,0,0,0.04)"},
         {
             label: "En proceso",
             value: trabajos.filter((j) => j.status?.toLowerCase() === "en proceso").length,
@@ -91,8 +90,7 @@ export default function TecnicoDetallePage() {
     ];
 
     return (
-        <Box sx={{maxWidth: 780, mx: "auto"}}>
-            {/* Volver */}
+        <Box sx={{maxWidth: screen, mx: "auto"}}>
             <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 3}}>
                 <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)"}}>
                     <ArrowBackIcon fontSize="small"/>
@@ -115,8 +113,7 @@ export default function TecnicoDetallePage() {
             <Snackbar
                 open={snack.open} autoHideDuration={3000}
                 onClose={() => setSnack((s) => ({...s, open: false}))}
-                anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-            >
+                anchorOrigin={{vertical: "bottom", horizontal: "center"}}>
                 <Alert severity={snack.severity} onClose={() => setSnack((s) => ({...s, open: false}))}
                        sx={{borderRadius: 3, fontWeight: 600}}>
                     {snack.msg}

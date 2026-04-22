@@ -1,34 +1,41 @@
-import { createClient } from "@/lib/supabase/client";
-import { Servicios } from "@/lib/types/servicios";
+import {createClient} from "@/lib/supabase/client";
+import {Servicios} from "@/lib/types/servicios";
+import {count} from "d3-array";
 
-export type JobEstado = "Pendiente" | "En proceso" | "Finalizado";
+export type JobEstado = "Pendiente" | "en proceso" | "finalizado";
 const supabase = createClient();
 
 export const serviciosService = {
     async getAllServicios(): Promise<Servicios[]> {
-        const { data, error } = await supabase.from("jobs").select("*");
+        const {data, error} = await supabase.from("jobs").select("*");
         if (error) throw error;
         return data as Servicios[];
     },
 
     async getNumberServicios(): Promise<number | null> {
-        const { count, error } = await supabase
+        const {count, error} = await supabase
             .from("jobs")
-            .select("*", { count: "exact", head: true });
-        if (error) { console.error(error); return null; }
+            .select("*", {count: "exact", head: true});
+        if (error) {
+            console.error(error);
+            return null;
+        }
         return count;
     },
-    async getNumberServiciosByWorker(id:string): Promise<number | null> {
-        const { count, error } = await supabase
+    async getNumberServiciosByWorker(id: string): Promise<number | null> {
+        const {count, error} = await supabase
             .from("jobs")
             .eq('worker_id', id)
-            .select("*", { count: "exact", head: true });
-        if (error) { console.error(error); return null; }
+            .select("*", {count: "exact", head: true});
+        if (error) {
+            console.error(error);
+            return null;
+        }
         return count;
     },
 
     async getDetailsServicio(id: string): Promise<Servicios> {
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from("jobs")
             .select("*")
             .eq("id", id)
@@ -38,9 +45,9 @@ export const serviciosService = {
     },
 
     async updateEstado(id: string, estado: JobEstado): Promise<void> {
-        const { error } = await supabase
+        const {error} = await supabase
             .from("jobs")
-            .update({ status: estado })
+            .update({status: estado})
             .eq("id", id);
         if (error) throw error;
     },
@@ -50,7 +57,7 @@ export const serviciosService = {
         jobTitle: string,
         nuevoEstado: JobEstado
     ): Promise<void> {
-        const { error } = await supabase.functions.invoke("send-notification", {
+        const {error} = await supabase.functions.invoke("send-notification", {
             body: {
                 user_id: workerId,
                 title: "Estado del trabajo actualizado",
@@ -60,4 +67,13 @@ export const serviciosService = {
         });
         if (error) console.warn("No se pudo enviar la notificación:", error);
     },
+    async serviciosActivos(): Promise<void> {
+        const {data, error} = await supabase
+            .from("jobs")
+            .select("*", {count: "exact", head: true})
+            .eq("status", "en proceso");
+
+        if (error) throw error;
+        return data;
+    }
 };
