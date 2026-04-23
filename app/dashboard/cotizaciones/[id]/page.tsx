@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import {cotizacionesService} from "@/lib/data/cotizaciones";
 import {Cotizaciones} from "@/lib/types/cotizaciones";
 import CrearJobModal from "@/components/jobs/newJobModal";
-
+import SeccionApelacion from "@/components/cotizaciones/seccionApelacion";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
@@ -101,31 +101,48 @@ async function getTécnicoPorCotizacion(cotizacionId: string): Promise<string | 
     }
 }
 
-function SeccionEnviada({costo}: { costo: string }) {
+// Reemplaza SeccionEnviada completa
+function SeccionEnviada({costo, cotizacionId, enApelacion}: {
+    costo: string;
+    cotizacionId: string;
+    enApelacion: boolean;
+}) {
+    const [apelando, setApelando] = useState(enApelacion);
+
+    const iniciarApelacion = async () => {
+        await supabase.from("cotizaciones")
+            .update({en_apelacion: true})
+            .eq("id", cotizacionId);
+        setApelando(true);
+    };
+
     return (
-        <Card sx={{borderRadius: 1, border: "1px solid rgba(245,124,0,0.25)", bgcolor: "rgba(245,124,0,0.04)"}}>
-            <CardContent sx={{p: 4, textAlign: "center"}}>
-                <Box sx={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: 1,
-                    bgcolor: "#F57C00",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: 2
-                }}>
-                    <AccessTimeIcon sx={{fontSize: 34, color: "#fff"}}/>
-                </Box>
-                <Typography variant="h6" fontWeight={800} mb={1}>Esperando Respuesta</Typography>
-                <Typography variant="body2" color="text.secondary" lineHeight={1.7}>
-                    El presupuesto por <strong>${costo}</strong> ha sido enviado exitosamente
-                    al cliente y se encuentra en revisión. Te notificaremos en cuanto
-                    el cliente emita una respuesta.
+        <Box sx={{display: "flex", flexDirection: "column", gap: 2}}>
+            <Card sx={{borderRadius: 1, border: "1px solid rgba(245,124,0,0.25)", bgcolor: "rgba(245,124,0,0.04)"}}>
+                <CardContent sx={{p: 4, textAlign: "center"}}>
+                    <Box sx={{
+                        width: 64, height: 64, borderRadius: 1, bgcolor: "#F57C00",
+                        display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 2
+                    }}>
+                        <AccessTimeIcon sx={{fontSize: 34, color: "#fff"}}/>
+                    </Box>
+                    <Typography variant="h6" fontWeight={800} mb={1}>Esperando Respuesta</Typography>
+                    <Typography variant="body2" color="text.secondary" lineHeight={1.7}>
+                        El presupuesto por <strong>${costo}</strong> ha sido enviado al cliente y se encuentra en
+                        revisión.
+                    </Typography>
+                </CardContent>
+            </Card>
+
+            {/* Chat de apelación */}
+            {apelando ? (
+                <SeccionApelacion cotizacionId={cotizacionId} senderRole="admin" costo={costo}/>
+            ) : (
+                <Typography variant="caption" color="text.secondary" textAlign="center">
+                    Si el cliente apela el precio, el chat aparecerá aquí automáticamente.
                 </Typography>
-            </CardContent>
-        </Card>
+            )}
+        </Box>
     );
 }
 
@@ -184,7 +201,7 @@ function SeccionAceptada({costo, cotizacion, onJobCreado}: {
     );
 }
 
-function SeccionAsignada({ costo, cotizacion }: { costo: string; cotizacion: Cotizaciones }) {
+function SeccionAsignada({costo, cotizacion}: { costo: string; cotizacion: Cotizaciones }) {
     const [tecnicoNombre, setTecnicoNombre] = useState<string | null>(null);
     const [cargando, setCargando] = useState(true);
 
@@ -196,21 +213,33 @@ function SeccionAsignada({ costo, cotizacion }: { costo: string; cotizacion: Cot
             setTecnicoNombre(nombre);
             setCargando(false);
         }
+
         cargarTecnico();
     }, [cotizacion.id]);
 
     return (
-        <Card sx={{ borderRadius: 1, border: "1px solid rgba(46,125,50,0.25)", bgcolor: "rgba(46,125,50,0.04)" }}>
-            <CardContent sx={{ p: 4, textAlign: "center" }}>
-                <Box sx={{ width: 64, height: 64, borderRadius: 1, bgcolor: "#2E7D32", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 2 }}>
-                    <CheckCircleIcon sx={{ fontSize: 34, color: "#fff" }} />
+        <Card sx={{borderRadius: 1, border: "1px solid rgba(46,125,50,0.25)", bgcolor: "rgba(46,125,50,0.04)"}}>
+            <CardContent sx={{p: 4, textAlign: "center"}}>
+                <Box sx={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 1,
+                    bgcolor: "#2E7D32",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mx: "auto",
+                    mb: 2
+                }}>
+                    <CheckCircleIcon sx={{fontSize: 34, color: "#fff"}}/>
                 </Box>
                 <Typography variant="h6" fontWeight={800} mb={1}>¡Trabajo Asignado!</Typography>
                 <Typography variant="body2" color="text.secondary" lineHeight={1.7} mb={3}>
-                    El cliente ha aprobado el presupuesto de <strong>${costo}</strong> y el trabajo ha sido asignado al siguiente técnico:
+                    El cliente ha aprobado el presupuesto de <strong>${costo}</strong> y el trabajo ha sido asignado al
+                    siguiente técnico:
                 </Typography>
                 {cargando ? (
-                    <CircularProgress size={24} />
+                    <CircularProgress size={24}/>
                 ) : tecnicoNombre ? (
                     <Typography variant="h6" fontWeight={700} color="#2E7D32">
                         {tecnicoNombre}
@@ -366,7 +395,11 @@ export default function CotizacionDetallePage() {
                 <GeneradorPresupuesto cotizacion={cotizacion} onEnviado={handleEnviado}/>
             )}
             {estado === "enviada" && (
-                <SeccionEnviada costo={cotizacion.costo_estimado ?? "—"}/>
+                <SeccionEnviada
+                    costo={cotizacion.costo_estimado ?? "—"}
+                    cotizacionId={cotizacion.id}
+                    enApelacion={cotizacion.en_apelacion ?? false}
+                />
             )}
             {estado === "aceptada" && (
                 <SeccionAceptada

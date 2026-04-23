@@ -101,15 +101,14 @@ export default function TecnicoDetallePage() {
             </Box>
 
             <TecnicoPerfil tecnico={tecnico} stats={stats}/>
-            <TecnicoTrabajos trabajos={trabajos}/>
             <TecnicoHerramientas
                 workerId={id}
                 herramientas={herramientas}
                 onEstadoCambiado={handleEstadoCambiado}
                 onEliminada={handleEliminada}
-                onCreada={handleCreada}
-            />
+                onCreada={handleCreada}/>
 
+            <TecnicoTrabajos trabajos={trabajos}/>
             <Snackbar
                 open={snack.open} autoHideDuration={3000}
                 onClose={() => setSnack((s) => ({...s, open: false}))}

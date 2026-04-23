@@ -375,11 +375,10 @@ export function PresupuestoPDF({
                     </View>
                 </View>
 
-                {/* ── Footer band ── */}
                 <View style={s.footerBand} fixed>
                     <Text style={s.footerBandText}>{empresa.nombre}</Text>
                     <Text style={s.footerBandMuted}>
-                        Presupuesto válido por 15 días · {empresa.email}
+                        Presupuesto válido por 5 días · {empresa.email}
                     </Text>
                 </View>
 

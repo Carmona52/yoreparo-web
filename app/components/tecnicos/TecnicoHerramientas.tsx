@@ -38,7 +38,7 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
 
     return (
         <>
-            <Card sx={{borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)"}}>
+            <Card sx={{borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", mb:2}}>
                 <CardContent sx={{p: 3}}>
                     <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2}}>
                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>

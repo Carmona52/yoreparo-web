@@ -136,21 +136,13 @@ function BloqueServicio({
 
     return (
         <Box sx={{mb: 2, border: `2px solid ${bloque.color}22`, borderRadius: 1, overflow: "hidden"}}>
-            <Box sx={{bgcolor: bloque.color, px: 2, py: 1.5, display: "flex", alignItems: "flex-start", gap: 2}}>
+            <Box sx={{bgcolor: bloque.color, px: 2, py: 1.5, display: "flex", gap: 2, alignItems: "center"}}>
 
-                {nombre.length != 0 ? <Typography variant="body2" fontWeight={800} color={contrastColor(bloque.color)}
-                                                  flex={1}> {nombre}</Typography> :
-                    <Typography variant="body2" fontWeight={800} color='black' flex={1}> Por favor, elija un
-                        servicio </Typography>}
+                {nombre.length != 0 ? <Typography variant="body2" fontWeight={800} color={contrastColor(bloque.color)} flex={1}> {nombre}</Typography> :
+                    <Typography variant="body2" fontWeight={800} color='black' flex={1}> Por favor, elija un servicio </Typography>}
 
-
-                <FormControl size="small" sx={{
-                    minWidth: 180,
-                    "& .MuiInputBase-root": {bgcolor: "rgba(255,255,255,0.15)", color: contrastColor(bloque.color)}
-                }}>
-                    <Select
-                        value={bloque.nombre}
-                        onChange={(e) => {
+                <FormControl size="small" sx={{minWidth: 280, "& .MuiInputBase-root": {bgcolor: "rgba(255,255,255,0.15)", color: contrastColor(bloque.color)}}}>
+                    <Select value={bloque.nombre} onChange={(e) => {
                             const selectedLabel = e.target.value;
                             const servicio = SERVICIOS_DISPONIBLES.find(s => s.label === selectedLabel);
                             setNombre(selectedLabel)
@@ -160,13 +152,13 @@ function BloqueServicio({
                                 color: servicio ? servicio.color : bloque.color
                             });
                         }}
-                        displayEmpty sx={{
-                        fontSize: 13,
+                         sx={{
+                        fontSize: 16,
                         fontWeight: 700,
                         bgcolor: "rgb(2,33,29)",
-                        color: contrastColor(bloque.color)
+                        color: "rgb(2,33,29)",
                     }}>
-                        <MenuItem value="" disabled><em>Seleccionar servicio</em></MenuItem>
+                        <MenuItem value="" disabled><em color='black'>Seleccionar servicio</em></MenuItem>
                         {SERVICIOS_DISPONIBLES.map((s) => (
                             <MenuItem key={s.label} value={s.label}>{s.label}</MenuItem>
                         ))}
@@ -184,7 +176,7 @@ function BloqueServicio({
             <Box sx={{p: 2}}>
                 <Box sx={{display: "grid", gridTemplateColumns: "2fr 0.7fr 1fr 1fr 36px", gap: 1, px: 1, mb: 0.5}}>
                     {["Descripción", "Cant.", "P. Unit.", "Total", ""].map((h) => (
-                        <Typography key={h} variant="caption" color="text.secondary" fontWeight={700} fontSize={10}
+                        <Typography key={h} variant="caption" color="text.secondary" fontWeight={700} fontSize={12}
                                     textTransform="uppercase">{h}</Typography>
                     ))}
                 </Box>
@@ -205,17 +197,17 @@ function BloqueServicio({
                                 <TextField size="small" placeholder="Material o insumo"
                                            value={m.descripcion}
                                            onChange={(e) => updateMat(m.id, "descripcion", e.target.value)}
-                                           sx={{"& .MuiInputBase-input": {fontSize: 12}}}/>
+                                           sx={{"& .MuiInputBase-input": {fontSize: 14}}}/>
                                 <TextField size="small" placeholder="1" type="number"
                                            value={m.cantidad}
                                            onChange={(e) => updateMat(m.id, "cantidad", e.target.value)}
-                                           sx={{"& .MuiInputBase-input": {fontSize: 12, textAlign: "center"}}}/>
+                                           sx={{"& .MuiInputBase-input": {fontSize: 14, textAlign: "center"}}}/>
                                 <TextField size="small" placeholder="$0" type="number"
                                            value={m.precioUnitario}
                                            onChange={(e) => updateMat(m.id, "precioUnitario", e.target.value)}
-                                           sx={{"& .MuiInputBase-input": {fontSize: 12}}}/>
+                                           sx={{"& .MuiInputBase-input": {fontSize: 14}}}/>
                                 <Typography variant="body2" fontWeight={700} color="#2E7D32" textAlign="right" pr={0.5}
-                                            fontSize={12}>
+                                            fontSize={14}>
                                     {formatMXN(rowTotal)}
                                 </Typography>
                                 <IconButton size="small" onClick={() => removeMat(m.id)}
@@ -228,8 +220,8 @@ function BloqueServicio({
                 </Box>
 
                 <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1.5}}>
-                    <Button size="small" startIcon={<AddIcon/>} onClick={addMat}
-                            sx={{fontSize: 11, color: "#1565C0", fontWeight: 700}}>
+                    <Button size="large" startIcon={<AddIcon/>} onClick={addMat}
+                            sx={{fontSize: 14, color: "#1565C0", fontWeight: 700}}>
                         Agregar material
                     </Button>
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
@@ -261,7 +253,7 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
     const [tab, setTab] = useState(0);
 
     const [empresa, setEmpresa] = useState<DatosEmpresa>({
-        nombre: "Yo Reparo", telefono: "+52 222 000 0000",
+        nombre: "Yo Reparo", telefono: "+52 238 109 8104",
         email: "contacto@yoreparo.com", direccion: "Puebla, México",
     });
 
@@ -332,7 +324,6 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
         }
     }
 
-    // ── Subir PDF directo ──
     async function handleSubirPdf() {
         if (!pdfFile) {
             setError("Selecciona un archivo PDF");
@@ -358,7 +349,7 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
 
                 <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{
                     mb: 3, borderBottom: "1px solid rgba(0,0,0,0.08)",
-                    "& .MuiTab-root": {textTransform: "none", fontWeight: 600, fontSize: 13},
+                    "& .MuiTab-root": {textTransform: "none", fontWeight: 600, fontSize: 16},
                     "& .Mui-selected": {color: "#1565C0"},
                     "& .MuiTabs-indicator": {bgcolor: "#FFD600", height: 3},
                 }}>
@@ -379,8 +370,8 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                                    }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                                 <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-                                    <BusinessIcon sx={{fontSize: 17, color: "#5A5A72"}}/>
-                                    <Typography variant="body2" fontWeight={600}>Datos de la empresa</Typography>
+                                    <BusinessIcon sx={{fontSize: 19, color: "#5A5A72"}}/>
+                                    <Typography fontWeight={600}>Datos de la empresa</Typography>
                                 </Box>
                             </AccordionSummary>
                             <AccordionDetails sx={{pt: 0}}>
@@ -494,13 +485,13 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                                        "&:before": {display: "none"}
                                    }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                <Typography variant="body2" fontWeight={600}>Tiempo y forma de pago</Typography>
+                                <Typography fontWeight={600}>Tiempo y forma de pago</Typography>
                             </AccordionSummary>
                             <AccordionDetails sx={{pt: 0}}>
                                 <Box sx={{display: "flex", flexDirection: "column", gap: 1.5}}>
-                                    <TextField size="small" label="Tiempo estimado" fullWidth value={tiempoEstimado}
+                                    <TextField size="medium" label="Tiempo estimado" fullWidth value={tiempoEstimado}
                                                onChange={(e) => setTiempoEstimado(e.target.value)}/>
-                                    <TextField size="small" label="Forma de pago" fullWidth value={formaPago}
+                                    <TextField size="medium" label="Forma de pago" fullWidth value={formaPago}
                                                onChange={(e) => setFormaPago(e.target.value)}/>
                                 </Box>
                             </AccordionDetails>
