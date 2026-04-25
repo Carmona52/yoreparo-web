@@ -31,7 +31,6 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import BuildIcon from "@mui/icons-material/Build";
 
-
 type Props = {
     open: boolean;
     onClose: () => void;
@@ -48,7 +47,6 @@ type FormState = {
     price: string;
 };
 
-
 function toLocalISO(date: Date): string {
     const pad = (n: number) => String(n).padStart(2, "0");
     const offset = -date.getTimezoneOffset();
@@ -61,9 +59,7 @@ function toLocalISO(date: Date): string {
 }
 
 function buildInitialForm(cotizacion: Cotizaciones): FormState {
-    const fecha = cotizacion.fecha_preferida
-        ? new Date(cotizacion.fecha_preferida)
-        : new Date();
+    const fecha = cotizacion.fecha_preferida ? new Date(cotizacion.fecha_preferida) : new Date();
     return {
         title: cotizacion.servicio ?? "",
         description: cotizacion.descripcion ?? "",
@@ -73,7 +69,6 @@ function buildInitialForm(cotizacion: Cotizaciones): FormState {
         price: cotizacion.costo_estimado ?? "",
     };
 }
-
 
 export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Props) {
     const supabase = createClient();
@@ -85,6 +80,40 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
     const [success, setSuccess] = useState(false);
     const [form, setForm] = useState<FormState>(() => buildInitialForm(cotizacion));
     const [cotizacionId, setCotizacionId] = useState<string | null>(null);
+
+    const [datePart, setDatePart] = useState<string>("");
+    const [timePart, setTimePart] = useState<string>("09:00");
+
+    const timeSlots = Array.from({length: 13}, (_, i) => {
+        const hour = 8 + i;
+        return `${hour.toString().padStart(2, "0")}:00`;
+    });
+
+    useEffect(() => {
+        if (!form.fecha_cita) return;
+        const [date, time] = form.fecha_cita.split("T");
+        if (date) setDatePart(date);
+        if (time) {
+            const hourOnly = time.slice(0, 5);
+            if (timeSlots.includes(hourOnly)) {
+                setTimePart(hourOnly);
+            } else {
+                // Si la hora original no está en los slots (ej. 23:00), forzamos una válida
+                setTimePart("09:00");
+                setForm((prev) => ({...prev, fecha_cita: `${date}T09:00`}));
+            }
+        }
+    }, [form.fecha_cita, timeSlots]);
+
+    const handleDateChange = (newDate: string) => {
+        setDatePart(newDate);
+        setForm((prev) => ({...prev, fecha_cita: `${newDate}T${timePart}`}));
+    };
+
+    const handleTimeChange = (newTime: string) => {
+        setTimePart(newTime);
+        setForm((prev) => ({...prev, fecha_cita: `${datePart}T${newTime}`}));
+    };
 
     useEffect(() => {
         if (!open) {
@@ -109,10 +138,9 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
         }
 
         void cargarTecnicos();
-    }, [open]);
+    }, [open, cotizacion, supabase]);
 
     const tecnicoSeleccionado = tecnicos.find((t) => t.id === form.worker_id);
-
 
     async function handleGuardar() {
         if (!form.title.trim()) {
@@ -132,51 +160,58 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
         setError(null);
 
         try {
-            const {data: {user}} = await supabase.auth.getUser();
+            const {
+                data: {user},
+            } = await supabase.auth.getUser();
             if (!user) throw new Error("Sin sesión activa");
 
-            const {data, error: insertError} = await supabase.from("jobs").insert({
-                title: form.title,
-                description: form.description,
-                address: form.address,
-                worker_id: form.worker_id,
-                fecha_cita: toLocalISO(new Date(form.fecha_cita)),
-                created_by: user.id,
-                status: "Pendiente",
-                cotizacion_id: cotizacion.id,
-                price: parseFloat(form.price) || 0,
-                image_url: cotizacion.evidencia_url ?? null,
-            }).select().single();
+            const {data, error: insertError} = await supabase
+                .from("jobs")
+                .insert({
+                    title: form.title,
+                    description: form.description,
+                    address: form.address,
+                    worker_id: form.worker_id,
+                    fecha_cita: toLocalISO(new Date(form.fecha_cita)),
+                    created_by: user.id,
+                    status: "Pendiente",
+                    cotizacion_id: cotizacion.id,
+                    price: parseFloat(form.price) || 0,
+                    image_url: cotizacion.evidencia_url ?? null,
+                })
+                .select()
+                .single();
 
             console.log(data.id);
-            setCotizacionId(data.id)
+            setCotizacionId(data.id);
 
             if (insertError) {
-                throw insertError
+                throw insertError;
             } else {
                 const {error} = await supabase
                     .from("cotizaciones")
-                    .update({'job_id': data.id, 'estado':'Asignada'})
+                    .update({job_id: data.id, estado: "Asignada"})
                     .eq("id", cotizacion.id);
             }
 
-            await supabase.functions.invoke("send-notification", {
-                body: {
-                    user_id: form.worker_id,
-                    title: "Nuevo trabajo asignado",
-                    body: `Se te ha asignado el trabajo: "${form.title}"`,
-                    data: "jobs",
-                },
-            }).catch((notifError: unknown) => {
-                console.warn("Notificación no enviada:", notifError);
-            });
+            await supabase.functions
+                .invoke("send-notification", {
+                    body: {
+                        user_id: form.worker_id,
+                        title: "Nuevo trabajo asignado",
+                        body: `Se te ha asignado el trabajo: "${form.title}"`,
+                        data: "jobs",
+                    },
+                })
+                .catch((notifError: unknown) => {
+                    console.warn("Notificación no enviada:", notifError);
+                });
 
             setSuccess(true);
             setTimeout(() => {
                 onSuccess();
                 onClose();
             }, 1200);
-
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Error al crear el trabajo";
             setError(message);
@@ -193,24 +228,28 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             fullWidth
             PaperProps={{sx: {borderRadius: 4, overflow: "hidden"}}}
         >
-            <Box sx={{
-                bgcolor: "#1A1A2E",
-                px: 3,
-                py: 2.5,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between"
-            }}>
+            <Box
+                sx={{
+                    bgcolor: "#1A1A2E",
+                    px: 3,
+                    py: 2.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                }}
+            >
                 <Box sx={{display: "flex", alignItems: "center", gap: 1.5}}>
-                    <Box sx={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        bgcolor: "#FFD600",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}>
+                    <Box
+                        sx={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            bgcolor: "#FFD600",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
                         <BuildIcon sx={{fontSize: 17, color: "#1A1A2E"}}/>
                     </Box>
                     <Box>
@@ -228,18 +267,23 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             </Box>
 
             <DialogContent sx={{p: 3}}>
-                <Box sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    mb: 2.5,
-                    p: 1.5,
-                    bgcolor: "rgba(255,214,0,0.08)",
-                    borderRadius: 2.5,
-                    border: "1px solid rgba(255,214,0,0.2)"
-                }}>
-                    <Chip label="Cotización aceptada" size="small"
-                          sx={{bgcolor: "rgba(255,214,0,0.2)", color: "#B8860B", fontWeight: 700, fontSize: 11}}/>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mb: 2.5,
+                        p: 1.5,
+                        bgcolor: "rgba(255,214,0,0.08)",
+                        borderRadius: 2.5,
+                        border: "1px solid rgba(255,214,0,0.2)",
+                    }}
+                >
+                    <Chip
+                        label="Cotización aceptada"
+                        size="small"
+                        sx={{bgcolor: "rgba(255,214,0,0.2)", color: "#B8860B", fontWeight: 700, fontSize: 11}}
+                    />
                     <Typography variant="caption" color="text.secondary" noWrap>
                         {cotizacion.servicio} · ${cotizacion.costo_estimado}
                     </Typography>
@@ -251,34 +295,58 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
 
                 <Box sx={{display: "flex", flexDirection: "column", gap: 2.5}}>
                     <TextField
-                        label="Título del trabajo" fullWidth size="small"
+                        label="Título del trabajo"
+                        fullWidth
+                        size="small"
                         value={form.title}
                         onChange={(e) => setForm((p) => ({...p, title: e.target.value}))}
                         InputProps={{startAdornment: <BuildIcon sx={{fontSize: 17, color: "#5A5A72", mr: 1}}/>}}
                     />
 
                     <TextField
-                        label="Dirección" fullWidth size="small"
+                        label="Dirección"
+                        fullWidth
+                        size="small"
                         value={form.address}
                         onChange={(e) => setForm((p) => ({...p, address: e.target.value}))}
                         InputProps={{startAdornment: <LocationOnIcon sx={{fontSize: 17, color: "#5A5A72", mr: 1}}/>}}
                     />
 
                     <TextField
-                        label="Presupuesto ($)" fullWidth size="small" type="number"
+                        label="Presupuesto ($)"
+                        fullWidth
+                        size="small"
+                        type="number"
                         value={form.price}
                         onChange={(e) => setForm((p) => ({...p, price: e.target.value}))}
                         InputProps={{startAdornment: <AttachMoneyIcon sx={{fontSize: 17, color: "#2E7D32", mr: 1}}/>}}
                     />
 
-                    <TextField
-                        label="Fecha y hora de la cita" fullWidth size="small"
-                        type="datetime-local"
-                        value={form.fecha_cita}
-                        onChange={(e) => setForm((p) => ({...p, fecha_cita: e.target.value}))}
-                        InputLabelProps={{shrink: true}}
-                        InputProps={{startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: "#1565C0", mr: 1}}/>}}
-                    />
+                    {/* Selector de fecha y hora amigable */}
+                    <Box sx={{display: "flex", gap: 2, alignItems: "center"}}>
+                        <TextField
+                            label="Fecha"
+                            type="date"
+                            size="small"
+                            value={datePart}
+                            onChange={(e) => handleDateChange(e.target.value)}
+                            InputLabelProps={{shrink: true}}
+                            InputProps={{
+                                startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: "#1565C0", mr: 1}}/>,
+                            }}
+                            sx={{flex: 1}}
+                        />
+                        <FormControl size="small" sx={{flex: 1}}>
+                            <InputLabel>Hora</InputLabel>
+                            <Select value={timePart} label="Hora" onChange={(e) => handleTimeChange(e.target.value)}>
+                                {timeSlots.map((slot) => (
+                                    <MenuItem key={slot} value={slot}>
+                                        {slot}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
 
                     <Divider/>
 
@@ -304,14 +372,16 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                                         if (!t) return "";
                                         return (
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-                                                <Avatar sx={{
-                                                    width: 22,
-                                                    height: 22,
-                                                    fontSize: 11,
-                                                    bgcolor: "#FFD600",
-                                                    color: "#1A1A2E",
-                                                    fontWeight: 800
-                                                }}>
+                                                <Avatar
+                                                    sx={{
+                                                        width: 22,
+                                                        height: 22,
+                                                        fontSize: 11,
+                                                        bgcolor: "#FFD600",
+                                                        color: "#1A1A2E",
+                                                        fontWeight: 800,
+                                                    }}
+                                                >
                                                     {t.name?.charAt(0).toUpperCase()}
                                                 </Avatar>
                                                 <Typography variant="body2" fontWeight={600}>{t.name}</Typography>
@@ -322,14 +392,16 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                                     {tecnicos.map((t) => (
                                         <MenuItem key={t.id} value={t.id}>
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1.5, py: 0.5}}>
-                                                <Avatar sx={{
-                                                    width: 32,
-                                                    height: 32,
-                                                    fontSize: 13,
-                                                    bgcolor: "#FFD600",
-                                                    color: "#1A1A2E",
-                                                    fontWeight: 800
-                                                }}>
+                                                <Avatar
+                                                    sx={{
+                                                        width: 32,
+                                                        height: 32,
+                                                        fontSize: 13,
+                                                        bgcolor: "#FFD600",
+                                                        color: "#1A1A2E",
+                                                        fontWeight: 800,
+                                                    }}
+                                                >
                                                     {t.name?.charAt(0).toUpperCase()}
                                                 </Avatar>
                                                 <Box>
@@ -344,20 +416,22 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                             </FormControl>
                         )}
 
-                        {/* Preview técnico seleccionado */}
                         {tecnicoSeleccionado && (
-                            <Box sx={{
-                                mt: 1.5,
-                                p: 1.5,
-                                bgcolor: "rgba(46,125,50,0.06)",
-                                borderRadius: 2,
-                                border: "1px solid rgba(46,125,50,0.2)",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1.5
-                            }}>
+                            <Box
+                                sx={{
+                                    mt: 1.5,
+                                    p: 1.5,
+                                    bgcolor: "rgba(46,125,50,0.06)",
+                                    borderRadius: 2,
+                                    border: "1px solid rgba(46,125,50,0.2)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1.5,
+                                }}
+                            >
                                 <Avatar
-                                    sx={{width: 36, height: 36, bgcolor: "#FFD600", color: "#1A1A2E", fontWeight: 800}}>
+                                    sx={{width: 36, height: 36, bgcolor: "#FFD600", color: "#1A1A2E", fontWeight: 800}}
+                                >
                                     {tecnicoSeleccionado.name?.charAt(0).toUpperCase()}
                                 </Avatar>
                                 <Box>
@@ -366,20 +440,26 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                                         {tecnicoSeleccionado.phone} · {tecnicoSeleccionado.email}
                                     </Typography>
                                 </Box>
-                                <Chip label={tecnicoSeleccionado.role} size="small"
-                                      sx={{
-                                          ml: "auto",
-                                          bgcolor: "rgba(255,214,0,0.15)",
-                                          color: "#B8860B",
-                                          fontWeight: 700,
-                                          fontSize: 10
-                                      }}/>
+                                <Chip
+                                    label={tecnicoSeleccionado.role}
+                                    size="small"
+                                    sx={{
+                                        ml: "auto",
+                                        bgcolor: "rgba(255,214,0,0.15)",
+                                        color: "#B8860B",
+                                        fontWeight: 700,
+                                        fontSize: 10,
+                                    }}
+                                />
                             </Box>
                         )}
                     </Box>
 
                     <TextField
-                        label="Descripción detallada" fullWidth multiline rows={3}
+                        label="Descripción detallada"
+                        fullWidth
+                        multiline
+                        rows={3}
                         value={form.description}
                         onChange={(e) => setForm((p) => ({...p, description: e.target.value}))}
                     />
@@ -387,8 +467,11 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             </DialogContent>
 
             <DialogActions sx={{px: 3, pb: 3, pt: 0, gap: 1}}>
-                <Button onClick={onClose} disabled={saving}
-                        sx={{borderRadius: 2.5, fontWeight: 600, color: "text.secondary"}}>
+                <Button
+                    onClick={onClose}
+                    disabled={saving}
+                    sx={{borderRadius: 2.5, fontWeight: 600, color: "text.secondary"}}
+                >
                     Cancelar
                 </Button>
                 <Button
@@ -396,18 +479,24 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                     onClick={handleGuardar}
                     disabled={saving || success}
                     endIcon={
-                        saving ? <CircularProgress size={16} color="inherit"/> :
-                            success ? <CheckIcon/> :
-                                <PersonIcon/>
+                        saving ? (
+                            <CircularProgress size={16} color="inherit"/>
+                        ) : success ? (
+                            <CheckIcon/>
+                        ) : (
+                            <PersonIcon/>
+                        )
                     }
                     sx={{
-                        borderRadius: 2.5, fontWeight: 800, px: 3,
+                        borderRadius: 2.5,
+                        fontWeight: 800,
+                        px: 3,
                         bgcolor: saving || success ? "#2E7D32" : "#FFD600",
                         color: saving || success ? "#fff" : "#1A1A2E",
                         "&:hover": {bgcolor: "#F9A800"},
                         "&:disabled": {
                             bgcolor: saving || success ? "#2E7D32" : undefined,
-                            color: saving || success ? "#fff" : undefined
+                            color: saving || success ? "#fff" : undefined,
                         },
                     }}
                 >

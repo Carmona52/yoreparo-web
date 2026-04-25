@@ -167,7 +167,6 @@ export default function SeccionApelacion({
         });
     };
 
-    // ── Enviar mensaje ────────────────────────────────────────────────────────
     const handleSend = async () => {
         const trimmed = texto.trim();
         if (!trimmed) return;
@@ -197,20 +196,17 @@ export default function SeccionApelacion({
         if (err) {
             setError("Error al enviar el mensaje: " + err.message);
         } else {
-            // Actualización optimista: añadir el mensaje localmente de inmediato
             setMensajes((prev) => {
                 if (prev.some((m) => m.id === inserted.id)) return prev;
                 return [...prev, inserted as Mensaje];
             });
             setTexto("");
             setPrecioPropuesto("");
-            // Notificar al otro participante
             notificarRecipiente(trimmed, precioNum !== null);
         }
         setSending(false);
     };
 
-    // ── Cerrar sin acuerdo ────────────────────────────────────────────────────
     const handleCerrarSinAcuerdo = async () => {
         const ok = window.confirm(
             "¿Cerrar la apelación sin acuerdo? El cliente no podrá apelar de nuevo."
@@ -251,7 +247,6 @@ export default function SeccionApelacion({
             });
         }
 
-        // Notificar al cliente
         if (recipientUserId) {
             await supabase.functions.invoke("send-notification", {
                 body: {
@@ -468,7 +463,6 @@ export default function SeccionApelacion({
                             />
                         )}
 
-                        {/* Texto + botón enviar */}
                         <Box sx={{display: "flex", gap: 1, alignItems: "flex-end"}}>
                             <TextField
                                 fullWidth
@@ -500,15 +494,13 @@ export default function SeccionApelacion({
                                     borderRadius: 2,
                                     bgcolor: "#1565C0",
                                     "&:hover": {bgcolor: "#0D47A1"},
-                                }}
-                            >
+                                }}>
                                 {sending
                                     ? <CircularProgress size={18} color="inherit"/>
                                     : <SendIcon fontSize="small"/>}
                             </Button>
                         </Box>
 
-                        {/* Cerrar sin acuerdo (solo admin) */}
                         {senderRole === "admin" && (
                             <Button
                                 variant="outlined"

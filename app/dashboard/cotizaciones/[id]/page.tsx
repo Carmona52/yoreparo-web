@@ -372,9 +372,8 @@ export default function CotizacionDetallePage() {
     }
 
     return (
-        <Box sx={{maxWidth: "md", mx: "auto", marginX: 2}}>
+        <Box sx={{maxWidth: "screen", mx: "auto", marginX: 2}}>
 
-            {/* Breadcrumb */}
             <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 3}}>
                 <IconButton
                     onClick={() => router.back()}
@@ -466,12 +465,10 @@ export default function CotizacionDetallePage() {
                 </CardContent>
             </Card>
 
-            {/* Sección dinámica según estado */}
             {estado === "pendiente" && (
                 <GeneradorPresupuesto cotizacion={cotizacion} onEnviado={handleEnviado}/>
             )}
             {estado === "enviada" && (
-                // Pasamos la cotizacion completa — SeccionEnviada ya tiene todo lo que necesita
                 <SeccionEnviada cotizacion={cotizacion}/>
             )}
             {estado === "aceptada" && (
