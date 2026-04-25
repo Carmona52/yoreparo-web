@@ -8,17 +8,40 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import LinearProgress from "@mui/material/LinearProgress";
+
 import AndroidIcon from "@mui/icons-material/Android";
 import DownloadIcon from "@mui/icons-material/Download";
 import SecurityIcon from "@mui/icons-material/Security";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
+import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 
-const APK_URL = "https://github.com/Carmona52/yoreparo-web/releases/download/App_movil/application-2b76b93f-0562-4d4d-babc-7a67036d3330.apk";
-
+const APK_URL = "https://github.com/Carmona52/yoreparo-web/releases/download/App_movil/YoReparo.apk";
 const APK_VERSION = "1.0.0";
 const APK_SIZE = "120 MB";
 
+const appFeatures = [
+    {
+        icon: <BuildOutlinedIcon sx={{fontSize: 22, color: "#FFB300"}}/>,
+        title: "Gestión de Servicios",
+        description: "Crea y administra tus solicitudes de reparación de forma rápida.",
+    },
+    {
+        icon: <NotificationsNoneOutlinedIcon sx={{fontSize: 22, color: "#FFB300"}}/>,
+        title: "Notificaciones Push",
+        description: "Recibe alertas inmediatas sobre actualizaciones de tu servicio.",
+    },
+    {
+        icon: <ListAltOutlinedIcon sx={{fontSize: 22, color: "#FFB300"}}/>,
+        title: "Historial Completo",
+        description: "Accede al registro detallado de todos tus mantenimientos anteriores.",
+    },
+];
+
+// Arreglo de pasos de instalación
 const steps = [
     {
         icon: <InfoOutlinedIcon sx={{fontSize: 20, color: "#F57C00"}}/>,
@@ -56,14 +79,7 @@ export default function DownloadPage() {
     }
 
     return (
-        <Box sx={{
-                minHeight: "100vh",
-                bgcolor: "#F5F6FA",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                p: {xs: 2, sm: 4},
-            }}>
+        <Box sx={{minHeight: "100vh", bgcolor: "#F5F6FA", display: "flex", alignItems: "center", justifyContent: "center", p: {xs: 2, sm: 4},}}>
             <Box
                 sx={{
                     width: "100%",
@@ -72,6 +88,7 @@ export default function DownloadPage() {
                     flexDirection: "column",
                     gap: 3,
                 }}>
+
                 <Box
                     sx={{
                         bgcolor: "#fff",
@@ -198,7 +215,6 @@ export default function DownloadPage() {
                     </Box>
                 </Box>
 
-                {/* Card de instrucciones */}
                 <Box
                     sx={{
                         bgcolor: "#fff",
@@ -207,8 +223,49 @@ export default function DownloadPage() {
                         boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
                         px: 4,
                         py: 3,
-                    }}
-                >
+                    }}>
+                    <Typography variant="subtitle2" fontWeight={700} color="text.primary" mb={2}>
+                        ¿Qué incluye la versión 1.0.0?
+                    </Typography>
+                    <Box sx={{display: "flex", flexDirection: "column", gap: 2.5}}>
+                        {appFeatures.map((feature, i) => (
+                            <Box key={i} sx={{display: "flex", gap: 2, alignItems: "flex-start"}}>
+                                <Box
+                                    sx={{
+                                        width: 36,
+                                        height: 36,
+                                        borderRadius: "10px",
+                                        bgcolor: "rgba(255,214,0,0.15)", // Tono amarillo que hace juego con tu botón
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        flexShrink: 0,
+                                    }}>
+                                    {feature.icon}
+                                </Box>
+                                <Box pt={0.2}>
+                                    <Typography variant="body2" fontWeight={700} color="text.primary" mb={0.3}>
+                                        {feature.title}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary" lineHeight={1.4}
+                                                display="block">
+                                        {feature.description}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
+
+                <Box
+                    sx={{
+                        bgcolor: "#fff",
+                        borderRadius: 4,
+                        border: "1px solid rgba(0,0,0,0.07)",
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+                        px: 4,
+                        py: 3,
+                    }}>
                     <Typography variant="subtitle2" fontWeight={700} color="text.primary" mb={2}>
                         Cómo instalar en Android
                     </Typography>
@@ -227,8 +284,7 @@ export default function DownloadPage() {
                                             justifyContent: "center",
                                             flexShrink: 0,
                                             border: "1px solid rgba(0,0,0,0.07)",
-                                        }}
-                                    >
+                                        }}>
                                         {step.icon}
                                     </Box>
                                     <Typography variant="body2" color="text.secondary" lineHeight={1.6} pt={0.3}>
