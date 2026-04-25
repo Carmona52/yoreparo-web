@@ -17,7 +17,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -27,28 +26,45 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import {supabase} from "@/lib/supabase/supabase";
 
+type ApelacionEstado = "activa" | "aceptada" | "cerrada_sin_acuerdo" | null | undefined;
+
 const GeneradorPresupuesto = dynamic(
     () => import("@/components/pdf/GeneradorPresupuesto"),
-    {ssr: false, loading: () => <Box sx={{p: 4, textAlign: "center"}}><CircularProgress sx={{color: "#FFD600"}}/></Box>}
+    {
+        ssr: false,
+        loading: () => (
+            <Box sx={{p: 4, textAlign: "center"}}>
+                <CircularProgress sx={{color: "#FFD600"}}/>
+            </Box>
+        ),
+    }
 );
 
 function normalizeEstado(estado: string) {
     return estado?.toLowerCase().trim() ?? "";
 }
 
-const ESTADO_STYLES: Record<string, { bg: string; color: string; label: string }> = {
-    pendiente: {bg: "rgba(245,124,0,0.12)", color: "#E65100", label: "Pendiente"},
-    enviada: {bg: "rgba(21,101,192,0.12)", color: "#1565C0", label: "Enviada"},
-    aceptada: {bg: "rgba(46,125,50,0.12)", color: "#2E7D32", label: "Aceptada"},
-    rechazada: {bg: "rgba(211,47,47,0.12)", color: "#C62828", label: "Rechazada"},
-    asignada: {bg: "rgb(61,198,40)", color: "#ffffff", label: "Asignada"},
+const ESTADO_STYLES: Record<string, {bg: string; color: string; label: string}> = {
+    pendiente: {bg: "rgba(245,124,0,0.12)",  color: "#E65100",  label: "Pendiente"},
+    enviada:   {bg: "rgba(21,101,192,0.12)", color: "#1565C0",  label: "Enviada"},
+    aceptada:  {bg: "rgba(46,125,50,0.12)",  color: "#2E7D32",  label: "Aceptada"},
+    rechazada: {bg: "rgba(211,47,47,0.12)",  color: "#C62828",  label: "Rechazada"},
+    asignada:  {bg: "rgb(61,198,40)",        color: "#ffffff",  label: "Asignada"},
 };
 
-function EstadoChip({estado}: { estado: string }) {
-    const key = normalizeEstado(estado);
+function EstadoChip({estado}: {estado: string}) {
+    const key   = normalizeEstado(estado);
     const style = ESTADO_STYLES[key] ?? {bg: "rgba(0,0,0,0.07)", color: "#5A5A72", label: estado ?? "—"};
-    return (<Chip label={style.label} size="medium"
-                  sx={{bgcolor: style.bg, color: style.color, fontWeight: 700, fontSize: 16, height: 32, p: 3}}/>);
+    return (
+        <Chip
+            label={style.label}
+            size="medium"
+            sx={{
+                bgcolor: style.bg, color: style.color,
+                fontWeight: 700, fontSize: 16, height: 32, p: 3,
+            }}
+        />
+    );
 }
 
 function formatFecha(fecha: string) {
@@ -59,84 +75,101 @@ function formatFecha(fecha: string) {
     });
 }
 
-async function getTécnicoPorCotizacion(cotizacionId: string): Promise<string | null> {
+async function getTecnicoPorCotizacion(cotizacionId: string): Promise<string | null> {
     try {
-        const {data: cotizacion, error: errorCoti} = await supabase
+        const {data: cotizacion, error: e1} = await supabase
             .from("cotizaciones")
             .select("job_id")
             .eq("id", cotizacionId)
             .single();
+        if (e1 || !cotizacion?.job_id) return null;
 
-        if (errorCoti || !cotizacion?.job_id) {
-            console.error("Error al obtener job_id de la cotización:", errorCoti);
-            return null;
-        }
-
-        const {data: job, error: errorJob} = await supabase
+        const {data: job, error: e2} = await supabase
             .from("jobs")
             .select("worker_id")
             .eq("id", cotizacion.job_id)
             .single();
+        if (e2 || !job?.worker_id) return null;
 
-        if (errorJob || !job?.worker_id) {
-            console.error("Error al obtener worker_id del job:", errorJob);
-            return null;
-        }
-
-        const {data: perfil, error: errorPerfil} = await supabase
+        const {data: perfil, error: e3} = await supabase
             .from("profiles")
             .select("name")
             .eq("id", job.worker_id)
             .single();
-
-        if (errorPerfil) {
-            console.error("Error al obtener nombre del perfil:", errorPerfil);
-            return null;
-        }
+        if (e3) return null;
 
         return perfil?.name ?? null;
-    } catch (err) {
-        console.error("Error inesperado:", err);
+    } catch {
         return null;
     }
 }
 
-// Reemplaza SeccionEnviada completa
-function SeccionEnviada({costo, cotizacionId, enApelacion}: {
-    costo: string;
-    cotizacionId: string;
-    enApelacion: boolean;
-}) {
-    const [apelando, setApelando] = useState(enApelacion);
 
-    const iniciarApelacion = async () => {
-        await supabase.from("cotizaciones")
-            .update({en_apelacion: true})
-            .eq("id", cotizacionId);
-        setApelando(true);
-    };
+interface SeccionEnviadaProps {
+    cotizacion: Cotizaciones;
+}
+
+function SeccionEnviada({cotizacion}: SeccionEnviadaProps) {
+    const costo          = cotizacion.costo_estimado ?? "—";
+    const cotizacionId   = cotizacion.id;
+    const [apelando, setApelando] = useState(
+        cotizacion.en_apelacion ?? false
+    );
+
+    useEffect(() => {
+        const channel = supabase
+            .channel(`seccion-enviada-${cotizacionId}`)
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: "public",
+                    table: "cotizaciones",
+                    filter: `id=eq.${cotizacionId}`,
+                },
+                (payload) => {
+                    const nuevo = payload.new as Cotizaciones;
+                    if (nuevo.en_apelacion) setApelando(true);
+                }
+            )
+            .subscribe();
+
+        return () => { supabase.removeChannel(channel); };
+    }, [cotizacionId]);
 
     return (
         <Box sx={{display: "flex", flexDirection: "column", gap: 2}}>
-            <Card sx={{borderRadius: 1, border: "1px solid rgba(245,124,0,0.25)", bgcolor: "rgba(245,124,0,0.04)"}}>
+            <Card sx={{
+                borderRadius: 1,
+                border: "1px solid rgba(245,124,0,0.25)",
+                bgcolor: "rgba(245,124,0,0.04)",
+            }}>
                 <CardContent sx={{p: 4, textAlign: "center"}}>
                     <Box sx={{
                         width: 64, height: 64, borderRadius: 1, bgcolor: "#F57C00",
-                        display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 2
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        mx: "auto", mb: 2,
                     }}>
                         <AccessTimeIcon sx={{fontSize: 34, color: "#fff"}}/>
                     </Box>
-                    <Typography variant="h6" fontWeight={800} mb={1}>Esperando Respuesta</Typography>
+                    <Typography variant="h6" fontWeight={800} mb={1}>
+                        Esperando Respuesta
+                    </Typography>
                     <Typography variant="body2" color="text.secondary" lineHeight={1.7}>
-                        El presupuesto por <strong>${costo}</strong> ha sido enviado al cliente y se encuentra en
-                        revisión.
+                        El presupuesto por <strong>${costo}</strong> ha sido enviado al
+                        cliente y se encuentra en revisión.
                     </Typography>
                 </CardContent>
             </Card>
 
-            {/* Chat de apelación */}
             {apelando ? (
-                <SeccionApelacion cotizacionId={cotizacionId} senderRole="admin" costo={costo}/>
+                <SeccionApelacion
+                    cotizacionId={cotizacionId}
+                    senderRole="admin"
+                    costo={costo}
+                    apelacionEstado={cotizacion.apelacion_estado as ApelacionEstado}
+                    recipientUserId={cotizacion.created_by}
+                />
             ) : (
                 <Typography variant="caption" color="text.secondary" textAlign="center">
                     Si el cliente apela el precio, el chat aparecerá aquí automáticamente.
@@ -146,31 +179,32 @@ function SeccionEnviada({costo, cotizacionId, enApelacion}: {
     );
 }
 
-function SeccionAceptada({costo, cotizacion, onJobCreado}: {
+interface SeccionAceptadaProps {
     costo: string;
     cotizacion: Cotizaciones;
-    onJobCreado: () => void
-}) {
-    const [modalOpen, setModalOpen] = useState(false);
+    onJobCreado: () => void;
+}
 
+function SeccionAceptada({costo, cotizacion, onJobCreado}: SeccionAceptadaProps) {
+    const [modalOpen, setModalOpen] = useState(false);
     return (
         <>
-            <Card sx={{borderRadius: 1, border: "1px solid rgba(46,125,50,0.25)", bgcolor: "rgba(46,125,50,0.04)"}}>
+            <Card sx={{
+                borderRadius: 1,
+                border: "1px solid rgba(46,125,50,0.25)",
+                bgcolor: "rgba(46,125,50,0.04)",
+            }}>
                 <CardContent sx={{p: 4, textAlign: "center"}}>
                     <Box sx={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 1,
-                        bgcolor: "#2E7D32",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        mx: "auto",
-                        mb: 2
+                        width: 64, height: 64, borderRadius: 1, bgcolor: "#2E7D32",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        mx: "auto", mb: 2,
                     }}>
                         <CheckCircleIcon sx={{fontSize: 34, color: "#fff"}}/>
                     </Box>
-                    <Typography variant="h6" fontWeight={800} mb={1}>¡Cotización Aceptada!</Typography>
+                    <Typography variant="h6" fontWeight={800} mb={1}>
+                        ¡Cotización Aceptada!
+                    </Typography>
                     <Typography variant="body2" color="text.secondary" lineHeight={1.7} mb={3}>
                         El cliente ha aprobado formalmente el presupuesto de{" "}
                         <strong>${costo}</strong>. Es el momento de asignar un técnico
@@ -201,42 +235,41 @@ function SeccionAceptada({costo, cotizacion, onJobCreado}: {
     );
 }
 
-function SeccionAsignada({costo, cotizacion}: { costo: string; cotizacion: Cotizaciones }) {
+interface SeccionAsignadaProps {
+    costo: string;
+    cotizacion: Cotizaciones;
+}
+
+function SeccionAsignada({costo, cotizacion}: SeccionAsignadaProps) {
     const [tecnicoNombre, setTecnicoNombre] = useState<string | null>(null);
-    const [cargando, setCargando] = useState(true);
+    const [cargando, setCargando]           = useState(true);
 
     useEffect(() => {
-        async function cargarTecnico() {
-            if (!cotizacion.id) return;
-            setCargando(true);
-            const nombre = await getTécnicoPorCotizacion(cotizacion.id);
+        if (!cotizacion.id) return;
+        getTecnicoPorCotizacion(cotizacion.id).then((nombre) => {
             setTecnicoNombre(nombre);
             setCargando(false);
-        }
-
-        cargarTecnico();
+        });
     }, [cotizacion.id]);
 
     return (
-        <Card sx={{borderRadius: 1, border: "1px solid rgba(46,125,50,0.25)", bgcolor: "rgba(46,125,50,0.04)"}}>
+        <Card sx={{
+            borderRadius: 1,
+            border: "1px solid rgba(46,125,50,0.25)",
+            bgcolor: "rgba(46,125,50,0.04)",
+        }}>
             <CardContent sx={{p: 4, textAlign: "center"}}>
                 <Box sx={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: 1,
-                    bgcolor: "#2E7D32",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: 2
+                    width: 64, height: 64, borderRadius: 1, bgcolor: "#2E7D32",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    mx: "auto", mb: 2,
                 }}>
                     <CheckCircleIcon sx={{fontSize: 34, color: "#fff"}}/>
                 </Box>
                 <Typography variant="h6" fontWeight={800} mb={1}>¡Trabajo Asignado!</Typography>
                 <Typography variant="body2" color="text.secondary" lineHeight={1.7} mb={3}>
-                    El cliente ha aprobado el presupuesto de <strong>${costo}</strong> y el trabajo ha sido asignado al
-                    siguiente técnico:
+                    El cliente ha aprobado el presupuesto de <strong>${costo}</strong> y el
+                    trabajo ha sido asignado al siguiente técnico:
                 </Typography>
                 {cargando ? (
                     <CircularProgress size={24}/>
@@ -254,12 +287,17 @@ function SeccionAsignada({costo, cotizacion}: { costo: string; cotizacion: Cotiz
     );
 }
 
-
 function SeccionRechazada() {
     return (
-        <Card sx={{borderRadius: 1, border: "1px solid rgba(211,47,47,0.25)", bgcolor: "rgba(211,47,47,0.04)"}}>
+        <Card sx={{
+            borderRadius: 1,
+            border: "1px solid rgba(211,47,47,0.25)",
+            bgcolor: "rgba(211,47,47,0.04)",
+        }}>
             <CardContent sx={{p: 4, textAlign: "center"}}>
-                <Typography variant="h6" fontWeight={800} mb={1} color="#C62828">Cotización Rechazada</Typography>
+                <Typography variant="h6" fontWeight={800} mb={1} color="#C62828">
+                    Cotización Rechazada
+                </Typography>
                 <Typography variant="body2" color="text.secondary" lineHeight={1.7}>
                     El cliente ha declinado el presupuesto enviado. Puedes contactarlo
                     para revisar los términos y generar una nueva propuesta si es necesario.
@@ -269,18 +307,44 @@ function SeccionRechazada() {
     );
 }
 
+
 export default function CotizacionDetallePage() {
-    const {id} = useParams<{ id: string }>();
-    const router = useRouter();
+    const {id}       = useParams<{id: string}>();
+    const router     = useRouter();
     const [cotizacion, setCotizacion] = useState<Cotizaciones | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading]       = useState(true);
+    const [error, setError]           = useState<string | null>(null);
 
     useEffect(() => {
-        cotizacionesService.getCotizacionById(id)
+        cotizacionesService
+            .getCotizacionById(id)
             .then(setCotizacion)
             .catch(() => setError("No se pudo cargar la cotización"))
             .finally(() => setLoading(false));
+    }, [id]);
+
+    // Realtime: actualizar cotización si cambia desde la app móvil
+    useEffect(() => {
+        if (!id) return;
+        const channel = supabase
+            .channel(`cotizacion-page-${id}`)
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: "public",
+                    table: "cotizaciones",
+                    filter: `id=eq.${id}`,
+                },
+                (payload) => {
+                    setCotizacion((prev) =>
+                        prev ? {...prev, ...(payload.new as Cotizaciones)} : prev
+                    );
+                }
+            )
+            .subscribe();
+
+        return () => { supabase.removeChannel(channel); };
     }, [id]);
 
     if (loading) return (
@@ -290,13 +354,17 @@ export default function CotizacionDetallePage() {
     );
 
     if (error || !cotizacion) return (
-        <Alert severity="error" sx={{mt: 2}}>{error ?? "Cotización no encontrada"}</Alert>
+        <Alert severity="error" sx={{mt: 2}}>
+            {error ?? "Cotización no encontrada"}
+        </Alert>
     );
 
     const estado = normalizeEstado(cotizacion.estado);
 
     function handleEnviado(costo: string) {
-        setCotizacion((prev) => prev ? {...prev, estado: "Enviada", costo_estimado: costo} : prev);
+        setCotizacion((prev) =>
+            prev ? {...prev, estado: "Enviada", costo_estimado: costo} : prev
+        );
     }
 
     function handleJobCreado() {
@@ -304,10 +372,15 @@ export default function CotizacionDetallePage() {
     }
 
     return (
-        <Box sx={{maxWidth: screen, mx: "auto", marginX: 2}}>
+        <Box sx={{maxWidth: "md", mx: "auto", marginX: 2}}>
 
+            {/* Breadcrumb */}
             <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 3}}>
-                <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)"}}>
+                <IconButton
+                    onClick={() => router.back()}
+                    size="small"
+                    sx={{bgcolor: "rgba(0,0,0,0.05)"}}
+                >
                     <ArrowBackIcon fontSize="small"/>
                 </IconButton>
                 <Typography variant="body2" color="text.secondary" fontWeight={600}>
@@ -315,9 +388,13 @@ export default function CotizacionDetallePage() {
                 </Typography>
             </Box>
 
+            {/* Card principal */}
             <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)", mb: 3}}>
                 <CardContent sx={{p: 3}}>
-                    <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 0.5}}>
+                    <Box sx={{
+                        display: "flex", justifyContent: "space-between",
+                        alignItems: "flex-start", mb: 0.5,
+                    }}>
                         <Typography variant="body2" color="text.secondary" fontWeight={500}>
                             {cotizacion.created_by ?? "Cliente"}
                         </Typography>
@@ -330,13 +407,16 @@ export default function CotizacionDetallePage() {
 
                     <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1.5}}>
                         <LocationOnIcon sx={{fontSize: 18, color: "#1565C0"}}/>
-                        <Typography variant="body2" color="text.secondary">{cotizacion.direccion ?? "—"}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {cotizacion.direccion ?? "—"}
+                        </Typography>
                     </Box>
 
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <CalendarTodayIcon sx={{fontSize: 17, color: "#1565C0"}}/>
-                        <Typography variant="body2"
-                                    color="text.secondary">{formatFecha(cotizacion.fecha_preferida)}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {formatFecha(cotizacion.fecha_preferida)}
+                        </Typography>
                     </Box>
 
                     <Divider sx={{my: 2.5}}/>
@@ -359,11 +439,9 @@ export default function CotizacionDetallePage() {
                                 src={cotizacion.evidencia_url}
                                 alt="Evidencia"
                                 sx={{
-                                    width: "100%",
-                                    borderRadius: 1,
-                                    objectFit: "cover",
-                                    maxHeight: 560,
-                                    border: "1px solid rgba(0,0,0,0.08)"
+                                    width: "100%", borderRadius: 1,
+                                    objectFit: "cover", maxHeight: 560,
+                                    border: "1px solid rgba(0,0,0,0.08)",
                                 }}
                             />
                         </>
@@ -375,13 +453,10 @@ export default function CotizacionDetallePage() {
                             <Button
                                 fullWidth variant="outlined"
                                 startIcon={<PictureAsPdfIcon/>}
-                                onClick={() => window.open(cotizacion.pdf_url, "_blank")}
+                                onClick={() => window.open(cotizacion.pdf_url!, "_blank")}
                                 sx={{
-                                    borderRadius: 1,
-                                    borderColor: "#1565C0",
-                                    color: "#1565C0",
-                                    fontWeight: 600,
-                                    "&:hover": {bgcolor: "rgba(21,101,192,0.06)"}
+                                    borderRadius: 1, borderColor: "#1565C0", color: "#1565C0",
+                                    fontWeight: 600, "&:hover": {bgcolor: "rgba(21,101,192,0.06)"},
                                 }}
                             >
                                 Ver Documento de Presupuesto
@@ -391,15 +466,13 @@ export default function CotizacionDetallePage() {
                 </CardContent>
             </Card>
 
+            {/* Sección dinámica según estado */}
             {estado === "pendiente" && (
                 <GeneradorPresupuesto cotizacion={cotizacion} onEnviado={handleEnviado}/>
             )}
             {estado === "enviada" && (
-                <SeccionEnviada
-                    costo={cotizacion.costo_estimado ?? "—"}
-                    cotizacionId={cotizacion.id}
-                    enApelacion={cotizacion.en_apelacion ?? false}
-                />
+                // Pasamos la cotizacion completa — SeccionEnviada ya tiene todo lo que necesita
+                <SeccionEnviada cotizacion={cotizacion}/>
             )}
             {estado === "aceptada" && (
                 <SeccionAceptada
@@ -415,6 +488,7 @@ export default function CotizacionDetallePage() {
                 />
             )}
             {estado === "rechazada" && <SeccionRechazada/>}
+
         </Box>
     );
 }

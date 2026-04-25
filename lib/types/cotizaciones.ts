@@ -11,5 +11,6 @@ export type Cotizaciones = {
     job_id:string,
     direccion:string,
     fecha_preferida:string,
-    en_apelacion?:boolean
+    en_apelacion?:boolean,
+    apelacion_estado?:string,
 }

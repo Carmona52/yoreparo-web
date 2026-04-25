@@ -112,17 +112,6 @@ export default function LoginPage() {
                         </Button>
                     </Box>
 
-                    <Divider sx={{ my: 3 }}>o</Divider>
-
-                    <Button
-                        variant="outlined"
-                        size="large"
-                        fullWidth
-                        onClick={handleGoogleLogin}
-                        disabled={loading}
-                    >
-                        Continuar con Google
-                    </Button>
                 </CardContent>
             </Card>
         </Box>
