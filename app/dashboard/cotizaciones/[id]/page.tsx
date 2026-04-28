@@ -218,8 +218,7 @@ function SeccionAceptada({costo, cotizacion, onJobCreado}: SeccionAceptadaProps)
                             py: 1.5, fontSize: 15, fontWeight: 800, borderRadius: 1,
                             bgcolor: "#2E7D32", color: "#fff",
                             "&:hover": {bgcolor: "#1B5E20"},
-                        }}
-                    >
+                        }}>
                         Asignar Técnico
                     </Button>
                 </CardContent>
@@ -323,7 +322,6 @@ export default function CotizacionDetallePage() {
             .finally(() => setLoading(false));
     }, [id]);
 
-    // Realtime: actualizar cotización si cambia desde la app móvil
     useEffect(() => {
         if (!id) return;
         const channel = supabase
@@ -387,7 +385,6 @@ export default function CotizacionDetallePage() {
                 </Typography>
             </Box>
 
-            {/* Card principal */}
             <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)", mb: 3}}>
                 <CardContent sx={{p: 3}}>
                     <Box sx={{

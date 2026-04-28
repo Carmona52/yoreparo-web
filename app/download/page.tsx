@@ -41,7 +41,6 @@ const appFeatures = [
     },
 ];
 
-// Arreglo de pasos de instalación
 const steps = [
     {
         icon: <InfoOutlinedIcon sx={{fontSize: 20, color: "#F57C00"}}/>,
@@ -79,7 +78,14 @@ export default function DownloadPage() {
     }
 
     return (
-        <Box sx={{minHeight: "100vh", bgcolor: "#F5F6FA", display: "flex", alignItems: "center", justifyContent: "center", p: {xs: 2, sm: 4},}}>
+        <Box sx={{
+            minHeight: "100vh",
+            bgcolor: "#F5F6FA",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: {xs: 2, sm: 4},
+        }}>
             <Box
                 sx={{
                     width: "100%",
@@ -235,7 +241,7 @@ export default function DownloadPage() {
                                         width: 36,
                                         height: 36,
                                         borderRadius: "10px",
-                                        bgcolor: "rgba(255,214,0,0.15)", // Tono amarillo que hace juego con tu botón
+                                        bgcolor: "rgba(255,214,0,0.15)",
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
