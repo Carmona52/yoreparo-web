@@ -98,7 +98,6 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             if (timeSlots.includes(hourOnly)) {
                 setTimePart(hourOnly);
             } else {
-                // Si la hora original no está en los slots (ej. 23:00), forzamos una válida
                 setTimePart("09:00");
                 setForm((prev) => ({...prev, fecha_cita: `${date}T09:00`}));
             }
@@ -130,7 +129,7 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                 const {data, error: sbError} = await supabase
                     .from("profiles")
                     .select("*")
-                    .neq("role", "cliente");
+                    .eq("role", "worker");
                 if (!sbError && data) setTecnicos(data as User[]);
             } finally {
                 setLoadingTecnicos(false);

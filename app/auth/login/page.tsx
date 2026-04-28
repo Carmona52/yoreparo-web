@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+import {createClient} from "@/lib/supabase/client";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -27,7 +27,7 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const {error} = await supabase.auth.signInWithPassword({
             email,
             password,
         });
@@ -39,34 +39,16 @@ export default function LoginPage() {
             router.replace("/dashboard");
         }
     }
-
-    async function handleGoogleLogin() {
-        setLoading(true);
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/auth/oauth`,
-            },
-        });
-        if (error) {
-            setError(error.message);
-            setLoading(false);
-        }
-    }
-
     return (
-        <Box
-            sx={{
+        <Box sx={{
                 minHeight: "100vh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 bgcolor: "background.default",
-                p: 2,
-            }}
-        >
-            <Card sx={{ width: "100%", maxWidth: 420 }}>
-                <CardContent sx={{ p: 4 }}>
+                p: 2,}}>
+            <Card sx={{width: "100%", maxWidth: 420}}>
+                <CardContent sx={{p: 4}}>
                     <Typography variant="h5" fontWeight={700} mb={1}>
                         Bienvenido
                     </Typography>
@@ -75,7 +57,7 @@ export default function LoginPage() {
                     </Typography>
 
                     {error && (
-                        <Alert severity="error" sx={{ mb: 3 }}>
+                        <Alert severity="error" sx={{mb: 3}}>
                             {error}
                         </Alert>
                     )}
@@ -88,27 +70,22 @@ export default function LoginPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             fullWidth
-                            autoComplete="email"
-                        />
-                        <TextField
-                            label="Contraseña"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            fullWidth
-                            autoComplete="current-password"
-                        />
+                            autoComplete="email"/>
+                        <TextField label="Contraseña"
+                                   type="password"
+                                   value={password}
+                                   onChange={(e) => setPassword(e.target.value)}
+                                   required
+                                   fullWidth
+                                   autoComplete="current-password"/>
 
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            size="large"
-                            disabled={loading}
-                            fullWidth
-                            sx={{ mt: 1 }}
-                        >
-                            {loading ? <CircularProgress size={22} color="inherit" /> : "Iniciar sesión"}
+                        <Button type="submit"
+                                variant="contained"
+                                size="large"
+                                disabled={loading}
+                                fullWidth
+                                sx={{mt: 1}}>
+                            {loading ? <CircularProgress size={22} color="inherit"/> : "Iniciar sesión"}
                         </Button>
                     </Box>
 

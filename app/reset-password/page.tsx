@@ -76,7 +76,7 @@ export default function ResetPasswordPage() {
                     Crear nueva contraseña
                 </Typography>
                 <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
-                    Ingresa tu nueva contraseña para la cuenta de administrador.
+                    Ingresa tu nueva contraseña para tu cuenta.
                 </Typography>
 
                 <Box component="form" onSubmit={handleReset} noValidate>

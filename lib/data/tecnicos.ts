@@ -8,7 +8,7 @@ export const tecnicosService = {
         const { data, error } = await supabase
             .from("profiles")
             .select("*")
-            .neq("role", "cliente");
+            .eq("role", "worker");
         if (error) throw error;
         return data as User[];
     },
