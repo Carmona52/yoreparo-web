@@ -15,7 +15,6 @@ import SecurityIcon from "@mui/icons-material/Security";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
-import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 

@@ -13,6 +13,16 @@ export const tecnicosService = {
         return data as User[];
     },
 
+    async getSupervisores(): Promise<User[]> {
+        const supabase = createClient();
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("role", "owner");
+        if (error) throw error;
+        return data as User[];
+    },
+
     async getDetailsTecnico(id: string): Promise<User> {
         const supabase = createClient();
         const { data, error } = await supabase

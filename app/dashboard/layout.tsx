@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import {useState} from "react";
+import {useRouter, usePathname} from "next/navigation";
+import {createClient} from "@/lib/supabase/client";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import AppBar from "@mui/material/AppBar";
@@ -17,7 +17,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
+import {useTheme} from "@mui/material/styles";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -32,17 +32,18 @@ const DRAWER_FULL = 256;
 const DRAWER_MINI = 68;
 
 const navItems = [
-    { label: "Dashboard",      icon: <DashboardIcon />,  href: "/dashboard" },
-    { label: "Servicios",      icon: <BuildIcon />,       href: "/dashboard/servicios" },
-    { label: "Cotizaciones",    icon: <AssignmentIcon />,  href: "/dashboard/cotizaciones" },
-    { label: "Técnicos",       icon: <PeopleIcon />,      href: "/dashboard/tecnicos" },
+    {label: "Dashboard", icon: <DashboardIcon/>, href: "/dashboard"},
+    {label: "Servicios", icon: <BuildIcon/>, href: "/dashboard/servicios"},
+    {label: "Cotizaciones", icon: <AssignmentIcon/>, href: "/dashboard/cotizaciones"},
+    {label: "Técnicos", icon: <PeopleIcon/>, href: "/dashboard/tecnicos"},
+    {label: "Supervisores", icon: <PeopleIcon/>, href: "/dashboard/supervisores"},
 ];
 
 const bottomItems = [
-    { label: "Configuración",  icon: <SettingsIcon />,   href: "/dashboard/configuracion" },
+    {label: "Configuración", icon: <SettingsIcon/>, href: "/dashboard/configuracion"},
 ];
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({children}: { children: React.ReactNode }) {
     const muiTheme = useTheme();
     const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -58,11 +59,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         router.replace("/auth/login");
     }
 
-    function NavItem({ item }: { item: typeof navItems[0] }) {
-        const isActive = pathname === item.href;
+    function NavItem({item}: { item: typeof navItems[0] }) {
+        const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
         const mini = collapsed && !isMobile;
         return (
-            <ListItem disablePadding sx={{ px: 1, mb: 0.5 }}>
+            <ListItem disablePadding sx={{px: 1, mb: 0.5}}>
                 <Tooltip title={mini ? item.label : ""} placement="right">
                     <ListItemButton
                         selected={isActive}
@@ -76,13 +77,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             px: mini ? 1 : 2,
                             borderRadius: 1.5
                         }}>
-                        <ListItemIcon sx={{ minWidth: mini ? 0 : 38, color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.6)" }}>
+                        <ListItemIcon
+                            sx={{minWidth: mini ? 0 : 38, color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.6)"}}>
                             {item.icon}
                         </ListItemIcon>
                         {!mini && (
                             <ListItemText
                                 primary={item.label}
-                                primaryTypographyProps={{ fontSize: 14, fontWeight: isActive ? 700 : 500, color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.85)" }}
+                                primaryTypographyProps={{
+                                    fontSize: 14,
+                                    fontWeight: isActive ? 700 : 500,
+                                    color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.85)"
+                                }}
                             />
                         )}
                     </ListItemButton>
@@ -92,7 +98,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
 
     const drawerContent = (
-        <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{height: "100%", display: "flex", flexDirection: "column"}}>
             <Toolbar sx={{
                 minHeight: "64px !important",
                 px: collapsed && !isMobile ? 1 : 2,
@@ -100,14 +106,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 borderBottom: "1px solid rgba(255,255,255,0.08)",
             }}>
                 {(!collapsed || isMobile) && (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5}}>
+                    <Box sx={{display: "flex", alignItems: "center", gap: 1.5}}>
                         <Box
                             component="img"
                             src="/logo.png"
                             alt="Yo Reparo Logo"
-                            sx={{ width: 34, height: 34, objectFit: "contain", flexShrink: 0 }}
+                            sx={{width: 34, height: 34, objectFit: "contain", flexShrink: 0}}
                         />
-                        <Typography variant="h1" sx={{ color: "#fff", fontWeight: 700, fontSize: 20, lineHeight: 1.2 }}>
+                        <Typography variant="h1" sx={{color: "#fff", fontWeight: 700, fontSize: 20, lineHeight: 1.2}}>
                             Yo Reparo
                         </Typography>
                     </Box>
@@ -118,29 +124,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         component="img"
                         src="/logo.png"
                         alt="Yo Reparo Logo"
-                        sx={{ width: 64, height: 64, objectFit: "contain" }}
+                        sx={{width: 64, height: 64, objectFit: "contain"}}
                     />
                 )}
 
                 {!isMobile && (
                     <Tooltip title={collapsed ? "Expandir" : "Colapsar"} placement="right">
-                        <IconButton onClick={() => setCollapsed(!collapsed)} size="small" sx={{ color: "rgba(255,255,255,0.5)", ml: collapsed ? 0 : 1 }}>
-                            <ChevronLeftIcon sx={{ transition: "transform 0.2s", transform: collapsed ? "rotate(180deg)" : "none", fontSize: 20 }} />
+                        <IconButton onClick={() => setCollapsed(!collapsed)} size="small"
+                                    sx={{color: "rgba(255,255,255,0.5)", ml: collapsed ? 0 : 1}}>
+                            <ChevronLeftIcon sx={{
+                                transition: "transform 0.2s",
+                                transform: collapsed ? "rotate(180deg)" : "none",
+                                fontSize: 20
+                            }}/>
                         </IconButton>
                     </Tooltip>
                 )}
             </Toolbar>
 
-            <List sx={{ flex: 1, pt: 1.5, px: 0.5 }}>
-                {navItems.map((item) => <NavItem key={item.href} item={item} />)}
+            <List sx={{flex: 1, pt: 1.5, px: 0.5}}>
+                {navItems.map((item) => <NavItem key={item.href} item={item}/>)}
             </List>
 
-            <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
+            <Divider sx={{borderColor: "rgba(255,255,255,0.08)"}}/>
 
-            <List sx={{ pt: 1, pb: 1, px: 0.5 }}>
-                {bottomItems.map((item) => <NavItem key={item.href} item={item} />)}
+            <List sx={{pt: 1, pb: 1, px: 0.5}}>
+                {bottomItems.map((item) => <NavItem key={item.href} item={item}/>)}
 
-                <ListItem disablePadding sx={{ px: 1, mt: 0.5 }}>
+                <ListItem disablePadding sx={{px: 1, mt: 0.5}}>
                     <Tooltip title={collapsed && !isMobile ? "Cerrar sesión" : ""} placement="right">
                         <ListItemButton
                             onClick={handleLogout}
@@ -149,16 +160,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 minHeight: 46,
                                 px: collapsed && !isMobile ? 1 : 2,
                                 borderRadius: 2,
-                                "&:hover": { backgroundColor: "rgba(211,47,47,0.18)" },
+                                "&:hover": {backgroundColor: "rgba(211,47,47,0.18)"},
                             }}
                         >
-                            <ListItemIcon sx={{ minWidth: collapsed && !isMobile ? 0 : 38, color: "#EF9F9F" }}>
-                                <LogoutIcon />
+                            <ListItemIcon sx={{minWidth: collapsed && !isMobile ? 0 : 38, color: "#EF9F9F"}}>
+                                <LogoutIcon/>
                             </ListItemIcon>
                             {(!collapsed || isMobile) && (
                                 <ListItemText
                                     primary="Cerrar sesión"
-                                    primaryTypographyProps={{ fontSize: 14, fontWeight: 500, color: "#EF9F9F" }}
+                                    primaryTypographyProps={{fontSize: 14, fontWeight: 500, color: "#EF9F9F"}}
                                 />
                             )}
                         </ListItemButton>
@@ -169,19 +180,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
 
     return (
-        <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+        <Box sx={{display: "flex", minHeight: "100vh", bgcolor: "background.default"}}>
 
-            <AppBar position="fixed" elevation={0} sx={{ display: { md: "none" }, zIndex: (t) => t.zIndex.drawer + 1 }}>
-                <Toolbar sx={{ gap: 2 }}>
-                    <IconButton edge="start" onClick={() => setMobileOpen(true)} sx={{ color: "#1A1A2E" }}>
-                        <MenuIcon />
+            <AppBar position="fixed" elevation={0} sx={{display: {md: "none"}, zIndex: (t) => t.zIndex.drawer + 1}}>
+                <Toolbar sx={{gap: 2}}>
+                    <IconButton edge="start" onClick={() => setMobileOpen(true)} sx={{color: "#1A1A2E"}}>
+                        <MenuIcon/>
                     </IconButton>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <Box
                             component="img"
                             src="/logo.png"
                             alt="Logo"
-                            sx={{ width: 34, height: 34, objectFit: "contain" }}
+                            sx={{width: 34, height: 34, objectFit: "contain"}}
                         />
                         <Typography variant="h2" fontWeight={700} fontSize={20} color="#1A1A2E">Yo Reparo</Typography>
                     </Box>
@@ -192,10 +203,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 variant="temporary"
                 open={mobileOpen}
                 onClose={() => setMobileOpen(false)}
-                ModalProps={{ keepMounted: true }}
+                ModalProps={{keepMounted: true}}
                 sx={{
-                    display: { xs: "block", md: "none" },
-                    "& .MuiDrawer-paper": { width: DRAWER_FULL, boxSizing: "border-box" },
+                    display: {xs: "block", md: "none"},
+                    "& .MuiDrawer-paper": {width: DRAWER_FULL, boxSizing: "border-box"},
                 }}
             >
                 {drawerContent}
@@ -204,7 +215,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Drawer
                 variant="permanent"
                 sx={{
-                    display: { xs: "none", md: "block" },
+                    display: {xs: "none", md: "block"},
                     width: drawerWidth,
                     flexShrink: 0,
                     transition: "width 0.22s cubic-bezier(0.4,0,0.2,1)",
@@ -224,8 +235,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: { xs: 2, md: 3.5 },
-                    mt: { xs: "64px", md: 0 },
+                    p: {xs: 2, md: 3.5},
+                    mt: {xs: "64px", md: 0},
                     minHeight: "100vh",
                     maxWidth: "100%",
                     overflow: "hidden",
