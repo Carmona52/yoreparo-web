@@ -5,19 +5,21 @@ import {Servicios} from "@/lib/types/servicios";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-
+import {requireAuth} from "@/lib/supabase/Auth";
 import StatCards from "@/components/dashboard/statsCards";
 import CotizacionesRecientes from "@/components/dashboard/cotizacionesRecientes";
 import JobsPendientesAsignar from "@/components/dashboard/jobsPendientesAsignar";
 import GraficaIngresos from "@/components/dashboard/graficaIngresos";
 
 export default async function DashboardPage() {
+
     const supabase = await createClient();
 
-    const {data: {user}} = await supabase.auth.getUser();
+
+    const {user, profile} = await requireAuth();
     if (!user) redirect("/auth/login");
 
-    const firstName = user.user_metadata?.full_name?.split(" ")[0]
+    const firstName = profile.name?.split(" ")[0]
         ?? user.email?.split("@")[0]
         ?? "Usuario";
 
