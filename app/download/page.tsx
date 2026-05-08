@@ -230,7 +230,7 @@ export default function DownloadPage() {
                         py: 3,
                     }}>
                     <Typography variant="subtitle2" fontWeight={700} color="text.primary" mb={2}>
-                        ¿Qué incluye la versión 1.0.0?
+                        ¿Qué incluye la versión {APK_VERSION}?
                     </Typography>
                     <Box sx={{display: "flex", flexDirection: "column", gap: 2.5}}>
                         {appFeatures.map((feature, i) => (
