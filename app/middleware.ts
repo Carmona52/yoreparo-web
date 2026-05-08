@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const ROLES_PERMITIDOS = ["owner", "supervisor"] as const;
+const ROLES_PERMITIDOS = ["owner", "supervisor", "administrador"] as const;
 type RolPermitido = typeof ROLES_PERMITIDOS[number];
 
 function rolPermitido(role: string | null | undefined): role is RolPermitido {
