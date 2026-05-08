@@ -18,8 +18,8 @@ import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 
-const APK_URL = "https://github.com/Carmona52/yoreparo-web/releases/download/App_movil/YoReparo.apk";
-const APK_VERSION = "1.0.0";
+const APK_URL = "https://github.com/Carmona52/yoreparo-web/releases/download/Yo_Reparo_1.1.0/YoReparo.apk";
+const APK_VERSION = "1.1.0";
 const APK_SIZE = "120 MB";
 
 const appFeatures = [
