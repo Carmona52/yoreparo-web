@@ -7,7 +7,13 @@ const supabase = createClient();
 
 export const serviciosService = {
     async getAllServicios(): Promise<Servicios[]> {
-        const {data, error} = await supabase.from("jobs").select("*");
+        const { data, error } = await supabase
+            .from('jobs')
+            .select(`
+        *,
+        profiles:profiles!created_by(name),
+        trabajador:profiles!worker_id(name)
+    `)
         if (error) throw error;
         return data as Servicios[];
     },

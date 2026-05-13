@@ -91,9 +91,6 @@ export default async function DashboardPage() {
                 trabajosFinalizados={trabajosFinalizados ?? 0}
             />
 
-            <Box sx={{mb: 3}}>
-                <GraficaIngresos jobs={(jobsFinalizados ?? []) as Servicios[]}/>
-            </Box>
 
             <Grid container spacing={2.5}>
                 <Grid size={{xs: 12, md: 6}}>
@@ -103,6 +100,10 @@ export default async function DashboardPage() {
                     <JobsPendientesAsignar jobs={(jobsSinTecnico ?? []) as Servicios[]}/>
                 </Grid>
             </Grid>
+
+            <Box sx={{my: 3}}>
+                <GraficaIngresos jobs={(jobsFinalizados ?? []) as Servicios[]}/>
+            </Box>
         </Box>
     );
 }

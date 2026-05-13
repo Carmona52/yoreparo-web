@@ -22,7 +22,7 @@ export default function JobsPendientesAsignar({jobs}: { jobs: Servicios[] }) {
     const router = useRouter();
 
     return (
-        <Card sx={{borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", height: "100%"}}>
+        <Card sx={{ border: "1px solid rgba(0,0,0,0.07)", height: "100%"}}>
             <CardContent sx={{p: 3}}>
                 <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
                     <PersonOffIcon sx={{fontSize: 18, color: "#E65100"}}/>

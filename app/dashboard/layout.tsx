@@ -27,6 +27,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import NotificacionesBtn from "@/components/notifications/notificationsButtons";
 
 const DRAWER_FULL = 256;
 const DRAWER_MINI = 68;
@@ -150,6 +151,7 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
 
             <List sx={{pt: 1, pb: 1, px: 0.5}}>
                 {bottomItems.map((item) => <NavItem key={item.href} item={item}/>)}
+                <NotificacionesBtn></NotificacionesBtn>
 
                 <ListItem disablePadding sx={{px: 1, mt: 0.5}}>
                     <Tooltip title={collapsed && !isMobile ? "Cerrar sesión" : ""} placement="right">

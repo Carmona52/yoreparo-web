@@ -2,8 +2,9 @@
 
 import {useState, useEffect} from 'react';
 import {createClient} from '@/lib/supabase/client';
-import {Cotizaciones} from '@/lib/types/cotizaciones';
+import {Servicios} from '@/lib/types/servicios';
 import {User} from '@/lib/types/user';
+import {serviciosService, JobEstado} from '@/lib/data/servicios';
 
 import {
     Dialog,
@@ -27,26 +28,27 @@ import {
 } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
-import PersonIcon from '@mui/icons-material/Person';
+import SaveIcon from '@mui/icons-material/Save';
 import CheckIcon from '@mui/icons-material/Check';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
+import PersonIcon from '@mui/icons-material/Person';
 
 type Props = {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    cotizacion: Cotizaciones;
+    servicio: Servicios | null;
 };
 
 type FormState = {
     title: string;
     description: string;
     address: string;
-    worker_id: string;
     price: string;
+    worker_id: string;
 };
 
 type DateTimeState = {
@@ -66,33 +68,27 @@ function toLocalISOFromParts(dateStr: string, timeStr: string): string {
     return `${localDate.getFullYear()}-${pad(localDate.getMonth() + 1)}-${pad(localDate.getDate())}T${pad(localDate.getHours())}:${pad(localDate.getMinutes())}:00${sign}${offsetHours}:${offsetMins}`;
 }
 
-function buildInitialDateTime(cotizacion: Cotizaciones): DateTimeState {
-    let dateObj = new Date();
-    if (cotizacion.fecha_preferida) {
-        const parsed = new Date(cotizacion.fecha_preferida);
-        if (!isNaN(parsed.getTime())) dateObj = parsed;
-    }
-    const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const hours = String(dateObj.getHours()).padStart(2, '0');
+function parseISOToLocalDateTime(isoString: string): DateTimeState | null {
+    if (!isoString) return null;
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return null;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
     return {
         date: `${year}-${month}-${day}`,
-        time: `${hours}:00`,
+        time: `${hours}:${minutes}`,
     };
 }
 
-function buildInitialForm(cotizacion: Cotizaciones): FormState {
-    return {
-        title: cotizacion.servicio ?? '',
-        description: cotizacion.descripcion ?? '',
-        address: cotizacion.direccion ?? '',
-        worker_id: '',
-        price: cotizacion.costo_estimado?.toString() ?? '',
-    };
-}
+const timeSlots = Array.from({length: 13}, (_, i) => {
+    const hour = 8 + i;
+    return `${hour.toString().padStart(2, '0')}:00`;
+});
 
-export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Props) {
+export default function EditarServicioModal({open, onClose, onSuccess, servicio}: Props) {
     const supabase = createClient();
 
     const [tecnicos, setTecnicos] = useState<User[]>([]);
@@ -100,22 +96,44 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const [form, setForm] = useState<FormState>(() => buildInitialForm(cotizacion));
-    const [dateTime, setDateTime] = useState<DateTimeState>(() => buildInitialDateTime(cotizacion));
 
-    const timeSlots = Array.from({length: 13}, (_, i) => {
-        const hour = 8 + i;
-        return `${hour.toString().padStart(2, '0')}:00`;
+    const [form, setForm] = useState<FormState>({
+        title: '',
+        description: '',
+        address: '',
+        price: '',
+        worker_id: '',
     });
+    const [dateTime, setDateTime] = useState<DateTimeState>({date: '', time: '09:00'});
 
     useEffect(() => {
-        if (open) {
-            setForm(buildInitialForm(cotizacion));
-            setDateTime(buildInitialDateTime(cotizacion));
-            setError(null);
-            setSuccess(false);
+        if (!open || !servicio) return;
+
+        setForm({
+            title: servicio.title ?? '',
+            description: servicio.description ?? '',
+            address: servicio.address ?? '',
+            price: servicio.price?.toString() ?? '',
+            worker_id: servicio.worker_id ?? '',
+        });
+
+        const dt = parseISOToLocalDateTime(servicio.fecha_cita);
+        if (dt) {
+            if (!timeSlots.includes(dt.time)) {
+                dt.time = '09:00';
+            }
+            setDateTime(dt);
+        } else {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            setDateTime({
+                date: `${year}-${month}-${day}`,
+                time: '09:00',
+            });
         }
-    }, [open, cotizacion]);
+    }, [open, servicio]);
 
     useEffect(() => {
         if (!open) return;
@@ -139,64 +157,51 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
     const tecnicoSeleccionado = tecnicos.find((t) => t.id === form.worker_id);
 
     const handleGuardar = async () => {
+        if (!servicio) return;
+
         if (!form.title.trim()) return setError('El título es requerido');
         if (!form.address.trim()) return setError('La dirección es requerida');
-        if (!form.worker_id) return setError('Selecciona un técnico');
         if (!dateTime.date || !dateTime.time) return setError('Fecha y hora son requeridas');
 
         const selectedDate = new Date(`${dateTime.date}T${dateTime.time}`);
         if (isNaN(selectedDate.getTime())) return setError('Fecha inválida');
-        if (selectedDate < new Date()) return setError('No se puede crear un trabajo en el pasado');
+        if (selectedDate < new Date()) return setError('No se puede asignar una fecha/hora pasada');
 
         setSaving(true);
         setError(null);
 
         try {
-            const {data: {user}} = await supabase.auth.getUser();
-            if (!user) throw new Error('Sin sesión activa');
-
             const fechaCitaISO = toLocalISOFromParts(dateTime.date, dateTime.time);
 
-            const {data, error: insertError} = await supabase
+            const {error: updateError} = await supabase
                 .from('jobs')
-                .insert({
+                .update({
                     title: form.title,
                     description: form.description,
                     address: form.address,
-                    worker_id: form.worker_id,
-                    fecha_cita: fechaCitaISO,
-                    created_by: user.id,
-                    status: 'Pendiente',
-                    cotizacion_id: cotizacion.id,
                     price: parseFloat(form.price) || 0,
-                    image_url: cotizacion.evidencia_url ?? null,
+                    fecha_cita: fechaCitaISO,
+                    worker_id: form.worker_id || null,
                 })
-                .select()
-                .single();
+                .eq('id', servicio.id);
 
-            if (insertError) throw insertError;
+            if (updateError) throw updateError;
 
-            await supabase
-                .from('cotizaciones')
-                .update({job_id: data.id, estado: 'Asignada'})
-                .eq('id', cotizacion.id);
-
-            await supabase.functions.invoke('send-notification', {
-                body: {
-                    user_id: form.worker_id,
-                    title: 'Nuevo trabajo asignado',
-                    body: `Se te ha asignado el trabajo: "${form.title}"`,
-                    data: 'jobs',
-                },
-            });
+            if (form.worker_id && form.worker_id !== servicio.worker_id) {
+                await serviciosService.notificarTecnico(
+                    form.worker_id,
+                    form.title,
+                    servicio.status as JobEstado
+                ).catch(e => console.warn('Notificación no enviada:', e));
+            }
 
             setSuccess(true);
             setTimeout(() => {
-                onSuccess();
+                onSuccess();   // Recargar datos en la página padre
                 onClose();
             }, 1200);
         } catch (err) {
-            setError('Error al crear el trabajo');
+            setError('Error al actualizar el servicio');
         } finally {
             setSaving(false);
         }
@@ -208,8 +213,7 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             onClose={!saving ? onClose : undefined}
             maxWidth="sm"
             fullWidth
-            PaperProps={{sx: {borderRadius: 4, overflow: 'hidden'}}}
-        >
+            PaperProps={{sx: {borderRadius: 4, overflow: 'hidden'}}}>
             <Box sx={{
                 bgcolor: '#1A1A2E',
                 px: 3,
@@ -231,10 +235,10 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                         <BuildIcon sx={{fontSize: 17, color: '#1A1A2E'}}/>
                     </Box>
                     <Box>
-                        <Typography fontWeight={800} color="#fff" fontSize={16} lineHeight={1.2}>Nuevo
-                            Trabajo</Typography>
-                        <Typography variant="caption" color="rgba(255,255,255,0.5)">Desde cotización
-                            aceptada</Typography>
+                        <Typography fontWeight={800} color="#fff" fontSize={16} lineHeight={1.2}>Editar
+                            Servicio</Typography>
+                        <Typography variant="caption" color="rgba(255,255,255,0.5)">Modifica los datos del
+                            trabajo</Typography>
                     </Box>
                 </Box>
                 <IconButton onClick={onClose} disabled={saving} size="small" sx={{color: 'rgba(255,255,255,0.5)'}}>
@@ -243,24 +247,9 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             </Box>
 
             <DialogContent sx={{p: 3}}>
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    mb: 2.5,
-                    p: 1.5,
-                    bgcolor: 'rgba(255,214,0,0.08)',
-                    borderRadius: 2.5,
-                    border: '1px solid rgba(255,214,0,0.2)'
-                }}>
-                    <Chip label="Cotización aceptada" size="small"
-                          sx={{bgcolor: 'rgba(255,214,0,0.2)', color: '#B8860B', fontWeight: 700, fontSize: 11}}/>
-                    <Typography variant="caption" color="text.secondary" noWrap>{cotizacion.servicio} ·
-                        ${cotizacion.costo_estimado}</Typography>
-                </Box>
-
                 {error && <Alert severity="error" sx={{mb: 2}}>{error}</Alert>}
-                {success && <Alert severity="success" sx={{mb: 2}} icon={<CheckIcon/>}>¡Trabajo creado!</Alert>}
+                {success && <Alert severity="success" sx={{mb: 2}} icon={<CheckIcon/>}>¡Servicio actualizado
+                    exitosamente!</Alert>}
 
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 2.5}}>
                     <TextField
@@ -271,16 +260,18 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                         onChange={(e) => setForm(p => ({...p, title: e.target.value}))}
                         InputProps={{startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>}}
                     />
+
                     <TextField
                         label="Dirección"
                         fullWidth
                         size="small"
                         value={form.address}
                         onChange={(e) => setForm(p => ({...p, address: e.target.value}))}
-                        InputProps={{startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>}}
+                        InputProps={{startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#F57C00', mr: 1}}/>}}
                     />
+
                     <TextField
-                        label="Presupuesto ($)"
+                        label="Precio ($)"
                         fullWidth
                         size="small"
                         type="number"
@@ -317,11 +308,12 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                     <Divider/>
 
                     <Box>
-                        <Typography variant="body2" fontWeight={700} mb={1.5}>Asignar técnico</Typography>
+                        <Typography variant="body2" fontWeight={700} mb={1.5}>Técnico asignado</Typography>
 
                         {loadingTecnicos ? (
-                            <Box sx={{display: 'flex', justifyContent: 'center', py: 2}}><CircularProgress size={24}
-                                                                                                           sx={{color: '#FFD600'}}/></Box>
+                            <Box sx={{display: 'flex', justifyContent: 'center', py: 2}}>
+                                <CircularProgress size={24} sx={{color: '#FFD600'}}/>
+                            </Box>
                         ) : (
                             <Autocomplete
                                 options={tecnicos}
@@ -335,7 +327,7 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                                         {...params}
                                         label="Seleccionar técnico"
                                         size="small"
-                                        placeholder="Busca por nombre..."
+                                        placeholder="Buscar por nombre..."
                                     />
                                 )}
                                 renderOption={(props, option) => (
@@ -379,8 +371,9 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                                 </Avatar>
                                 <Box>
                                     <Typography variant="body2" fontWeight={700}>{tecnicoSeleccionado.name}</Typography>
-                                    <Typography variant="caption"
-                                                color="text.secondary">{tecnicoSeleccionado.phone || 'Sin teléfono'}</Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        {tecnicoSeleccionado.phone || 'Sin teléfono'} · {tecnicoSeleccionado.email}
+                                    </Typography>
                                 </Box>
                                 <Chip label={tecnicoSeleccionado.role} size="small" sx={{
                                     ml: 'auto',
@@ -394,7 +387,7 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                     </Box>
 
                     <TextField
-                        label="Descripción"
+                        label="Descripción detallada"
                         fullWidth
                         multiline
                         rows={3}
@@ -405,21 +398,25 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             </DialogContent>
 
             <DialogActions sx={{px: 3, pb: 3, pt: 0, gap: 1}}>
-                <Button onClick={onClose} disabled={saving}
-                        sx={{fontWeight: 600, color: 'text.secondary'}}>Cancelar</Button>
+                <Button onClick={onClose} disabled={saving} sx={{fontWeight: 600, color: 'text.secondary'}}>
+                    Cancelar
+                </Button>
                 <Button
                     variant="contained"
                     onClick={handleGuardar}
                     disabled={saving || success}
-                    endIcon={saving ? <CircularProgress size={16} color="inherit"/> : <PersonIcon/>}
+                    endIcon={saving ? <CircularProgress size={16} color="inherit"/> : success ? <CheckIcon/> :
+                        <SaveIcon/>}
                     sx={{
-                        borderRadius: 2.5, fontWeight: 800, px: 3,
+                        borderRadius: 2.5,
+                        fontWeight: 800,
+                        px: 3,
                         bgcolor: success ? '#2E7D32' : '#FFD600',
                         color: success ? '#fff' : '#1A1A2E',
                         '&:hover': {bgcolor: '#F9A800'}
                     }}
                 >
-                    {saving ? 'Guardando...' : success ? '¡Creado!' : 'Confirmar Trabajo'}
+                    {saving ? 'Guardando...' : success ? '¡Actualizado!' : 'Guardar Cambios'}
                 </Button>
             </DialogActions>
         </Dialog>

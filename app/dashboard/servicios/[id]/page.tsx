@@ -20,6 +20,7 @@ import Alert from "@mui/material/Alert";
 import Divider from "@mui/material/Divider";
 import Snackbar from "@mui/material/Snackbar";
 import Tooltip from "@mui/material/Tooltip";
+import EditarServicioModal from '@/components/jobs/editJobModal';
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -32,6 +33,7 @@ import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import BuildCircleIcon from "@mui/icons-material/BuildCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import BuildIcon from "@mui/icons-material/Build";
 
 
 const ESTADOS: { value: JobEstado; label: string; color: string; bg: string; icon: React.ReactNode }[] = [
@@ -100,7 +102,7 @@ function SelectorEstado({
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
-                                        justifyContent:'space-between',
+                                        justifyContent: 'space-between',
                                         gap: 1,
                                         px: 2,
                                         py: 1.2,
@@ -190,6 +192,8 @@ export default function ServicioDetallePage() {
     const [snack, setSnack] = useState<{ open: boolean; msg: string; severity: "success" | "error" | "info" }>({
         open: false, msg: "", severity: "success",
     });
+    const [editModalOpen, setEditModalOpen] = useState(false);
+
 
     useEffect(() => {
         serviciosService.getDetailsServicio(id)
@@ -207,6 +211,26 @@ export default function ServicioDetallePage() {
             .catch(() => setError("No se pudo cargar el servicio"))
             .finally(() => setLoading(false));
     }, [id]);
+
+    const refreshData = async () => {
+        setLoading(true);
+        try {
+            const data = await serviciosService.getDetailsServicio(id);
+            setServicio(data);
+            if (data.worker_id) {
+                const {data: perfil} = await supabase
+                    .from("profiles")
+                    .select("*")
+                    .eq("id", data.worker_id)
+                    .single();
+                if (perfil) setTecnico(perfil as User);
+            }
+        } catch {
+            setError("No se pudo cargar el servicio");
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function handleCambiarEstado(nuevoEstado: JobEstado) {
         if (!servicio) return;
@@ -238,6 +262,18 @@ export default function ServicioDetallePage() {
         } catch {
             setSnack({open: true, msg: "Error al cambiar el estado", severity: "error"});
         } finally {
+            await supabase.functions
+                .invoke("send-notification", {
+                    body: {
+                        user_id: tecnico?.id,
+                        title: `Se ha cambiado el estado del trabajo: ${servicio.title}`,
+                        body: `Atención, un administrador ha cambiado el estado del trabajo a ${servicio.status}`,
+                        data: "jobs",
+                    },
+                })
+                .catch((notifError: unknown) => {
+                    console.warn("Notificación no enviada:", notifError);
+                });
             setCambiandoEstado(false);
         }
     }
@@ -256,14 +292,30 @@ export default function ServicioDetallePage() {
 
     return (
         <Box sx={{maxWidth: screen, mx: "auto", marginX: 2}}>
-
-            <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 3}}>
-                <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)"}}>
-                    <ArrowBackIcon fontSize="small"/>
-                </IconButton>
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
-                    Detalle del Servicio
-                </Typography>
+            <Box sx={{display: "flex", alignItems:'center', justifyContent: 'space-between', my:2}}>
+                <Box>
+                    <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                        <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)", mr:2}}>
+                            <ArrowBackIcon fontSize="small"/>
+                        </IconButton> Detalle del Servicio
+                    </Typography>
+                </Box>
+                <Box>
+                    <Button
+                        variant="outlined"
+                        startIcon={<BuildIcon/>}
+                        onClick={() => setEditModalOpen(true)}
+                        sx={{
+                            borderRadius: 2,
+                            width: "300px",
+                            borderColor: '#FFD600',
+                            color: '#B8860B',
+                            fontWeight: 700,
+                            '&:hover': {borderColor: '#F9A800', bgcolor: 'rgba(255,214,0,0.08)'}
+                        }}>
+                        Editar
+                    </Button>
+                </Box>
             </Box>
 
             <SelectorEstado
@@ -295,7 +347,12 @@ export default function ServicioDetallePage() {
 
                     <Box sx={{p: 3}}>
                         {/* Título + estado */}
-                        <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2}}>
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                            mb: 2
+                        }}>
                             <Typography variant="h5" fontWeight={800} color="text.primary" flex={1} pr={2}>
                                 {servicio.title}
                             </Typography>
@@ -323,7 +380,8 @@ export default function ServicioDetallePage() {
                                 <AttachMoneyIcon sx={{fontSize: 17, color: "#2E7D32"}}/>
                                 <Typography variant="body2" color="text.secondary">
                                     Precio:&nbsp;
-                                    <Typography component="span" variant="body2" fontWeight={700} color="text.primary">
+                                    <Typography component="span" variant="body2" fontWeight={700}
+                                                color="text.primary">
                                         {servicio.price
                                             ? `$${servicio.price.toLocaleString("es-MX")}`
                                             : "—"}
@@ -429,7 +487,10 @@ export default function ServicioDetallePage() {
                                             })
                                         )
                                     }
-                                    sx={{bgcolor: "rgba(255,214,0,0.12)", "&:hover": {bgcolor: "rgba(255,214,0,0.25)"}}}
+                                    sx={{
+                                        bgcolor: "rgba(255,214,0,0.12)",
+                                        "&:hover": {bgcolor: "rgba(255,214,0,0.25)"}
+                                    }}
                                 >
                                     <NotificationsActiveIcon sx={{fontSize: 19, color: "#B8860B"}}/>
                                 </IconButton>
@@ -465,7 +526,14 @@ export default function ServicioDetallePage() {
                 </CardContent>
             </Card>
 
-            {/* Snackbar de feedback */}
+            <EditarServicioModal
+                open={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                onSuccess={() => {
+                    refreshData();
+                }}
+                servicio={servicio}
+            />
             <Snackbar
                 open={snack.open}
                 autoHideDuration={3500}

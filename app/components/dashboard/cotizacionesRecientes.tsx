@@ -27,7 +27,7 @@ export default function CotizacionesRecientes({cotizaciones}: { cotizaciones: Co
     const router = useRouter();
 
     return (
-        <Card sx={{borderRadius: 4, border: "1px solid rgba(0,0,0,0.07)", height: "100%"}}>
+        <Card sx={{border: "1px solid rgba(0,0,0,0.07)", height: "100%"}}>
             <CardContent sx={{p: 3}}>
                 <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
                     <AssignmentIcon sx={{fontSize: 18, color: "#5A5A72"}}/>
