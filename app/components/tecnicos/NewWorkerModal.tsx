@@ -113,7 +113,7 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
                 onClick={handleOpen}
                 sx={{bgcolor: "#FFD600", color: "#1A1A2E", fontWeight: 700, "&:hover": {bgcolor: "#e6c100"}}}
             >
-                Nuevo Técnico
+                Agregar Personal
             </Button>
 
             <Modal
@@ -197,7 +197,7 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
                             variant="contained"
                             onClick={createWorker}
                             disabled={loading}
-                            sx={{mt: 3, py: 1.5, fontWeight: 700, bgcolor: "#1A1A2E", "&:hover": {bgcolor: "#2d2d4d"}}}
+                            sx={{mt: 3, py: 1.5, fontWeight: 700}}
                         >
                             {loading ? <CircularProgress size={24} color="inherit"/> : "Guardar Técnico"}
                         </Button>

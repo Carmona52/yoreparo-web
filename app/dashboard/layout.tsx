@@ -28,6 +28,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificacionesBtn from "@/components/notifications/notificationsButtons";
+import HandymanIcon from '@mui/icons-material/Handyman';
 
 const DRAWER_FULL = 256;
 const DRAWER_MINI = 68;
@@ -38,6 +39,7 @@ const navItems = [
     {label: "Cotizaciones", icon: <AssignmentIcon/>, href: "/dashboard/cotizaciones"},
     {label: "Técnicos", icon: <PeopleIcon/>, href: "/dashboard/tecnicos"},
     {label: "Supervisores", icon: <PeopleIcon/>, href: "/dashboard/supervisores"},
+    {label: "Herramientas", icon: <HandymanIcon/>, href: "/dashboard/herramientas"},
 ];
 
 const bottomItems = [

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/supabase';
 import {
     Container,
@@ -20,8 +19,6 @@ export default function ResetPasswordPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
-    const router = useRouter();
-
     useEffect(() => {
         const checkSession = async () => {
             const { data: { session }, error } = await supabase.auth.getSession();

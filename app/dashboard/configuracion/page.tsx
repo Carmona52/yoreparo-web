@@ -1,5 +1,5 @@
 export default function configuracionPage() {
     return(
-        <h1>Configuración</h1>
+        <h1>Proximamente</h1>
     )
 }

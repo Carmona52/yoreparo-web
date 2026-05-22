@@ -1,7 +1,6 @@
 import {
     Document, Page, Text, View, Image, StyleSheet,
 } from "@react-pdf/renderer";
-import {white} from "next/dist/lib/picocolors";
 
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 

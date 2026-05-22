@@ -1,6 +1,5 @@
 import {createClient} from "@/lib/supabase/client";
 import {Servicios} from "@/lib/types/servicios";
-import {count} from "d3-array";
 
 export type JobEstado = "Pendiente" | "en proceso" | "finalizado";
 const supabase = createClient();

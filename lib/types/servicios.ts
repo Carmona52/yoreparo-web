@@ -1,5 +1,3 @@
-import {string} from "prop-types";
-
 export type Servicios = {
     id: string,
     title: string,

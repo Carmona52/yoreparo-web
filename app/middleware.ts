@@ -1,15 +1,22 @@
-import { createServerClient } from "@supabase/ssr";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import {createServerClient} from "@supabase/ssr";
+import {NextResponse} from "next/server";
+import type {NextRequest} from "next/server";
 
-const ROLES_PERMITIDOS = ["owner", "supervisor", "administrador"] as const;
-type RolPermitido = typeof ROLES_PERMITIDOS[number];
+const ROLES_DASHBOARD = ["owner", "supervisor", "administrador"] as const;
+const ROLE_HOME = ["cliente"] as const;
+type RolHome = typeof ROLE_HOME[number];
+type RolDashboard = typeof ROLES_DASHBOARD[number];
 
-function rolPermitido(role: string | null | undefined): role is RolPermitido {
-    return ROLES_PERMITIDOS.includes(role as RolPermitido);
+function isHomeRole(role: string | null | undefined): role is RolHome {
+    return ROLE_HOME.includes(role as RolHome);
+
 }
 
-const PUBLIC_ROUTES = [
+function isDashboardRole(role: string | null | undefined): role is RolDashboard {
+    return ROLES_DASHBOARD.includes(role as RolDashboard);
+}
+
+const FULLY_PUBLIC = [
     "/auth/login",
     "/auth/callback",
     "/auth/oauth",
@@ -17,39 +24,58 @@ const PUBLIC_ROUTES = [
     "/reset-password",
     "/download",
     "/unauthorized",
+    "/home",
 ];
 
-function isPublicRoute(pathname: string) {
-    return pathname === "/" || PUBLIC_ROUTES.some((r) => pathname.startsWith(r));
+const AUTH_REQUIRED = [
+    "/home/servicios",
+    "/home/cotizaciones",
+];
+
+function isFullyPublic(pathname: string): boolean {
+    if (pathname === "/") return true;
+    return FULLY_PUBLIC.some((r) => {
+        return pathname === r || pathname === `${r}/`;
+    });
 }
 
-export async function middleware(req: NextRequest) {
-    const res = NextResponse.next({ request: { headers: req.headers } });
-    const { pathname } = req.nextUrl;
+function isAuthRequired(pathname: string): boolean {
+    return AUTH_REQUIRED.some((r) => pathname.startsWith(r));
+}
 
-    if (isPublicRoute(pathname)) return res;
+// ── Middleware ────────────────────────────────────────────────────────────────
+
+export async function middleware(req: NextRequest) {
+    const res = NextResponse.next({request: {headers: req.headers}});
+    const {pathname} = req.nextUrl;
+
+    if (isFullyPublic(pathname)) return res;
 
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                getAll() { return req.cookies.getAll(); },
+                getAll() {
+                    return req.cookies.getAll();
+                },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
-                    cookiesToSet.forEach(({ name, value, options }) => res.cookies.set(name, value, options));
+                    cookiesToSet.forEach(({name, value}) => req.cookies.set(name, value));
+                    cookiesToSet.forEach(({name, value, options}) => res.cookies.set(name, value, options));
                 },
             },
         }
     );
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {data: {user}, error: authError} = await supabase.auth.getUser();
 
     if (authError || !user) {
         return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
-    const { data: profile, error: profileError } = await supabase
+    if (isAuthRequired(pathname)) return res;
+
+    const {data: profile, error: profileError} = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
@@ -59,9 +85,14 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 
-    if (!rolPermitido(profile.role)) {
+    if (pathname.startsWith("/dashboard") && !isDashboardRole(profile.role)) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
+
+    if(pathname === "/home/servicios" || pathname === "/home/cotizaciones" && !isHomeRole(profile.role)) {
+        return NextResponse.redirect(new URL("/auth/login", req.url));
+    }
+
 
     return res;
 }

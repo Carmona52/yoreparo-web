@@ -1,31 +1,42 @@
 "use client";
 
-import {useEffect} from "react";
-import {useRouter} from "next/navigation";
-import {createClient} from "@/lib/supabase/client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 
-export default function Home() {
+const ROLES_DASHBOARD = ["owner", "supervisor", "administrador"];
+
+export default function Index() {
     const router = useRouter();
 
     useEffect(() => {
         const supabase = createClient();
 
-        async function checkSession() {
-            const {
-                data: {session},
-            } = await supabase.auth.getSession();
+        async function routeUser() {
+            const { data: { session } } = await supabase.auth.getSession();
 
-            if (session) {
+            if (!session) {
+                router.replace("/auth/login");
+                return;
+            }
+
+            const { data: profile } = await supabase
+                .from("profiles")
+                .select("role")
+                .eq("id", session.user.id)
+                .single();
+
+            if (profile && ROLES_DASHBOARD.includes(profile.role)) {
                 router.replace("/dashboard");
             } else {
-                router.replace("/auth/login");
+                router.replace("/home");
             }
         }
 
-        checkSession();
+        routeUser();
     }, [router]);
 
     return (
@@ -40,9 +51,9 @@ export default function Home() {
                 bgcolor: "background.default",
             }}
         >
-            <CircularProgress size={48} thickness={3} color="primary"/>
+            <CircularProgress size={48} thickness={3} color="primary" />
             <Typography variant="body2" color="text.secondary" letterSpacing={2}>
-                Verificando sesión...
+                Preparando tu entorno...
             </Typography>
         </Box>
     );

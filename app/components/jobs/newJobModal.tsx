@@ -4,26 +4,14 @@ import {useState, useEffect} from 'react';
 import {createClient} from '@/lib/supabase/client';
 import {Cotizaciones} from '@/lib/types/cotizaciones';
 import {User} from '@/lib/types/user';
+import {jobWorkersService} from '@/lib/data/jobWorkers';
+import SelectorTecnicosAdicionales from "@/components/jobs/selectTecnicosAdicionales";
 
 import {
-    Dialog,
-    DialogContent,
-    DialogActions,
-    Box,
-    Typography,
-    TextField,
-    Button,
-    IconButton,
-    Avatar,
-    CircularProgress,
-    Alert,
-    Divider,
-    MenuItem,
-    Select,
-    InputLabel,
-    FormControl,
-    Chip,
-    Autocomplete
+    Dialog, DialogContent, DialogActions,
+    Box, Typography, TextField, Button, IconButton,
+    Avatar, CircularProgress, Alert, Divider,
+    MenuItem, Select, InputLabel, FormControl, Chip, Autocomplete,
 } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -33,6 +21,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BuildIcon from '@mui/icons-material/Build';
+import StarIcon from '@mui/icons-material/Star';
 
 type Props = {
     open: boolean;
@@ -49,10 +38,7 @@ type FormState = {
     price: string;
 };
 
-type DateTimeState = {
-    date: string;
-    time: string;
-};
+type DateTimeState = { date: string; time: string };
 
 function toLocalISOFromParts(dateStr: string, timeStr: string): string {
     const [year, month, day] = dateStr.split('-').map(Number);
@@ -61,9 +47,7 @@ function toLocalISOFromParts(dateStr: string, timeStr: string): string {
     const offset = -localDate.getTimezoneOffset();
     const sign = offset >= 0 ? '+' : '-';
     const pad = (n: number) => String(n).padStart(2, '0');
-    const offsetHours = pad(Math.floor(Math.abs(offset) / 60));
-    const offsetMins = pad(Math.abs(offset) % 60);
-    return `${localDate.getFullYear()}-${pad(localDate.getMonth() + 1)}-${pad(localDate.getDate())}T${pad(localDate.getHours())}:${pad(localDate.getMinutes())}:00${sign}${offsetHours}:${offsetMins}`;
+    return `${localDate.getFullYear()}-${pad(localDate.getMonth() + 1)}-${pad(localDate.getDate())}T${pad(localDate.getHours())}:${pad(localDate.getMinutes())}:00${sign}${pad(Math.floor(Math.abs(offset) / 60))}:${pad(Math.abs(offset) % 60)}`;
 }
 
 function buildInitialDateTime(cotizacion: Cotizaciones): DateTimeState {
@@ -72,13 +56,10 @@ function buildInitialDateTime(cotizacion: Cotizaciones): DateTimeState {
         const parsed = new Date(cotizacion.fecha_preferida);
         if (!isNaN(parsed.getTime())) dateObj = parsed;
     }
-    const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const pad = (n: number) => String(n).padStart(2, '0');
     return {
-        date: `${year}-${month}-${day}`,
-        time: `${hours}:00`,
+        date: `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`,
+        time: `${pad(dateObj.getHours())}:00`,
     };
 }
 
@@ -92,6 +73,8 @@ function buildInitialForm(cotizacion: Cotizaciones): FormState {
     };
 }
 
+const timeSlots = Array.from({length: 13}, (_, i) => `${String(8 + i).padStart(2, '0')}:00`);
+
 export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Props) {
     const supabase = createClient();
 
@@ -102,16 +85,13 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
     const [success, setSuccess] = useState(false);
     const [form, setForm] = useState<FormState>(() => buildInitialForm(cotizacion));
     const [dateTime, setDateTime] = useState<DateTimeState>(() => buildInitialDateTime(cotizacion));
-
-    const timeSlots = Array.from({length: 13}, (_, i) => {
-        const hour = 8 + i;
-        return `${hour.toString().padStart(2, '0')}:00`;
-    });
+    const [adicionales, setAdicionales] = useState<string[]>([]); // IDs técnicos adicionales
 
     useEffect(() => {
         if (open) {
             setForm(buildInitialForm(cotizacion));
             setDateTime(buildInitialDateTime(cotizacion));
+            setAdicionales([]);
             setError(null);
             setSuccess(false);
         }
@@ -123,30 +103,32 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
         async function cargarTecnicos() {
             setLoadingTecnicos(true);
             try {
-                const {data, error: sbError} = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .neq('role', 'cliente');
+                const {data, error: sbError} = await supabase.from('profiles').select('*').neq('role', 'cliente');
                 if (!sbError && data) setTecnicos(data as User[]);
             } finally {
                 setLoadingTecnicos(false);
             }
         }
 
-        cargarTecnicos();
-    }, [open, supabase]);
+        void cargarTecnicos();
+    }, [open]);
 
-    const tecnicoSeleccionado = tecnicos.find((t) => t.id === form.worker_id);
+    const tecnicoLider = tecnicos.find((t) => t.id === form.worker_id);
 
     const handleGuardar = async () => {
         if (!form.title.trim()) return setError('El título es requerido');
         if (!form.address.trim()) return setError('La dirección es requerida');
-        if (!form.worker_id) return setError('Selecciona un técnico');
+        if (!form.worker_id) return setError('Selecciona el líder de equipo');
         if (!dateTime.date || !dateTime.time) return setError('Fecha y hora son requeridas');
 
         const selectedDate = new Date(`${dateTime.date}T${dateTime.time}`);
         if (isNaN(selectedDate.getTime())) return setError('Fecha inválida');
         if (selectedDate < new Date()) return setError('No se puede crear un trabajo en el pasado');
+
+        // Técnico adicional no puede ser el mismo que el líder
+        if (adicionales.includes(form.worker_id)) {
+            return setError('El líder de equipo no puede estar también como técnico adicional');
+        }
 
         setSaving(true);
         setError(null);
@@ -155,16 +137,15 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
             const {data: {user}} = await supabase.auth.getUser();
             if (!user) throw new Error('Sin sesión activa');
 
-            const fechaCitaISO = toLocalISOFromParts(dateTime.date, dateTime.time);
-
-            const {data, error: insertError} = await supabase
+            // 1. Crear el job
+            const {data: newJob, error: insertError} = await supabase
                 .from('jobs')
                 .insert({
                     title: form.title,
                     description: form.description,
                     address: form.address,
                     worker_id: form.worker_id,
-                    fecha_cita: fechaCitaISO,
+                    fecha_cita: toLocalISOFromParts(dateTime.date, dateTime.time),
                     created_by: user.id,
                     status: 'Pendiente',
                     cotizacion_id: cotizacion.id,
@@ -176,40 +157,50 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
 
             if (insertError) throw insertError;
 
+            // 2. Actualizar cotización
             await supabase
                 .from('cotizaciones')
-                .update({job_id: data.id, estado: 'Asignada'})
+                .update({job_id: newJob.id, estado: 'Asignada'})
                 .eq('id', cotizacion.id);
 
+            // 3. Insertar técnicos adicionales
+            if (adicionales.length > 0) {
+                await jobWorkersService.insertMany(newJob.id, adicionales);
+            }
+
+            // 4. Notificar al líder
             await supabase.functions.invoke('send-notification', {
                 body: {
                     user_id: form.worker_id,
                     title: 'Nuevo trabajo asignado',
-                    body: `Se te ha asignado el trabajo: "${form.title}"`,
+                    body: `Se te ha asignado como líder del trabajo: "${form.title}"`,
                     data: 'jobs',
                 },
             });
+
+            // 5. Notificar a los adicionales
+            if (adicionales.length > 0) {
+                await jobWorkersService.notificarTodos(newJob.id, form.title,
+                    `Has sido asignado al equipo del trabajo: "${form.title}"`
+                );
+            }
 
             setSuccess(true);
             setTimeout(() => {
                 onSuccess();
                 onClose();
             }, 1200);
-        } catch (err) {
-            setError('Error al crear el trabajo');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Error al crear el trabajo');
         } finally {
             setSaving(false);
         }
     };
 
     return (
-        <Dialog
-            open={open}
-            onClose={!saving ? onClose : undefined}
-            maxWidth="sm"
-            fullWidth
-            PaperProps={{sx: {borderRadius: 4, overflow: 'hidden'}}}
-        >
+        <Dialog open={open} onClose={!saving ? onClose : undefined} maxWidth="sm" fullWidth
+                PaperProps={{sx: {borderRadius: 4, overflow: 'hidden'}}}>
+
             <Box sx={{
                 bgcolor: '#1A1A2E',
                 px: 3,
@@ -255,88 +246,72 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                 }}>
                     <Chip label="Cotización aceptada" size="small"
                           sx={{bgcolor: 'rgba(255,214,0,0.2)', color: '#B8860B', fontWeight: 700, fontSize: 11}}/>
-                    <Typography variant="caption" color="text.secondary" noWrap>{cotizacion.servicio} ·
-                        ${cotizacion.costo_estimado}</Typography>
+                    <Typography variant="caption" color="text.secondary" noWrap>
+                        {cotizacion.servicio} · ${cotizacion.costo_estimado}
+                    </Typography>
                 </Box>
 
                 {error && <Alert severity="error" sx={{mb: 2}}>{error}</Alert>}
                 {success && <Alert severity="success" sx={{mb: 2}} icon={<CheckIcon/>}>¡Trabajo creado!</Alert>}
 
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 2.5}}>
-                    <TextField
-                        label="Título del trabajo"
-                        fullWidth
-                        size="small"
-                        value={form.title}
-                        onChange={(e) => setForm(p => ({...p, title: e.target.value}))}
-                        InputProps={{startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>}}
-                    />
-                    <TextField
-                        label="Dirección"
-                        fullWidth
-                        size="small"
-                        value={form.address}
-                        onChange={(e) => setForm(p => ({...p, address: e.target.value}))}
-                        InputProps={{startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>}}
-                    />
-                    <TextField
-                        label="Presupuesto ($)"
-                        fullWidth
-                        size="small"
-                        type="number"
-                        value={form.price}
-                        onChange={(e) => setForm(p => ({...p, price: e.target.value}))}
-                        InputProps={{startAdornment: <AttachMoneyIcon sx={{fontSize: 17, color: '#2E7D32', mr: 1}}/>}}
-                    />
+                    <TextField label="Título del trabajo" fullWidth size="small" value={form.title}
+                               onChange={(e) => setForm(p => ({...p, title: e.target.value}))}
+                               InputProps={{
+                                   startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                               }}/>
+
+                    <TextField label="Dirección" fullWidth size="small" value={form.address}
+                               onChange={(e) => setForm(p => ({...p, address: e.target.value}))}
+                               InputProps={{
+                                   startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                               }}/>
+
+                    <TextField label="Presupuesto ($)" fullWidth size="small" type="number" value={form.price}
+                               onChange={(e) => setForm(p => ({...p, price: e.target.value}))}
+                               InputProps={{
+                                   startAdornment: <AttachMoneyIcon sx={{fontSize: 17, color: '#2E7D32', mr: 1}}/>
+                               }}/>
 
                     <Box sx={{display: 'flex', gap: 2}}>
-                        <TextField
-                            label="Fecha"
-                            type="date"
-                            size="small"
-                            value={dateTime.date}
-                            onChange={(e) => setDateTime(prev => ({...prev, date: e.target.value}))}
-                            InputLabelProps={{shrink: true}}
-                            InputProps={{
-                                startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
-                            }}
-                            sx={{flex: 1}}
-                        />
+                        <TextField label="Fecha" type="date" size="small" value={dateTime.date}
+                                   onChange={(e) => setDateTime(p => ({...p, date: e.target.value}))}
+                                   InputLabelProps={{shrink: true}}
+                                   InputProps={{
+                                       startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
+                                   }}
+                                   sx={{flex: 1}}/>
                         <FormControl size="small" sx={{flex: 1}}>
                             <InputLabel>Hora</InputLabel>
-                            <Select
-                                value={dateTime.time}
-                                label="Hora"
-                                onChange={(e) => setDateTime(prev => ({...prev, time: e.target.value as string}))}
-                            >
-                                {timeSlots.map(slot => <MenuItem key={slot} value={slot}>{slot}</MenuItem>)}
+                            <Select value={dateTime.time} label="Hora"
+                                    onChange={(e) => setDateTime(p => ({...p, time: e.target.value}))}>
+                                {timeSlots.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Box>
 
                     <Divider/>
 
+                    {/* Líder de equipo */}
                     <Box>
-                        <Typography variant="body2" fontWeight={700} mb={1.5}>Asignar técnico</Typography>
+                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1.5}}>
+                            <StarIcon sx={{fontSize: 17, color: '#B8860B'}}/>
+                            <Typography variant="body2" fontWeight={700}>Líder de equipo</Typography>
+                        </Box>
 
                         {loadingTecnicos ? (
-                            <Box sx={{display: 'flex', justifyContent: 'center', py: 2}}><CircularProgress size={24}
-                                                                                                           sx={{color: '#FFD600'}}/></Box>
+                            <Box sx={{display: 'flex', justifyContent: 'center', py: 2}}>
+                                <CircularProgress size={24} sx={{color: '#FFD600'}}/>
+                            </Box>
                         ) : (
                             <Autocomplete
                                 options={tecnicos}
-                                getOptionLabel={(option) => option.name || ''}
-                                value={tecnicoSeleccionado || null}
-                                onChange={(_, newValue) => {
-                                    setForm(p => ({...p, worker_id: newValue ? newValue.id : ''}));
-                                }}
+                                getOptionLabel={(o) => o.name || ''}
+                                value={tecnicoLider || null}
+                                onChange={(_, v) => setForm(p => ({...p, worker_id: v ? v.id : ''}))}
                                 renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Seleccionar técnico"
-                                        size="small"
-                                        placeholder="Busca por nombre..."
-                                    />
+                                    <TextField {...params} label="Seleccionar líder" size="small"
+                                               placeholder="Busca por nombre..."/>
                                 )}
                                 renderOption={(props, option) => (
                                     <Box component="li" {...props}
@@ -362,63 +337,66 @@ export default function CrearJobModal({open, onClose, onSuccess, cotizacion}: Pr
                             />
                         )}
 
-                        {tecnicoSeleccionado && (
+                        {tecnicoLider && (
                             <Box sx={{
-                                mt: 2,
+                                mt: 1.5,
                                 p: 1.5,
-                                bgcolor: 'rgba(46,125,50,0.06)',
+                                bgcolor: 'rgba(255,214,0,0.06)',
                                 borderRadius: 2,
-                                border: '1px solid rgba(46,125,50,0.2)',
+                                border: '1px solid rgba(255,214,0,0.25)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 1.5
                             }}>
                                 <Avatar
-                                    sx={{width: 36, height: 36, bgcolor: '#FFD600', color: '#1A1A2E', fontWeight: 800}}>
-                                    {tecnicoSeleccionado.name?.charAt(0).toUpperCase()}
+                                    sx={{width: 34, height: 34, bgcolor: '#FFD600', color: '#1A1A2E', fontWeight: 800}}>
+                                    {tecnicoLider.name?.charAt(0).toUpperCase()}
                                 </Avatar>
-                                <Box>
-                                    <Typography variant="body2" fontWeight={700}>{tecnicoSeleccionado.name}</Typography>
+                                <Box sx={{flex: 1}}>
+                                    <Typography variant="body2" fontWeight={700}>{tecnicoLider.name}</Typography>
                                     <Typography variant="caption"
-                                                color="text.secondary">{tecnicoSeleccionado.phone || 'Sin teléfono'}</Typography>
+                                                color="text.secondary">{tecnicoLider.phone || 'Sin teléfono'}</Typography>
                                 </Box>
-                                <Chip label={tecnicoSeleccionado.role} size="small" sx={{
-                                    ml: 'auto',
-                                    bgcolor: 'rgba(255,214,0,0.15)',
-                                    color: '#B8860B',
-                                    fontWeight: 700,
-                                    fontSize: 10
-                                }}/>
+                                <Chip label="Líder" size="small"
+                                      icon={<StarIcon sx={{fontSize: 12, color: '#B8860B !important'}}/>}
+                                      sx={{
+                                          bgcolor: 'rgba(255,214,0,0.2)',
+                                          color: '#B8860B',
+                                          fontWeight: 700,
+                                          fontSize: 10
+                                      }}/>
                             </Box>
                         )}
                     </Box>
 
-                    <TextField
-                        label="Descripción"
-                        fullWidth
-                        multiline
-                        rows={3}
-                        value={form.description}
-                        onChange={(e) => setForm(p => ({...p, description: e.target.value}))}
+                    {/* Técnicos adicionales */}
+                    <SelectorTecnicosAdicionales
+                        tecnicos={tecnicos}
+                        seleccionados={adicionales}
+                        onChange={setAdicionales}
+                        liderID={form.worker_id}
+                        disabled={loadingTecnicos}
                     />
+
+                    <TextField label="Descripción" fullWidth multiline rows={3} value={form.description}
+                               onChange={(e) => setForm(p => ({...p, description: e.target.value}))}/>
                 </Box>
             </DialogContent>
 
             <DialogActions sx={{px: 3, pb: 3, pt: 0, gap: 1}}>
                 <Button onClick={onClose} disabled={saving}
                         sx={{fontWeight: 600, color: 'text.secondary'}}>Cancelar</Button>
-                <Button
-                    variant="contained"
-                    onClick={handleGuardar}
-                    disabled={saving || success}
-                    endIcon={saving ? <CircularProgress size={16} color="inherit"/> : <PersonIcon/>}
-                    sx={{
-                        borderRadius: 2.5, fontWeight: 800, px: 3,
-                        bgcolor: success ? '#2E7D32' : '#FFD600',
-                        color: success ? '#fff' : '#1A1A2E',
-                        '&:hover': {bgcolor: '#F9A800'}
-                    }}
-                >
+                <Button variant="contained" onClick={handleGuardar} disabled={saving || success}
+                        endIcon={saving ? <CircularProgress size={16} color="inherit"/> : success ? <CheckIcon/> :
+                            <PersonIcon/>}
+                        sx={{
+                            borderRadius: 2.5,
+                            fontWeight: 800,
+                            px: 3,
+                            bgcolor: success ? '#2E7D32' : '#FFD600',
+                            color: success ? '#fff' : '#1A1A2E',
+                            '&:hover': {bgcolor: '#F9A800'}
+                        }}>
                     {saving ? 'Guardando...' : success ? '¡Creado!' : 'Confirmar Trabajo'}
                 </Button>
             </DialogActions>

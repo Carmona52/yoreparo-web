@@ -20,7 +20,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ImageIcon from "@mui/icons-material/Image";
 import NewJobModalNoData from "@/components/jobs/newJobModalNoData";
 import SearchIcon from '@mui/icons-material/Search';
-import {TextField, Tabs, Tab} from "@mui/material"; // Añadido Tabs y Tab
+import {TextField, Tabs, Tab} from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import PersonIcon from "@mui/icons-material/Person";
 

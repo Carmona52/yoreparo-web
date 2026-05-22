@@ -10,7 +10,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function LoginPage() {
@@ -36,7 +35,7 @@ export default function LoginPage() {
             setError(error.message);
             setLoading(false);
         } else {
-            router.replace("/dashboard");
+            router.replace("/");
         }
     }
     return (

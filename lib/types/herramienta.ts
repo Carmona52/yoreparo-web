@@ -1,4 +1,4 @@
-export type HerramientaEstado = "Prestada" | "Dañada" | "Perdida";
+export type HerramientaEstado = "Prestada" | "Dañada" | "Perdida" | "En inventario";
 
 export type Herramienta = {
     id: string;
@@ -6,4 +6,14 @@ export type Herramienta = {
     tool: string;
     estado: HerramientaEstado;
     worker_id: string;
+    trabajador?:{
+        name: string;
+    }
+    fecha_prestamo: string;
 };
+
+export type createHerramienta = {
+    tool: string;
+    estado: HerramientaEstado;
+    fecha_prestamo: string;
+}
