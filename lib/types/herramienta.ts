@@ -1,4 +1,4 @@
-export type HerramientaEstado = "Prestada" | "Dañada" | "Perdida" | "En inventario";
+export type HerramientaEstado = "Prestada" | "Dañada" | "Perdida" | "En inventario" ;
 
 export type Herramienta = {
     id: string;

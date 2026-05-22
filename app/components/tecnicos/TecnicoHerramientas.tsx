@@ -15,9 +15,11 @@ import {Herramienta, HerramientaEstado} from "@/lib/types/herramienta";
 
 const ESTILOS: Record<HerramientaEstado, { color: string; bg: string }> = {
     Prestada: {color: "#1565C0", bg: "rgba(21,101,192,0.10)"},
+    'En inventario': {color: "#3dc628", bg: "rgba(61,198,40,0.10)"},
     Dañada: {color: "#E65100", bg: "rgba(245,124,0,0.10)"},
     Perdida: {color: "#C62828", bg: "rgba(211,47,47,0.10)"},
 };
+
 
 type Props = {
     workerId: string;
@@ -30,10 +32,11 @@ type Props = {
 export default function TecnicoHerramientas({workerId, herramientas, onEstadoCambiado, onEliminada, onCreada}: Props) {
     const [modalOpen, setModalOpen] = useState(false);
 
-    const conteo = {
+    const conteo: Record<HerramientaEstado, number> = {
         Prestada: herramientas.filter((h) => h.estado === "Prestada").length,
         Dañada: herramientas.filter((h) => h.estado === "Dañada").length,
         Perdida: herramientas.filter((h) => h.estado === "Perdida").length,
+        'En inventario': herramientas.filter((h) => h.estado === "En inventario").length,
     };
 
     return (
