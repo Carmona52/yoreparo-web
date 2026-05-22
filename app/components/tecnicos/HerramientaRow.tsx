@@ -16,6 +16,7 @@ import {Herramienta, HerramientaEstado} from "@/lib/types/herramienta";
 
 const ESTILOS: Record<HerramientaEstado, { color: string; bg: string }> = {
     Prestada: {color: "#1565C0", bg: "rgba(21,101,192,0.10)"},
+    'En inventario': {color: "#3dc628", bg: "rgba(211,47,47,0.10)"},
     Dañada: {color: "#E65100", bg: "rgba(245,124,0,0.10)"},
     Perdida: {color: "#C62828", bg: "rgba(211,47,47,0.10)"},
 };
