@@ -13,7 +13,7 @@ import AndroidIcon from "@mui/icons-material/Android";
 import DownloadIcon from "@mui/icons-material/Download";
 import SecurityIcon from "@mui/icons-material/Security";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
@@ -50,7 +50,7 @@ const steps = [
         text: "Descarga el archivo APK y ábrelo desde tu carpeta de Descargas",
     },
     {
-        icon: <CheckCircleOutlineIcon sx={{fontSize: 20, color: "#2E7D32"}}/>,
+        icon: <CheckCircleOutlineOutlinedIcon sx={{fontSize: 20, color: "#2E7D32"}}/>,
         text: "Toca Instalar y espera a que finalice. ¡Listo!",
     },
 ];
@@ -173,7 +173,7 @@ export default function DownloadPage() {
                             size="large"
                             onClick={handleDownload}
                             disabled={downloading}
-                            startIcon={done ? <CheckCircleOutlineIcon/> : <DownloadIcon/>}
+                            startIcon={done ? <CheckCircleOutlineOutlinedIcon/> : <DownloadIcon/>}
                             sx={{
                                 py: 1.6,
                                 fontSize: 16,

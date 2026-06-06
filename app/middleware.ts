@@ -28,8 +28,8 @@ const FULLY_PUBLIC = [
 ];
 
 const AUTH_REQUIRED = [
-    "/home/servicios",
-    "/home/cotizaciones",
+    "/home/user/servicios",
+    "/home/user/cotizaciones",
 ];
 
 function isFullyPublic(pathname: string): boolean {
@@ -70,7 +70,7 @@ export async function middleware(req: NextRequest) {
     const {data: {user}, error: authError} = await supabase.auth.getUser();
 
     if (authError || !user) {
-        return NextResponse.redirect(new URL("/auth/login", req.url));
+        return NextResponse.redirect(new URL("/home", req.url));
     }
 
     if (isAuthRequired(pathname)) return res;
@@ -89,8 +89,8 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 
-    if(pathname === "/home/servicios" || pathname === "/home/cotizaciones" && !isHomeRole(profile.role)) {
-        return NextResponse.redirect(new URL("/auth/login", req.url));
+    if(pathname.startsWith('/home/user') && !isHomeRole(profile.role)) {
+        return NextResponse.redirect(new URL("/home", req.url));
     }
 
 

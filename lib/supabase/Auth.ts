@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-const ROLES_PERMITIDOS = ["owner", "supervisor"];
+const ROLES_PERMITIDOS = ["owner", "supervisor", "administrador"];
 
 export async function requireAuth() {
     const supabase = await createClient();

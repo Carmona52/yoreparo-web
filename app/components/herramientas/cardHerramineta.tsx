@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import InfoHerramientaModal from "@/components/herramientas/infoHerramientaModal";
 import BuildIcon from "@mui/icons-material/Build";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 import {Herramienta} from "@/lib/types/herramienta";
@@ -94,7 +94,7 @@ export default function HerramientasCard(props: Herramienta) {
 
                 <Box sx={{display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 1}}>
                     <Box sx={{display: "flex", alignItems: "center", gap: 0.75, color: "text.secondary"}}>
-                        <PersonOutlineIcon sx={{fontSize: 18}}/>
+                        <PersonOutlinedIcon sx={{fontSize: 18}}/>
                         <Typography variant="body2" sx={{fontWeight: 500}}>
                             {isPrestado && worker_id
                                 ? `Prestada a ${trabajador?.name || 'Desconocido'} el día ${formatFecha(fecha_prestamo)}`

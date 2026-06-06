@@ -52,11 +52,20 @@ export default function CotizacionesPage() {
 
     return (
         <Box>
-            <Typography variant="h4" fontWeight={800} mb={1}>Cotizaciones</Typography>
-            <Typography variant="body2" color="text.secondary" mb={4}>
+            <Typography
+                variant="h4"
+                sx={{
+                    fontWeight: 800,
+                    mb: 1
+                }}>Cotizaciones</Typography>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: "text.secondary",
+                    mb: 4
+                }}>
                 {cotizaciones.length} cotización{cotizaciones.length !== 1 ? "es" : ""} registradas
             </Typography>
-
             <Box sx={{mb: 3}}>
                 <TextField
                     placeholder="Buscar por servicio, dirección..."
@@ -75,7 +84,6 @@ export default function CotizacionesPage() {
                     }}
                 />
             </Box>
-
             <Box sx={{borderBottom: 1, borderColor: 'divider', mb: 4}}>
                 <Tabs
                     value={statusFilter}
@@ -100,7 +108,6 @@ export default function CotizacionesPage() {
                     <Tab label="Completadas" value="completada"/>
                 </Tabs>
             </Box>
-
             {cotizaciones.length === 0 ? (
                 <Alert severity="info" sx={{borderRadius: 3}}>
                     No hay cotizaciones registradas actualmente.

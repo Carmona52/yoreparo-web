@@ -152,7 +152,7 @@ function SeccionEnviada({cotizacion}: SeccionEnviadaProps) {
                     }}>
                         <AccessTimeIcon sx={{fontSize: 34, color: "#fff"}}/>
                     </Box>
-                    <Typography variant="h6" fontWeight={800} mb={1}>
+                    <Typography variant="h6" mb={1}>
                         Esperando Respuesta
                     </Typography>
                     <Typography variant="body2" color="text.secondary" lineHeight={1.7}>

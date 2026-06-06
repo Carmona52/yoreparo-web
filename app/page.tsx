@@ -19,7 +19,7 @@ export default function Index() {
             const { data: { session } } = await supabase.auth.getSession();
 
             if (!session) {
-                router.replace("/auth/login");
+                router.replace("/home");
                 return;
             }
 
@@ -32,7 +32,7 @@ export default function Index() {
             if (profile && ROLES_DASHBOARD.includes(profile.role)) {
                 router.replace("/dashboard");
             } else {
-                router.replace("/home");
+                router.replace("/home/user");
             }
         }
 

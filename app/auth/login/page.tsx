@@ -48,10 +48,10 @@ export default function LoginPage() {
                 p: 2,}}>
             <Card sx={{width: "100%", maxWidth: 420}}>
                 <CardContent sx={{p: 4}}>
-                    <Typography variant="h5" fontWeight={700} mb={1}>
+                    <Typography variant="h5">
                         Bienvenido
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" mb={4}>
+                    <Typography variant="body2" color="text.secondary" >
                         Inicia sesión para continuar
                     </Typography>
 
@@ -61,7 +61,7 @@ export default function LoginPage() {
                         </Alert>
                     )}
 
-                    <Box component="form" onSubmit={handleLogin} display="flex" flexDirection="column" gap={2}>
+                    <Box component="form" onSubmit={handleLogin}>
                         <TextField
                             label="Correo electrónico"
                             type="email"
@@ -69,14 +69,16 @@ export default function LoginPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             fullWidth
-                            autoComplete="email"/>
+                            autoComplete="email"
+                        sx={{my:2}}/>
                         <TextField label="Contraseña"
                                    type="password"
                                    value={password}
                                    onChange={(e) => setPassword(e.target.value)}
                                    required
                                    fullWidth
-                                   autoComplete="current-password"/>
+                                   autoComplete="current-password"
+                        sx={{mb:2}}/>
 
                         <Button type="submit"
                                 variant="contained"
