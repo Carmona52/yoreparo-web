@@ -71,22 +71,23 @@ export default async function DashboardPage() {
     return (
         <Box>
             <Box sx={{mb: 4}}>
-                <Typography variant="h4" fontWeight={800} gutterBottom>
+                <Typography variant="h4" gutterBottom sx={{
+                    fontWeight: 800
+                }}>
                     Hola, {firstName} 👋
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                }}>
                     Aquí está el resumen del día
                 </Typography>
             </Box>
-
             <StatCards
                 serviciosActivos={serviciosActivos ?? 0}
                 tecnicosTotal={tecnicosTotal ?? 0}
                 cotizacionesPendientes={cotizacionesPendientes ?? 0}
                 trabajosFinalizados={trabajosFinalizados ?? 0}
             />
-
-
             <Grid container spacing={2.5}>
                 <Grid size={{xs: 12, md: 6}}>
                     <CotizacionesRecientes cotizaciones={(cotizacionesRecientes ?? []) as Cotizaciones[]}/>
@@ -95,7 +96,6 @@ export default async function DashboardPage() {
                     <JobsPendientesAsignar jobs={(jobsSinTecnico ?? []) as Servicios[]}/>
                 </Grid>
             </Grid>
-
             <Box sx={{my: 3}}>
                 <GraficaIngresos jobs={(jobsFinalizados ?? []) as Servicios[]}/>
             </Box>

@@ -73,14 +73,17 @@ export default function HerramientaRow({h, onEstadoCambiado, onEliminada}: Props
             }}>
                 <HandymanIcon sx={{fontSize: 18, color: estilo.color}}/>
             </Box>
-
-            <Typography variant="body2" fontWeight={600} flex={1} noWrap>
+            <Typography
+                variant="body2"
+                noWrap
+                sx={{
+                    fontWeight: 600,
+                    flex: 1
+                }}>
                 {h.tool}
             </Typography>
-
             <Chip label={h.estado} size="small"
                   sx={{bgcolor: estilo.bg, color: estilo.color, fontWeight: 700, fontSize: 11, height: 22}}/>
-
             {loading ? (
                 <CircularProgress size={18} sx={{color: "#FFD600", flexShrink: 0}}/>
             ) : (
@@ -88,21 +91,32 @@ export default function HerramientaRow({h, onEstadoCambiado, onEliminada}: Props
                     <MoreVertIcon fontSize="small"/>
                 </IconButton>
             )}
-
             <Menu
-                anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)}
-                PaperProps={{sx: {borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.12)", minWidth: 160}}}
+                anchorEl={anchor}
+                open={Boolean(anchor)}
+                onClose={() => setAnchor(null)}
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: 3,
+                            boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
+                            minWidth: 160
+                        }
+                    }
+                }}
             >
-                <Typography variant="caption" color="text.secondary"
-                            sx={{
-                                px: 2,
-                                pt: 1,
-                                pb: 0.5,
-                                display: "block",
-                                fontWeight: 700,
-                                textTransform: "uppercase",
-                                fontSize: 10
-                            }}>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: "text.secondary",
+                        px: 2,
+                        pt: 1,
+                        pb: 0.5,
+                        display: "block",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        fontSize: 10
+                    }}>
                     Cambiar estado
                 </Typography>
                 {(["Prestada", "Dañada", "Perdida"] as HerramientaEstado[])

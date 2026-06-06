@@ -304,9 +304,10 @@ export default function SeccionApelacion({
                     {/* Contenido */}
                     <Typography
                         variant="body2"
-                        lineHeight={1.5}
-                        sx={{color: esMio ? "#fff" : "text.primary"}}
-                    >
+                        sx={{
+                            lineHeight: 1.5,
+                            color: esMio ? "#fff" : "text.primary"
+                        }}>
                         {m.content}
                     </Typography>
 
@@ -373,8 +374,14 @@ export default function SeccionApelacion({
                             <GavelIcon sx={{color: "#fff", fontSize: 20}}/>
                         </Box>
                         <Box>
-                            <Typography fontWeight={800} fontSize={15}>Apelación de Precio</Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                sx={{
+                                    fontWeight: 800,
+                                    fontSize: 15
+                                }}>Apelación de Precio</Typography>
+                            <Typography variant="caption" sx={{
+                                color: "text.secondary"
+                            }}>
                                 Presupuesto en disputa: <strong>${costo}</strong>
                             </Typography>
                         </Box>
@@ -426,7 +433,13 @@ export default function SeccionApelacion({
                             <CircularProgress size={24}/>
                         </Box>
                     ) : mensajes.length === 0 ? (
-                        <Typography variant="body2" color="text.secondary" textAlign="center" mt={4}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                textAlign: "center",
+                                mt: 4
+                            }}>
                             {apelacionCerrada
                                 ? "No hubo mensajes en esta apelación."
                                 : senderRole === "admin"
@@ -452,14 +465,16 @@ export default function SeccionApelacion({
                                 label="Nuevo precio a proponer (opcional)"
                                 value={precioPropuesto}
                                 onChange={(e) => setPrecioPropuesto(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Typography color="success.main" fontWeight={700}>$</Typography>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Typography sx={{ color: "success.main", fontWeight: 700 }}>$</Typography>
+                                            </InputAdornment>
+                                        ),
+                                    }
                                 }}
-                                sx={{"& .MuiOutlinedInput-root": {borderRadius: 2}}}
+                                sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
                             />
                         )}
 

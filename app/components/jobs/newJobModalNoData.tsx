@@ -179,9 +179,11 @@ export default function NewJobModalNoData() {
                     }}>
                 Nuevo Trabajo
             </Button>
-
-            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth
-                    PaperProps={{sx: {borderRadius: 4, overflow: 'hidden'}}}>
+            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth slotProps={{
+                paper: {
+                    sx: {borderRadius: 4, overflow: 'hidden'}
+                }
+            }}>
 
                 <Box sx={{
                     bgcolor: '#1A1A2E',
@@ -204,9 +206,17 @@ export default function NewJobModalNoData() {
                             <BuildIcon sx={{fontSize: 17, color: '#1A1A2E'}}/>
                         </Box>
                         <Box>
-                            <Typography fontWeight={800} color="#fff" fontSize={16} lineHeight={1.2}>Nuevo
+                            <Typography
+                                sx={{
+                                    fontWeight: 800,
+                                    color: "#fff",
+                                    fontSize: 16,
+                                    lineHeight: 1.2
+                                }}>Nuevo
                                 Trabajo</Typography>
-                            <Typography variant="caption" color="rgba(255,255,255,0.5)">Creación manual</Typography>
+                            <Typography variant="caption" sx={{
+                                color: "rgba(255,255,255,0.5)"
+                            }}>Creación manual</Typography>
                         </Box>
                     </Box>
                     <IconButton onClick={handleClose} disabled={saving} size="small"
@@ -223,35 +233,46 @@ export default function NewJobModalNoData() {
                     <Box sx={{display: 'flex', flexDirection: 'column', gap: 2.5}}>
                         <TextField label="Título del trabajo" fullWidth size="small" value={form.title}
                                    onChange={(e) => setForm(p => ({...p, title: e.target.value}))}
-                                   InputProps={{
-                                       startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                                   slotProps={{
+                                       input: {
+                                           startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                                       }
                                    }}/>
 
                         <TextField label="Dirección" fullWidth size="small" value={form.address}
                                    onChange={(e) => setForm(p => ({...p, address: e.target.value}))}
-                                   InputProps={{
-                                       startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                                   slotProps={{
+                                       input: {
+                                           startAdornment: <LocationOnIcon
+                                               sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                                       }
                                    }}/>
 
                         <TextField label="Nombre del Cliente" fullWidth size="small" value={form.name_client}
                                    onChange={(e) => setForm(p => ({...p, name_client: e.target.value}))}
-                                   InputProps={{
-                                       startAdornment: <PersonIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                                   slotProps={{
+                                       input: {
+                                           startAdornment: <PersonIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                                       }
                                    }}/>
 
                         <TextField label="Presupuesto ($)" fullWidth size="small" type="number" value={form.price}
                                    onChange={(e) => setForm(p => ({...p, price: e.target.value}))}
-                                   InputProps={{
-                                       startAdornment: <AttachMoneyIcon sx={{fontSize: 17, color: '#2E7D32', mr: 1}}/>
+                                   slotProps={{
+                                       input: {
+                                           startAdornment: <AttachMoneyIcon
+                                               sx={{fontSize: 17, color: '#2E7D32', mr: 1}}/>
+                                       }
                                    }}/>
 
                         <Box sx={{display: 'flex', gap: 2}}>
                             <TextField label="Fecha" type="date" size="small" value={dateTime.date}
                                        onChange={(e) => setDateTime(p => ({...p, date: e.target.value}))}
-                                       InputLabelProps={{shrink: true}}
-                                       InputProps={{
-                                           startAdornment: <CalendarTodayIcon
-                                               sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
+                                       slotProps={{
+                                           inputLabel: {shrink: true},
+                                           input: {
+                                               startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
+                                           }
                                        }}
                                        sx={{flex: 1}}/>
                             <FormControl size="small" sx={{flex: 1}}>
@@ -269,7 +290,9 @@ export default function NewJobModalNoData() {
                         <Box>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1.5}}>
                                 <StarIcon sx={{fontSize: 17, color: '#B8860B'}}/>
-                                <Typography variant="body2" fontWeight={700}>Líder de equipo</Typography>
+                                <Typography variant="body2" sx={{
+                                    fontWeight: 700
+                                }}>Líder de equipo</Typography>
                             </Box>
 
                             {loadingTecnicos ? (
@@ -300,9 +323,13 @@ export default function NewJobModalNoData() {
                                                 {option.name?.charAt(0).toUpperCase()}
                                             </Avatar>
                                             <Box>
-                                                <Typography variant="body2" fontWeight={600}>{option.name}</Typography>
+                                                <Typography variant="body2" sx={{
+                                                    fontWeight: 600
+                                                }}>{option.name}</Typography>
                                                 <Typography variant="caption"
-                                                            color="text.secondary">{option.email}</Typography>
+                                                            sx={{
+                                                                color: "text.secondary"
+                                                            }}>{option.email}</Typography>
                                             </Box>
                                         </Box>
                                     )}
@@ -331,9 +358,13 @@ export default function NewJobModalNoData() {
                                         {tecnicoLider.name?.charAt(0).toUpperCase()}
                                     </Avatar>
                                     <Box sx={{flex: 1}}>
-                                        <Typography variant="body2" fontWeight={700}>{tecnicoLider.name}</Typography>
+                                        <Typography variant="body2" sx={{
+                                            fontWeight: 700
+                                        }}>{tecnicoLider.name}</Typography>
                                         <Typography variant="caption"
-                                                    color="text.secondary">{tecnicoLider.phone || 'Sin teléfono'} · {tecnicoLider.email}</Typography>
+                                                    sx={{
+                                                        color: "text.secondary"
+                                                    }}>{tecnicoLider.phone || 'Sin teléfono'} · {tecnicoLider.email}</Typography>
                                     </Box>
                                     <Chip label="Líder" size="small"
                                           icon={<StarIcon sx={{fontSize: 12, color: '#B8860B !important'}}/>}

@@ -105,11 +105,20 @@ export default function ServiciosPage() {
 
     return (
         <Box>
-            <Typography variant="h4" fontWeight={800} mb={1}>Servicios</Typography>
-            <Typography variant="body2" color="text.secondary" mb={4}>
+            <Typography
+                variant="h4"
+                sx={{
+                    fontWeight: 800,
+                    mb: 1
+                }}>Servicios</Typography>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: "text.secondary",
+                    mb: 4
+                }}>
                 {servicios.length} servicio{servicios.length !== 1 ? "s" : ""} registrados
             </Typography>
-
             <Box sx={{
                 my: 3,
                 display: "flex",
@@ -135,7 +144,6 @@ export default function ServiciosPage() {
                 />
                 <NewJobModalNoData/>
             </Box>
-
             {/* Selector de Estados (Tabs) */}
             <Box sx={{borderBottom: 1, borderColor: 'divider', mb: 3}}>
                 <Tabs
@@ -156,7 +164,6 @@ export default function ServiciosPage() {
                     <Tab label="Cancelados" value="cancelado"/>
                 </Tabs>
             </Box>
-
             {filteredAndSortedServicios.length === 0 ? (
                 <Alert severity="info" sx={{borderRadius: 3}}>
                     {searchQuery || statusFilter !== "todos"
@@ -194,26 +201,43 @@ export default function ServiciosPage() {
                                             alignItems: "flex-start",
                                             mb: 1
                                         }}>
-                                            <Typography fontWeight={700} fontSize={15} sx={{flex: 1, pr: 1}} noWrap>
+                                            <Typography
+                                                noWrap
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    fontSize: 15,
+                                                    flex: 1,
+                                                    pr: 1
+                                                }}>
                                                 {s.title ?? "Sin título"}
                                             </Typography>
                                             <StatusChip status={s.status}/>
                                         </Box>
 
                                         {s.description && (
-                                            <Typography variant="body2" color="text.secondary" mb={2} sx={{
-                                                display: "-webkit-box",
-                                                WebkitLineClamp: 2,
-                                                WebkitBoxOrient: "vertical",
-                                                overflow: "hidden"
-                                            }}>
+                                            <Typography
+                                                variant="body2"
+                                                sx={{
+                                                    color: "text.secondary",
+                                                    mb: 2,
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden"
+                                                }}>
                                                 {s.description}
                                             </Typography>
                                         )}
 
                                         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>
                                             <PersonIcon sx={{fontSize: 18, color: "#5A5A72"}}/>
-                                            <Typography variant="body2" fontWeight={600} color="text.primary" noWrap>
+                                            <Typography
+                                                variant="body2"
+                                                noWrap
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    color: "text.primary"
+                                                }}>
                                                 {s.name_client && s.name_client.length > 0 ? s.name_client : s.profiles?.name || "Sin cliente"}
                                             </Typography>
                                         </Box>
@@ -223,17 +247,29 @@ export default function ServiciosPage() {
                                         <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                                 <AttachMoneyIcon sx={{fontSize: 15, color: "#2E7D32"}}/>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    Precio: <Typography component="span" variant="body2" fontWeight={700} color="text.primary">{s.price ? `$${s.price.toLocaleString("es-MX")}` : "—"}</Typography>
+                                                <Typography variant="body2" sx={{
+                                                    color: "text.secondary"
+                                                }}>
+                                                    Precio: <Typography
+                                                    component="span"
+                                                    variant="body2"
+                                                    sx={{
+                                                        fontWeight: 700,
+                                                        color: "text.primary"
+                                                    }}>{s.price ? `$${s.price.toLocaleString("es-MX")}` : "—"}</Typography>
                                                 </Typography>
                                             </Box>
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                                 <LocationOnIcon sx={{fontSize: 15, color: "#F57C00"}}/>
-                                                <Typography variant="body2" color="text.secondary" noWrap>{s.address ?? "—"}</Typography>
+                                                <Typography variant="body2" noWrap sx={{
+                                                    color: "text.secondary"
+                                                }}>{s.address ?? "—"}</Typography>
                                             </Box>
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                                 <CalendarTodayIcon sx={{fontSize: 15, color: "#1565C0"}}/>
-                                                <Typography variant="body2" color="text.secondary">Cita: {formatFecha(s.fecha_cita)}</Typography>
+                                                <Typography variant="body2" sx={{
+                                                    color: "text.secondary"
+                                                }}>Cita: {formatFecha(s.fecha_cita)}</Typography>
                                             </Box>
                                         </Box>
 
@@ -241,10 +277,16 @@ export default function ServiciosPage() {
 
                                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                             <PersonIcon sx={{fontSize: 15, color: "#1565C0"}}/>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Trabajador: <Typography component="span" variant="body2"
-                                                                        fontWeight={700}
-                                                                        color="text.primary">{s.trabajador?.name || "No asignado"}</Typography>
+                                            <Typography variant="body2" sx={{
+                                                color: "text.secondary"
+                                            }}>
+                                                Trabajador: <Typography
+                                                component="span"
+                                                variant="body2"
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    color: "text.primary"
+                                                }}>{s.trabajador?.name || "No asignado"}</Typography>
                                             </Typography>
                                         </Box>
                                     </CardContent>

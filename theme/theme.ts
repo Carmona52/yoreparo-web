@@ -49,17 +49,17 @@ export const theme = createTheme({
                     fontWeight: 600,
                     borderRadius: 10,
                     boxShadow: "none",
-                    "&:hover": {boxShadow: "none"},
-                },
-                containedPrimary: {
-                    backgroundColor: "#FFD600",
-                    color: "#1A1A1A",
-                    "&:hover": {backgroundColor: "#F9A800"},
-                },
-                outlinedPrimary: {
-                    borderColor: "#FFD600",
-                    color: "#1A1A1A",
-                    "&:hover": {backgroundColor: "rgba(255,214,0,0.08)"},
+                    "&:hover": { boxShadow: "none" },
+                    "&.MuiButton-containedPrimary": {
+                        backgroundColor: "#FFD600",
+                        color: "#1A1A1A",
+                        "&:hover": { backgroundColor: "#F9A800" },
+                    },
+                    "&.MuiButton-outlinedPrimary": {
+                        borderColor: "#FFD600",
+                        color: "#1A1A1A",
+                        "&:hover": { backgroundColor: "rgba(255,214,0,0.08)" },
+                    },
                 },
             },
         },

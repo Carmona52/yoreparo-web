@@ -12,7 +12,9 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Toolbar sx={{ justifyContent: "space-between" }}>
 
                 <Box sx={{ display: "flex", alignItems: "center", cursor: 'pointer' }} onClick={() => router.push("/")}>
-                    <Typography fontWeight={700}>
+                    <Typography sx={{
+                        fontWeight: 700
+                    }}>
                         Yo Reparo
                     </Typography>
                 </Box>
@@ -21,12 +23,13 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     {isLoggedIn ? (
                         // Si recibe true, no muestra el botón (y puedes agregar el nombre aquí si luego lo pasas como prop)
-                        <Typography variant="body1" fontWeight={500}>
-                            Mi Cuenta
-                        </Typography>
+                        (<Typography variant="body1" sx={{
+                            fontWeight: 500
+                        }}>Mi Cuenta
+                                                    </Typography>)
                     ) : (
                         // Si recibe false, muestra el botón de iniciar sesión
-                        <Button
+                        (<Button
                             variant="outlined"
                             color="inherit"
                             startIcon={<LoginIcon />}
@@ -36,9 +39,8 @@ export default function NavBar({ isLoggedIn }: { isLoggedIn: boolean }) {
                                 fontWeight: 600,
                                 borderRadius: 2
                             }}
-                        >
-                            Iniciar sesión
-                        </Button>
+                        >Iniciar sesión
+                                                    </Button>)
                     )}
                 </Box>
 

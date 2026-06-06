@@ -58,10 +58,22 @@ export default function UnauthorizedPage() {
                 </Box>
 
                 <CardContent sx={{p: 4, textAlign: "center"}}>
-                    <Typography variant="h5" fontWeight={800} mb={1} color="text.primary">
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: 800,
+                            mb: 1,
+                            color: "text.primary"
+                        }}>
                         Lo sentimos, Error al iniciar sesión.
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.7} mb={3}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "text.secondary",
+                            lineHeight: 1.7,
+                            mb: 3
+                        }}>
                         Lo sentimos tenemos problemas al iniciar sesión, por favor intente nuevamente más tarde.
                         Si piensa que es un error, por favor, contacte a soporte.
                     </Typography>

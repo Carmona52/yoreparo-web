@@ -75,7 +75,14 @@ export default function CardCotizacion(c: Cotizaciones) {
                         alignItems: "flex-start",
                         mb: 1.5
                     }}>
-                        <Typography fontWeight={700} fontSize={15} sx={{flex: 1, pr: 1}} noWrap>
+                        <Typography
+                            noWrap
+                            sx={{
+                                fontWeight: 700,
+                                fontSize: 15,
+                                flex: 1,
+                                pr: 1
+                            }}>
                             {c.servicio ?? "Sin servicio"}
                         </Typography>
                         <EstadoChip estado={c.estado}/>
@@ -84,13 +91,13 @@ export default function CardCotizacion(c: Cotizaciones) {
                     {c.descripcion && (
                         <Typography
                             variant="body2"
-                            color="text.secondary"
-                            mb={2}
                             sx={{
+                                color: "text.secondary",
+                                mb: 2,
                                 display: "-webkit-box",
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: "vertical",
-                                overflow: "hidden",
+                                overflow: "hidden"
                             }}>
                             {c.descripcion}
                         </Typography>
@@ -101,10 +108,17 @@ export default function CardCotizacion(c: Cotizaciones) {
                     <Box sx={{display: "flex", flexDirection: "column", gap: 1}}>
                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                             <AttachMoneyIcon sx={{fontSize: 15, color: "#2E7D32"}}/>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" sx={{
+                                color: "text.secondary"
+                            }}>
                                 Costo estimado:&nbsp;
-                                <Typography component="span" variant="body2" fontWeight={700}
-                                            color="text.primary">
+                                <Typography
+                                    component="span"
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 700,
+                                        color: "text.primary"
+                                    }}>
                                     {c.costo_estimado ? `$${c.costo_estimado}` : "—"}
                                 </Typography>
                             </Typography>
@@ -112,14 +126,18 @@ export default function CardCotizacion(c: Cotizaciones) {
 
                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                             <LocationOnIcon sx={{fontSize: 15, color: "#F57C00"}}/>
-                            <Typography variant="body2" color="text.secondary" noWrap>
+                            <Typography variant="body2" noWrap sx={{
+                                color: "text.secondary"
+                            }}>
                                 {c.direccion ?? "—"}
                             </Typography>
                         </Box>
 
                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                             <CalendarTodayIcon sx={{fontSize: 15, color: "#1565C0"}}/>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" sx={{
+                                color: "text.secondary"
+                            }}>
                                 {formatFecha(c.fecha_preferida)}
                             </Typography>
                         </Box>
@@ -129,5 +147,5 @@ export default function CardCotizacion(c: Cotizaciones) {
                 </CardContent>
             </CardActionArea>
         </Card>
-    )
+    );
 }

@@ -57,11 +57,20 @@ export default function TecnicosPage() {
 
     return (
         <Box>
-            <Typography variant="h4" fontWeight={800} mb={1}>Técnicos</Typography>
-            <Typography variant="body2" color="text.secondary" mb={4}>
+            <Typography
+                variant="h4"
+                sx={{
+                    fontWeight: 800,
+                    mb: 1
+                }}>Técnicos</Typography>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: "text.secondary",
+                    mb: 4
+                }}>
                 {tecnicos.length} técnico{tecnicos.length !== 1 ? "s" : ""} registrados
             </Typography>
-
             <Box sx={{mb: 3, display: "flex", justifyContent: "space-between"}}>
                 <TextField
                     placeholder="Buscar por nombre, correo o rol..."
@@ -69,17 +78,18 @@ export default function TecnicosPage() {
                     value={searchQuery}
                     onChange={event => setSearchQuery(event.target.value)}
                     sx={{width: {xs: '100%', sm: 400}}}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon fontSize="small"/>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon fontSize="small"/>
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
                 <NewWorkerModal/>
             </Box>
-
             {tecnicos.length === 0 ? (
                 <Alert severity="info">No hay técnicos registrados</Alert>
             ) : filteredTecnicos.length === 0 ? (
@@ -104,7 +114,9 @@ export default function TecnicosPage() {
                                                 {tecnico.name?.charAt(0).toUpperCase() ?? "T"}
                                             </Avatar>
                                             <Box sx={{flex: 1, minWidth: 0}}>
-                                                <Typography fontWeight={700} noWrap>
+                                                <Typography noWrap sx={{
+                                                    fontWeight: 700
+                                                }}>
                                                     {tecnico.name ?? "Sin nombre"}
                                                 </Typography>
                                                 <Chip
@@ -125,13 +137,17 @@ export default function TecnicosPage() {
                                         <Box sx={{display: "flex", flexDirection: "column", gap: 0.8}}>
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                                 <EmailIcon sx={{fontSize: 14, color: "text.secondary"}}/>
-                                                <Typography variant="body2" color="text.secondary" noWrap>
+                                                <Typography variant="body2" noWrap sx={{
+                                                    color: "text.secondary"
+                                                }}>
                                                     {tecnico.email ?? "—"}
                                                 </Typography>
                                             </Box>
                                             <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                                 <PhoneIcon sx={{fontSize: 14, color: "text.secondary"}}/>
-                                                <Typography variant="body2" color="text.secondary">
+                                                <Typography variant="body2" sx={{
+                                                    color: "text.secondary"
+                                                }}>
                                                     {tecnico.phone ?? "—"}
                                                 </Typography>
                                             </Box>

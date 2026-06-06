@@ -29,7 +29,12 @@ export default function SupervisorPerfil({tecnico}: Props) {
                         {tecnico.name?.charAt(0).toUpperCase() ?? "T"}
                     </Avatar>
                     <Box sx={{pb: 0.5}}>
-                        <Typography variant="h5" fontWeight={800} lineHeight={1.2} >
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 800,
+                                lineHeight: 1.2
+                            }}>
                             {tecnico.name}
                         </Typography>
                         <Chip
@@ -49,11 +54,15 @@ export default function SupervisorPerfil({tecnico}: Props) {
                 <Box sx={{display: "flex", flexDirection: "column", gap: 1, mb: 2}}>
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <PhoneIcon sx={{fontSize: 15, color: "#5A5A72"}}/>
-                        <Typography variant="body2" color="text.secondary">{tecnico.phone ?? "—"}</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>{tecnico.phone ?? "—"}</Typography>
                     </Box>
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <EmailIcon sx={{fontSize: 15, color: "#5A5A72"}}/>
-                        <Typography variant="body2" color="text.secondary">{tecnico.email ?? "—"}</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>{tecnico.email ?? "—"}</Typography>
                     </Box>
                 </Box>
 

@@ -100,15 +100,20 @@ export default function InfoHerramientaModal({open, onClose, herramienta, onSucc
 
     return (
         <>
-
             <Modal open={open} onClose={onClose} closeAfterTransition slots={{backdrop: Backdrop}}
                    slotProps={{backdrop: {timeout: 500}}}>
                 <Fade in={open}>
                     <Box sx={modalStyle}>
                         <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2}}>
                             <Box>
-                                <Typography variant="h5" fontWeight={700}
-                                            sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontWeight: 700,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 1
+                                    }}>
                                     <BuildIcon color="primary"/> {herramienta.tool || "Detalle"}
                                 </Typography>
                                 <Chip label={herramienta.estado || "Desconocido"} size="small"
@@ -122,22 +127,41 @@ export default function InfoHerramientaModal({open, onClose, herramienta, onSucc
 
                         <Box sx={{display: 'flex', flexDirection: 'column', gap: 2.5}}>
                             <Box>
-                                <Typography variant="overline" color="text.secondary" fontWeight={600}>Información
+                                <Typography
+                                    variant="overline"
+                                    sx={{
+                                        color: "text.secondary",
+                                        fontWeight: 600
+                                    }}>Información
                                     General</Typography>
                                 <Typography variant="body1"><strong>ID:</strong> {herramienta.id || "N/A"}</Typography>
                             </Box>
 
                             <Box>
-                                <Typography variant="overline" color="text.secondary" fontWeight={600}>Estado
+                                <Typography
+                                    variant="overline"
+                                    sx={{
+                                        color: "text.secondary",
+                                        fontWeight: 600
+                                    }}>Estado
                                     Actual</Typography>
                                 {isPrestado && herramienta.trabajador && (
-                                    <Box mt={1}>
-                                        <Typography variant="caption" color="text.secondary">
+                                    <Box sx={{
+                                        mt: 1
+                                    }}>
+                                        <Typography variant="caption" sx={{
+                                            color: "text.secondary"
+                                        }}>
                                             <Person fontSize="inherit" sx={{ mr: 0.5, verticalAlign: 'middle' }} />
                                             Prestada a: {herramienta.trabajador.name}
                                         </Typography>
                                         {herramienta.fecha_prestamo && (
-                                            <Typography variant="caption" display="block" color="text.secondary">
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    display: "block",
+                                                    color: "text.secondary"
+                                                }}>
                                                 <CalendarToday fontSize="inherit" sx={{ mr: 0.5, verticalAlign: 'middle' }} />
                                                 Desde: {formatFecha(herramienta.fecha_prestamo)}
                                             </Typography>
@@ -175,7 +199,6 @@ export default function InfoHerramientaModal({open, onClose, herramienta, onSucc
                     </Box>
                 </Fade>
             </Modal>
-
             <Dialog open={activeDialog === "prestar"} onClose={closeDialog} fullWidth maxWidth="sm">
                 <DialogTitle>Prestar Herramienta</DialogTitle>
                 <DialogContent>
@@ -208,7 +231,6 @@ export default function InfoHerramientaModal({open, onClose, herramienta, onSucc
                     </Button>
                 </DialogActions>
             </Dialog>
-
             <Dialog open={["baja", "perdida", "entregada"].includes(activeDialog)} onClose={closeDialog}>
                 <DialogTitle>
                     {activeDialog === "baja" && "Dar de baja herramienta"}

@@ -46,7 +46,9 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
                     <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2}}>
                         <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                             <HandymanIcon sx={{fontSize: 18, color: "#5A5A72"}}/>
-                            <Typography variant="body2" fontWeight={700}>Herramientas</Typography>
+                            <Typography variant="body2" sx={{
+                                fontWeight: 700
+                            }}>Herramientas</Typography>
                             <Chip label={herramientas.length} size="small"
                                   sx={{
                                       height: 20,
@@ -85,7 +87,12 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
                     {herramientas.length === 0 ? (
                         <Box sx={{textAlign: "center", py: 4}}>
                             <HandymanIcon sx={{fontSize: 40, color: "rgba(0,0,0,0.12)", mb: 1}}/>
-                            <Typography variant="body2" color="text.secondary" mb={1.5}>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "text.secondary",
+                                    mb: 1.5
+                                }}>
                                 No hay herramientas registradas
                             </Typography>
                             <Button variant="outlined" size="small" startIcon={<AddIcon/>}
@@ -107,7 +114,6 @@ export default function TecnicoHerramientas({workerId, herramientas, onEstadoCam
                     )}
                 </CardContent>
             </Card>
-
             <ModalNuevaHerramienta
                 open={modalOpen}
                 workerId={workerId}

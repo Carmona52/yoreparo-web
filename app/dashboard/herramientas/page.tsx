@@ -40,8 +40,18 @@ export default function HerramientasPage() {
 
     return (
         <Box>
-            <Typography variant="h4" fontWeight={800} mb={1}>Herramientas de Yo Reparo</Typography>
-            <Typography variant="body2" color="text.secondary" mb={4}>
+            <Typography
+                variant="h4"
+                sx={{
+                    fontWeight: 800,
+                    mb: 1
+                }}>Herramientas de Yo Reparo</Typography>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: "text.secondary",
+                    mb: 4
+                }}>
                 {herramientas.length} Herramienta{herramientas.length !== 1 ? "s" : ""} Registradas
             </Typography>
             <Box sx={{mb: 3, display: "flex", justifyContent: "space-between"}}>
@@ -51,18 +61,19 @@ export default function HerramientasPage() {
                     value={searchQuery}
                     onChange={event => setSearchQuery(event.target.value)}
                     sx={{width: {xs: '100%', sm: 400}}}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon fontSize="small"/>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon fontSize="small"/>
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
 
                 <RegistrarNuevaHerramienta></RegistrarNuevaHerramienta>
             </Box>
-
             {filterHerramientas.map((herramienta, key) => (
                 <HerramientasCard key={key} id={herramienta.id} created_at={herramienta.created_at}
                                   tool={herramienta.tool}
@@ -72,7 +83,5 @@ export default function HerramientasPage() {
                                   fecha_prestamo={herramienta.fecha_prestamo}/>
             ))}
         </Box>
-
-
     );
 }

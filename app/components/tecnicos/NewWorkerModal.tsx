@@ -115,7 +115,6 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
             >
                 Agregar Personal
             </Button>
-
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -126,7 +125,9 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
                 <Fade in={open}>
                     <Box sx={modalStyle}>
                         <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
-                            <Typography variant="h6" fontWeight={700}>Añadir Nuevo Técnico</Typography>
+                            <Typography variant="h6" sx={{
+                                fontWeight: 700
+                            }}>Añadir Nuevo Técnico</Typography>
                             <IconButton onClick={handleClose} disabled={loading} size="small">
                                 <CloseIcon/>
                             </IconButton>
@@ -180,14 +181,16 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 disabled={loading}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }
                                 }}
                             />
                         </Box>
@@ -204,7 +207,6 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
                     </Box>
                 </Fade>
             </Modal>
-
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={4000}

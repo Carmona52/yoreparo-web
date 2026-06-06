@@ -56,8 +56,19 @@ export default function StatCards({ serviciosActivos, tecnicosTotal, cotizacione
                         <CardContent sx={{ p: "20px !important" }}>
                             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                                 <Box>
-                                    <Typography variant="overline" display="block" mb={0.5}>{s.label}</Typography>
-                                    <Typography variant="h4" fontWeight={800} color="text.primary" lineHeight={1}>
+                                    <Typography
+                                        variant="overline"
+                                        sx={{
+                                            display: "block",
+                                            mb: 0.5
+                                        }}>{s.label}</Typography>
+                                    <Typography
+                                        variant="h4"
+                                        sx={{
+                                            fontWeight: 800,
+                                            color: "text.primary",
+                                            lineHeight: 1
+                                        }}>
                                         {s.value}
                                     </Typography>
                                     <Chip label={s.chip.label} size="small"

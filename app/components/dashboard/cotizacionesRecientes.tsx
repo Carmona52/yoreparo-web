@@ -31,7 +31,9 @@ export default function CotizacionesRecientes({cotizaciones}: { cotizaciones: Co
             <CardContent sx={{p: 3}}>
                 <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
                     <AssignmentIcon sx={{fontSize: 18, color: "#5A5A72"}}/>
-                    <Typography variant="body2" fontWeight={700}>Cotizaciones recientes</Typography>
+                    <Typography variant="body2" sx={{
+                        fontWeight: 700
+                    }}>Cotizaciones recientes</Typography>
                     <Chip label={cotizaciones.length} size="small"
                           sx={{
                               height: 20,
@@ -45,7 +47,9 @@ export default function CotizacionesRecientes({cotizaciones}: { cotizaciones: Co
 
                 {cotizaciones.length === 0 ? (
                     <Box sx={{textAlign: "center", py: 4}}>
-                        <Typography variant="body2" color="text.secondary">Sin cotizaciones recientes</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>Sin cotizaciones recientes</Typography>
                     </Box>
                 ) : (
                     <Box sx={{display: "flex", flexDirection: "column"}}>
@@ -76,7 +80,14 @@ export default function CotizacionesRecientes({cotizaciones}: { cotizaciones: Co
                                             alignItems: "flex-start",
                                             mb: 0.5
                                         }}>
-                                            <Typography variant="body2" fontWeight={700} flex={1} pr={1} noWrap>
+                                            <Typography
+                                                variant="body2"
+                                                noWrap
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    flex: 1,
+                                                    pr: 1
+                                                }}>
                                                 {c.servicio ?? "Servicio"}
                                             </Typography>
                                             <Chip label={style.label} size="small"
@@ -93,11 +104,15 @@ export default function CotizacionesRecientes({cotizaciones}: { cotizaciones: Co
                                             {c.direccion && (
                                                 <Box sx={{display: "flex", alignItems: "center", gap: 0.5}}>
                                                     <LocationOnIcon sx={{fontSize: 12, color: "#5A5A72"}}/>
-                                                    <Typography variant="caption" color="text.secondary"
-                                                                noWrap>{c.direccion}</Typography>
+                                                    <Typography variant="caption" noWrap
+                                                                sx={{
+                                                                    color: "text.secondary"
+                                                                }}>{c.direccion}</Typography>
                                                 </Box>
                                             )}
-                                            <Typography variant="caption" color="text.secondary">
+                                            <Typography variant="caption" sx={{
+                                                color: "text.secondary"
+                                            }}>
                                                 {formatFecha(c.created_at)}
                                             </Typography>
                                         </Box>

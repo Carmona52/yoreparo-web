@@ -26,7 +26,9 @@ export default function JobsPendientesAsignar({jobs}: { jobs: Servicios[] }) {
             <CardContent sx={{p: 3}}>
                 <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
                     <PersonOffIcon sx={{fontSize: 18, color: "#E65100"}}/>
-                    <Typography variant="body2" fontWeight={700}>Sin técnico asignado</Typography>
+                    <Typography variant="body2" sx={{
+                        fontWeight: 700
+                    }}>Sin técnico asignado</Typography>
                     {jobs.length > 0 && (
                         <Chip label={jobs.length} size="small"
                               sx={{
@@ -42,7 +44,9 @@ export default function JobsPendientesAsignar({jobs}: { jobs: Servicios[] }) {
 
                 {jobs.length === 0 ? (
                     <Box sx={{textAlign: "center", py: 4}}>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>
                             Todos los trabajos tienen técnico asignado ✓
                         </Typography>
                     </Box>
@@ -75,24 +79,35 @@ export default function JobsPendientesAsignar({jobs}: { jobs: Servicios[] }) {
                                             {j.title?.charAt(0).toUpperCase() ?? "J"}
                                         </Avatar>
                                         <Box sx={{flex: 1, minWidth: 0}}>
-                                            <Typography variant="body2" fontWeight={700} noWrap>{j.title}</Typography>
+                                            <Typography variant="body2" noWrap sx={{
+                                                fontWeight: 700
+                                            }}>{j.title}</Typography>
                                             <Box sx={{display: "flex", gap: 1.5, flexWrap: "wrap", mt: 0.3}}>
                                                 {j.address && (
                                                     <Box sx={{display: "flex", alignItems: "center", gap: 0.4}}>
                                                         <LocationOnIcon sx={{fontSize: 11, color: "#5A5A72"}}/>
-                                                        <Typography variant="caption" color="text.secondary"
-                                                                    noWrap>{j.address}</Typography>
+                                                        <Typography variant="caption" noWrap
+                                                                    sx={{
+                                                                        color: "text.secondary"
+                                                                    }}>{j.address}</Typography>
                                                     </Box>
                                                 )}
                                                 {j.price != null && (
                                                     <Box sx={{display: "flex", alignItems: "center", gap: 0.4}}>
                                                         <AttachMoneyIcon sx={{fontSize: 11, color: "#2E7D32"}}/>
-                                                        <Typography variant="caption" fontWeight={600} color="#2E7D32">
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                fontWeight: 600,
+                                                                color: "#2E7D32"
+                                                            }}>
                                                             ${Number(j.price).toLocaleString("es-MX")}
                                                         </Typography>
                                                     </Box>
                                                 )}
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography variant="caption" sx={{
+                                                    color: "text.secondary"
+                                                }}>
                                                     {formatFecha(j.fecha_cita)}
                                                 </Typography>
                                             </Box>

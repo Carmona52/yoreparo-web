@@ -52,7 +52,6 @@ export default function HomePage() {
     return (
         <Box sx={{minHeight: "100vh", bgcolor: "#f8f9fa", pb: 10, }}>
             <Navbar isLoggedIn={usuario}/>
-
             <Box sx={{
                 bgcolor: "#1A1A2E",
                 color: "white",
@@ -84,16 +83,24 @@ export default function HomePage() {
                     </Button>
                 </Container>
             </Box>
-
             <Container maxWidth="lg" sx={{mt: -5}}>
 
 
                 <Paper elevation={3} sx={{p: {xs: 3, md: 5}, borderRadius: 3, mb: 8, textAlign: "center"}}>
-                    <Typography variant="h4" color="#1A1A2E" gutterBottom>
+                    <Typography variant="h4" gutterBottom sx={{
+                        color: "#1A1A2E"
+                    }}>
                         ¿Quiénes Somos?
                     </Typography>
-                    <Typography variant="body1" color="text.secondary"
-                                sx={{maxWidth: 700, mx: "auto", fontSize: "1.1rem", lineHeight: 1.8}}>
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            color: "text.secondary",
+                            maxWidth: 700,
+                            mx: "auto",
+                            fontSize: "1.1rem",
+                            lineHeight: 1.8
+                        }}>
                         En <strong>Yo Reparo</strong> somos un equipo de expertos dedicados a devolverle la vida a tus
                         equipos.
                         Nuestra misión es ofrecer total transparencia en cada diagnóstico y reparación.
@@ -103,10 +110,14 @@ export default function HomePage() {
                 </Paper>
 
                 <Box sx={{textAlign: "center", mb: 6}}>
-                    <Typography variant="h4" color="#1A1A2E" gutterBottom>
+                    <Typography variant="h4" gutterBottom sx={{
+                        color: "#1A1A2E"
+                    }}>
                         Nuestro Proceso
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography variant="body1" sx={{
+                        color: "text.secondary"
+                    }}>
                         Así de fácil es trabajar con nosotros
                     </Typography>
                 </Box>
@@ -130,10 +141,18 @@ export default function HomePage() {
                             <TimelineConnector sx={{bgcolor: "#1A1A2E", width: 3}}/>
                         </TimelineSeparator>
                         <TimelineContent sx={{py: '18px', px: 3}}>
-                            <Typography variant="h6" color="#1A1A2E">
+                            <Typography variant="h6" sx={{
+                                color: "#1A1A2E"
+                            }}>
                                 1. Solicitud y Cotización
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{mt: 0.5, fontSize: "1rem"}}>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "text.secondary",
+                                    mt: 0.5,
+                                    fontSize: "1rem"
+                                }}>
                                 Ingresas el equipo y generamos un diagnóstico inicial con una cotización clara para que
                                 tú decidas.
                             </Typography>
@@ -148,10 +167,18 @@ export default function HomePage() {
                             <TimelineConnector sx={{bgcolor: "#1A1A2E", width: 3}}/>
                         </TimelineSeparator>
                         <TimelineContent sx={{py: '18px', px: 3}}>
-                            <Typography variant="h6" color="#1A1A2E">
+                            <Typography variant="h6" sx={{
+                                color: "#1A1A2E"
+                            }}>
                                 2. Reparación
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{mt: 0.5, fontSize: "1rem"}}>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "text.secondary",
+                                    mt: 0.5,
+                                    fontSize: "1rem"
+                                }}>
                                 Una vez que apruebas la cotización, nuestros técnicos se ponen manos a la obra.
                             </Typography>
                         </TimelineContent>
@@ -164,10 +191,18 @@ export default function HomePage() {
                             </TimelineDot>
                         </TimelineSeparator>
                         <TimelineContent sx={{py: '18px', px: 3}}>
-                            <Typography variant="h6" color="#d32f2f" component='h6'>
+                            <Typography variant="h6" component='h6' sx={{
+                                color: "#d32f2f"
+                            }}>
                                 3. Entrega
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{mt: 0.5, fontSize: "1rem"}}>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "text.secondary",
+                                    mt: 0.5,
+                                    fontSize: "1rem"
+                                }}>
                                 Te notificamos cuando tu equipo está listo para que vuelvas a disfrutar de él como
                                 nuevo.
                             </Typography>
@@ -190,7 +225,6 @@ export default function HomePage() {
                 </Timeline>
 
             </Container>
-
         </Box>
     );
 }

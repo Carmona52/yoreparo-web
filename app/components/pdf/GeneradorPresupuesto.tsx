@@ -136,8 +136,20 @@ function BloqueServicio({
         <Box sx={{mb: 2, border: `2px solid ${bloque.color}22`, borderRadius: 1, overflow: "hidden"}}>
             <Box sx={{bgcolor: bloque.color, px: 2, py: 1.5, display: "flex", gap: 2, alignItems: "center"}}>
 
-                {nombre.length != 0 ? <Typography variant="body2" fontWeight={800} color={contrastColor(bloque.color)} flex={1}> {nombre}</Typography> :
-                    <Typography variant="body2" fontWeight={800} color='black' flex={1}> Por favor, elija un servicio </Typography>}
+                {nombre.length != 0 ? <Typography
+                    variant="body2"
+                    color={contrastColor(bloque.color)}
+                    sx={{
+                        fontWeight: 800,
+                        flex: 1
+                    }}> {nombre}</Typography> :
+                    <Typography
+                        variant="body2"
+                        color='black'
+                        sx={{
+                            fontWeight: 800,
+                            flex: 1
+                        }}> Por favor, elija un servicio </Typography>}
 
                 <FormControl size="small" sx={{minWidth: 280, "& .MuiInputBase-root": {bgcolor: "rgba(255,255,255,0.15)", color: contrastColor(bloque.color)}}}>
                     <Select value={bloque.nombre} onChange={(e) => {
@@ -170,12 +182,18 @@ function BloqueServicio({
                     </IconButton>
                 )}
             </Box>
-
             <Box sx={{p: 2}}>
                 <Box sx={{display: "grid", gridTemplateColumns: "2fr 0.7fr 1fr 1fr 36px", gap: 1, px: 1, mb: 0.5}}>
                     {["Descripción", "Cant.", "P. Unit.", "Total", ""].map((h) => (
-                        <Typography key={h} variant="caption" color="text.secondary" fontWeight={700} fontSize={12}
-                                    textTransform="uppercase">{h}</Typography>
+                        <Typography
+                            key={h}
+                            variant="caption"
+                            sx={{
+                                color: "text.secondary",
+                                fontWeight: 700,
+                                fontSize: 12,
+                                textTransform: "uppercase"
+                            }}>{h}</Typography>
                     ))}
                 </Box>
 
@@ -204,8 +222,15 @@ function BloqueServicio({
                                            value={m.precioUnitario}
                                            onChange={(e) => updateMat(m.id, "precioUnitario", e.target.value)}
                                            sx={{"& .MuiInputBase-input": {fontSize: 14}}}/>
-                                <Typography variant="body2" fontWeight={700} color="#2E7D32" textAlign="right" pr={0.5}
-                                            fontSize={14}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 700,
+                                        color: "#2E7D32",
+                                        textAlign: "right",
+                                        pr: 0.5,
+                                        fontSize: 14
+                                    }}>
                                     {formatMXN(rowTotal)}
                                 </Typography>
                                 <IconButton size="small" onClick={() => removeMat(m.id)}
@@ -223,9 +248,13 @@ function BloqueServicio({
                         Agregar material
                     </Button>
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-                        <Typography variant="caption" color="text.secondary">Subtotal:</Typography>
-                        <Typography variant="body2" fontWeight={800}
-                                    color={bloque.color}>{formatMXN(subtotal)}</Typography>
+                        <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                        }}>Subtotal:</Typography>
+                        <Typography variant="body2" color={bloque.color}
+                                    sx={{
+                                        fontWeight: 800
+                                    }}>{formatMXN(subtotal)}</Typography>
                     </Box>
                 </Box>
             </Box>
@@ -343,7 +372,12 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
     return (
         <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)"}}>
             <CardContent sx={{p: 3}}>
-                <Typography variant="h6" fontWeight={700} mb={2}>Generar Presupuesto</Typography>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontWeight: 700,
+                        mb: 2
+                    }}>Generar Presupuesto</Typography>
 
                 <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{
                     mb: 3, borderBottom: "1px solid rgba(0,0,0,0.08)",
@@ -369,7 +403,9 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                             <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                                 <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                                     <BusinessIcon sx={{fontSize: 19, color: "#5A5A72"}}/>
-                                    <Typography fontWeight={600}>Datos de la empresa</Typography>
+                                    <Typography sx={{
+                                        fontWeight: 600
+                                    }}>Datos de la empresa</Typography>
                                 </Box>
                             </AccordionSummary>
                             <AccordionDetails sx={{pt: 0}}>
@@ -391,17 +427,31 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                             mb: 3,
                             borderLeft: "3px solid #FFD600"
                         }}>
-                            <Typography variant="caption" fontWeight={700} color="text.secondary" display="block" mb={1}
-                                        textTransform="uppercase" letterSpacing={1}>Cliente</Typography>
-                            <Typography variant="body2" fontWeight={700}>{cliente.nombre}</Typography>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontWeight: 700,
+                                    color: "text.secondary",
+                                    display: "block",
+                                    mb: 1,
+                                    textTransform: "uppercase",
+                                    letterSpacing: 1
+                                }}>Cliente</Typography>
+                            <Typography variant="body2" sx={{
+                                fontWeight: 700
+                            }}>{cliente.nombre}</Typography>
                             <Typography variant="caption"
-                                        color="text.secondary">{cliente.email} · {cliente.telefono}</Typography>
+                                        sx={{
+                                            color: "text.secondary"
+                                        }}>{cliente.email} · {cliente.telefono}</Typography>
                         </Box>
 
                         <Divider sx={{mb: 3}}/>
 
                         <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2}}>
-                            <Typography fontWeight={700}>Servicios</Typography>
+                            <Typography sx={{
+                                fontWeight: 700
+                            }}>Servicios</Typography>
                             <Button size="large" startIcon={<AddIcon/>}
                                     onClick={() => setServicios((p) => [...p, nuevoServicio()])}
                                     sx={{fontSize: 16, fontWeight: 700, color: "#1565C0"}}>
@@ -421,7 +471,12 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                         ))}
 
                         <Box sx={{bgcolor: "#EEF2FF", borderRadius: 1, p: 2, mb: 2}}>
-                            <Typography variant="body2" fontWeight={700} mb={1.5}>Mano de obra (global)</Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    fontWeight: 700,
+                                    mb: 1.5
+                                }}>Mano de obra (global)</Typography>
                             <TextField size="small" fullWidth label="Costo ($)" type="number"
                                        value={manoDeObra} onChange={(e) => setManoDeObra(e.target.value)}/>
                         </Box>
@@ -440,8 +495,12 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                                                    sx={{color: "#2E7D32", "&.Mui-checked": {color: "#2E7D32"}}}/>}
                                 label={
                                     <Box>
-                                        <Typography variant="body2" fontWeight={700}>Incluir IVA (16%)</Typography>
-                                        <Typography variant="caption" color="text.secondary">Para clientes que requieren
+                                        <Typography variant="body2" sx={{
+                                            fontWeight: 700
+                                        }}>Incluir IVA (16%)</Typography>
+                                        <Typography variant="caption" sx={{
+                                            color: "text.secondary"
+                                        }}>Para clientes que requieren
                                             factura</Typography>
                                     </Box>
                                 }
@@ -450,28 +509,51 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
 
                         <Box sx={{bgcolor: "#1A1A2E", borderRadius: 1, p: 2, mb: 3}}>
                             <Box sx={{display: "flex", justifyContent: "space-between", mb: 0.5}}>
-                                <Typography variant="caption" color="rgba(255,255,255,0.5)">Subtotal
+                                <Typography variant="caption" sx={{
+                                    color: "rgba(255,255,255,0.5)"
+                                }}>Subtotal
                                     materiales</Typography>
                                 <Typography variant="caption"
-                                            color="rgba(255,255,255,0.7)">{formatMXN(subtotalMat)}</Typography>
+                                            sx={{
+                                                color: "rgba(255,255,255,0.7)"
+                                            }}>{formatMXN(subtotalMat)}</Typography>
                             </Box>
                             <Box sx={{display: "flex", justifyContent: "space-between", mb: conIva ? 0.5 : 1.5}}>
-                                <Typography variant="caption" color="rgba(255,255,255,0.5)">Mano de obra</Typography>
+                                <Typography variant="caption" sx={{
+                                    color: "rgba(255,255,255,0.5)"
+                                }}>Mano de obra</Typography>
                                 <Typography variant="caption"
-                                            color="rgba(255,255,255,0.7)">{formatMXN(mdo)}</Typography>
+                                            sx={{
+                                                color: "rgba(255,255,255,0.7)"
+                                            }}>{formatMXN(mdo)}</Typography>
                             </Box>
                             {conIva && (
                                 <Box sx={{display: "flex", justifyContent: "space-between", mb: 1.5}}>
-                                    <Typography variant="caption" color="#81C784">IVA (16%)</Typography>
-                                    <Typography variant="caption" color="#81C784"
-                                                fontWeight={700}>{formatMXN(iva)}</Typography>
+                                    <Typography variant="caption" sx={{
+                                        color: "#81C784"
+                                    }}>IVA (16%)</Typography>
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "#81C784",
+                                            fontWeight: 700
+                                        }}>{formatMXN(iva)}</Typography>
                                 </Box>
                             )}
                             <Divider sx={{borderColor: "rgba(255,255,255,0.1)", mb: 1.5}}/>
                             <Box sx={{display: "flex", justifyContent: "space-between"}}>
-                                <Typography variant="body2" fontWeight={800} color="#FFD600">TOTAL</Typography>
-                                <Typography variant="body2" fontWeight={800}
-                                            color="#FFD600">{formatMXN(total)}</Typography>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 800,
+                                        color: "#FFD600"
+                                    }}>TOTAL</Typography>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 800,
+                                        color: "#FFD600"
+                                    }}>{formatMXN(total)}</Typography>
                             </Box>
                         </Box>
 
@@ -483,7 +565,9 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                                        "&:before": {display: "none"}
                                    }}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                <Typography fontWeight={600}>Tiempo y forma de pago</Typography>
+                                <Typography sx={{
+                                    fontWeight: 600
+                                }}>Tiempo y forma de pago</Typography>
                             </AccordionSummary>
                             <AccordionDetails sx={{pt: 0}}>
                                 <Box sx={{display: "flex", flexDirection: "column", gap: 1.5}}>
@@ -541,7 +625,12 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
 
                 {tab === 1 && (
                     <Box>
-                        <Typography variant="body2" color="text.secondary" mb={3}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                mb: 3
+                            }}>
                             Si ya tienes el presupuesto listo, puedes subirlo directamente sin generarlo desde aquí.
                         </Typography>
 
@@ -567,18 +656,32 @@ export default function GeneradorPresupuesto({cotizacion, onEnviado}: Props) {
                             {pdfFile ? (
                                 <>
                                     <PictureAsPdfIcon sx={{fontSize: 40, color: "#2E7D32"}}/>
-                                    <Typography variant="body2" fontWeight={700} color="#2E7D32"
-                                                textAlign="center">{pdfFile.name}</Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontWeight: 700,
+                                            color: "#2E7D32",
+                                            textAlign: "center"
+                                        }}>{pdfFile.name}</Typography>
                                     <Chip label={`${(pdfFile.size / 1024 / 1024).toFixed(2)} MB`} size="small"
                                           sx={{bgcolor: "rgba(46,125,50,0.1)", color: "#2E7D32", fontWeight: 700}}/>
-                                    <Typography variant="caption" color="text.secondary">Toca para cambiar</Typography>
+                                    <Typography variant="caption" sx={{
+                                        color: "text.secondary"
+                                    }}>Toca para cambiar</Typography>
                                 </>
                             ) : (
                                 <>
                                     <UploadFileIcon sx={{fontSize: 40, color: "#1565C0"}}/>
-                                    <Typography variant="body2" fontWeight={700} color="#1565C0">Seleccionar
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontWeight: 700,
+                                            color: "#1565C0"
+                                        }}>Seleccionar
                                         PDF</Typography>
-                                    <Typography variant="caption" color="text.secondary">Haz clic o arrastra tu archivo
+                                    <Typography variant="caption" sx={{
+                                        color: "text.secondary"
+                                    }}>Haz clic o arrastra tu archivo
                                         aquí</Typography>
                                 </>
                             )}

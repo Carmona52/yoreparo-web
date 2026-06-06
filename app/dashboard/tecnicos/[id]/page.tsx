@@ -95,11 +95,15 @@ export default function TecnicoDetallePage() {
                 <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)"}}>
                     <ArrowBackIcon fontSize="small"/>
                 </IconButton>
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.secondary",
+                        fontWeight: 600
+                    }}>
                     Detalle del técnico
                 </Typography>
             </Box>
-
             <TecnicoPerfil tecnico={tecnico} stats={stats}/>
             <TecnicoHerramientas
                 workerId={id}
@@ -107,7 +111,6 @@ export default function TecnicoDetallePage() {
                 onEstadoCambiado={handleEstadoCambiado}
                 onEliminada={handleEliminada}
                 onCreada={handleCreada}/>
-
             <TecnicoTrabajos trabajos={trabajos}/>
             <Snackbar
                 open={snack.open} autoHideDuration={3000}

@@ -55,14 +55,16 @@ export default function TecnicoDetallePage() {
                 <IconButton onClick={() => router.back()} size="small" sx={{bgcolor: "rgba(0,0,0,0.05)"}}>
                     <ArrowBackIcon fontSize="small"/>
                 </IconButton>
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.secondary",
+                        fontWeight: 600
+                    }}>
                     Detalle del supervisor
                 </Typography>
             </Box>
-
             <SupervisorPerfil tecnico={tecnico}/>
-
-
             <Snackbar
                 open={snack.open} autoHideDuration={3000}
                 onClose={() => setSnack((s) => ({...s, open: false}))}

@@ -152,16 +152,22 @@ function SeccionEnviada({cotizacion}: SeccionEnviadaProps) {
                     }}>
                         <AccessTimeIcon sx={{fontSize: 34, color: "#fff"}}/>
                     </Box>
-                    <Typography variant="h6" mb={1}>
+                    <Typography variant="h6" sx={{
+                        mb: 1
+                    }}>
                         Esperando Respuesta
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.7}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "text.secondary",
+                            lineHeight: 1.7
+                        }}>
                         El presupuesto por <strong>${costo}</strong> ha sido enviado al
                         cliente y se encuentra en revisión.
                     </Typography>
                 </CardContent>
             </Card>
-
             {apelando ? (
                 <SeccionApelacion
                     cotizacionId={cotizacionId}
@@ -171,7 +177,12 @@ function SeccionEnviada({cotizacion}: SeccionEnviadaProps) {
                     recipientUserId={cotizacion.created_by}
                 />
             ) : (
-                <Typography variant="caption" color="text.secondary" textAlign="center">
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: "text.secondary",
+                        textAlign: "center"
+                    }}>
                     Si el cliente apela el precio, el chat aparecerá aquí automáticamente.
                 </Typography>
             )}
@@ -202,10 +213,21 @@ function SeccionAceptada({costo, cotizacion, onJobCreado}: SeccionAceptadaProps)
                     }}>
                         <CheckCircleIcon sx={{fontSize: 34, color: "#fff"}}/>
                     </Box>
-                    <Typography variant="h6" fontWeight={800} mb={1}>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 800,
+                            mb: 1
+                        }}>
                         ¡Cotización Aceptada!
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.7} mb={3}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "text.secondary",
+                            lineHeight: 1.7,
+                            mb: 3
+                        }}>
                         El cliente ha aprobado formalmente el presupuesto de{" "}
                         <strong>${costo}</strong>. Es el momento de asignar un técnico
                         calificado para llevar a cabo el servicio solicitado.
@@ -223,7 +245,6 @@ function SeccionAceptada({costo, cotizacion, onJobCreado}: SeccionAceptadaProps)
                     </Button>
                 </CardContent>
             </Card>
-
             <CrearJobModal
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
@@ -265,19 +286,37 @@ function SeccionAsignada({costo, cotizacion}: SeccionAsignadaProps) {
                 }}>
                     <CheckCircleIcon sx={{fontSize: 34, color: "#fff"}}/>
                 </Box>
-                <Typography variant="h6" fontWeight={800} mb={1}>¡Trabajo Asignado!</Typography>
-                <Typography variant="body2" color="text.secondary" lineHeight={1.7} mb={3}>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontWeight: 800,
+                        mb: 1
+                    }}>¡Trabajo Asignado!</Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.secondary",
+                        lineHeight: 1.7,
+                        mb: 3
+                    }}>
                     El cliente ha aprobado el presupuesto de <strong>${costo}</strong> y el
                     trabajo ha sido asignado al siguiente técnico:
                 </Typography>
                 {cargando ? (
                     <CircularProgress size={24}/>
                 ) : tecnicoNombre ? (
-                    <Typography variant="h6" fontWeight={700} color="#2E7D32">
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 700,
+                            color: "#2E7D32"
+                        }}>
                         {tecnicoNombre}
                     </Typography>
                 ) : (
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{
+                        color: "text.secondary"
+                    }}>
                         Técnico no asignado aún.
                     </Typography>
                 )}
@@ -294,10 +333,21 @@ function SeccionRechazada() {
             bgcolor: "rgba(211,47,47,0.04)",
         }}>
             <CardContent sx={{p: 4, textAlign: "center"}}>
-                <Typography variant="h6" fontWeight={800} mb={1} color="#C62828">
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontWeight: 800,
+                        mb: 1,
+                        color: "#C62828"
+                    }}>
                     Cotización Rechazada
                 </Typography>
-                <Typography variant="body2" color="text.secondary" lineHeight={1.7}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.secondary",
+                        lineHeight: 1.7
+                    }}>
                     El cliente ha declinado el presupuesto enviado. Puedes contactarlo
                     para revisar los términos y generar una nueva propuesta si es necesario.
                 </Typography>
@@ -371,7 +421,6 @@ export default function CotizacionDetallePage() {
 
     return (
         <Box sx={{maxWidth: "screen", mx: "auto", marginX: 2}}>
-
             <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 3}}>
                 <IconButton
                     onClick={() => router.back()}
@@ -380,54 +429,90 @@ export default function CotizacionDetallePage() {
                 >
                     <ArrowBackIcon fontSize="small"/>
                 </IconButton>
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.secondary",
+                        fontWeight: 600
+                    }}>
                     Detalle de la Cotización
                 </Typography>
             </Box>
-
             <Card sx={{borderRadius: 1, border: "1px solid rgba(0,0,0,0.07)", mb: 3}}>
                 <CardContent sx={{p: 3}}>
                     <Box sx={{
                         display: "flex", justifyContent: "space-between",
                         alignItems: "flex-start", mb: 0.5,
                     }}>
-                        <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                fontWeight: 500
+                            }}>
                             {cotizacion.created_by ?? "Cliente"}
                         </Typography>
                         <EstadoChip estado={cotizacion.estado}/>
                     </Box>
 
-                    <Typography variant="h5" fontWeight={800} color="text.primary" mb={2}>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: 800,
+                            color: "text.primary",
+                            mb: 2
+                        }}>
                         {cotizacion.servicio ?? "Servicio"}
                     </Typography>
 
                     <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1.5}}>
                         <LocationOnIcon sx={{fontSize: 18, color: "#1565C0"}}/>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>
                             {cotizacion.direccion ?? "—"}
                         </Typography>
                     </Box>
 
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <CalendarTodayIcon sx={{fontSize: 17, color: "#1565C0"}}/>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>
                             {formatFecha(cotizacion.fecha_preferida)}
                         </Typography>
                     </Box>
 
                     <Divider sx={{my: 2.5}}/>
 
-                    <Typography variant="overline" color="text.secondary" display="block" mb={1}>
+                    <Typography
+                        variant="overline"
+                        sx={{
+                            color: "text.secondary",
+                            display: "block",
+                            mb: 1
+                        }}>
                         Descripción del problema
                     </Typography>
-                    <Typography variant="body2" color="text.primary" lineHeight={1.8}>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: "text.primary",
+                            lineHeight: 1.8
+                        }}>
                         {cotizacion.descripcion ?? "Sin descripción"}
                     </Typography>
 
                     {cotizacion.evidencia_url && (
                         <>
                             <Divider sx={{my: 2.5}}/>
-                            <Typography variant="overline" color="text.secondary" display="block" mb={1.5}>
+                            <Typography
+                                variant="overline"
+                                sx={{
+                                    color: "text.secondary",
+                                    display: "block",
+                                    mb: 1.5
+                                }}>
                                 Evidencia fotográfica
                             </Typography>
                             <Box
@@ -461,7 +546,6 @@ export default function CotizacionDetallePage() {
                     )}
                 </CardContent>
             </Card>
-
             {estado === "pendiente" && (
                 <GeneradorPresupuesto cotizacion={cotizacion} onEnviado={handleEnviado}/>
             )}
@@ -482,7 +566,6 @@ export default function CotizacionDetallePage() {
                 />
             )}
             {estado === "rechazada" && <SeccionRechazada/>}
-
         </Box>
     );
 }

@@ -94,8 +94,18 @@ function CustomTooltip({active, payload, label}: {
     if (!active || !payload?.length) return null;
     return (
         <Box sx={{bgcolor: "#1A1A2E", borderRadius: 2, px: 2, py: 1.5, boxShadow: "0 4px 20px rgba(0,0,0,0.2)"}}>
-            <Typography variant="caption" color="rgba(255,255,255,0.6)" display="block">{label}</Typography>
-            <Typography variant="body2" fontWeight={800} color="#FFD600">{formatMXN(payload[0].value)}</Typography>
+            <Typography
+                variant="caption"
+                sx={{
+                    color: "rgba(255,255,255,0.6)",
+                    display: "block"
+                }}>{label}</Typography>
+            <Typography
+                variant="body2"
+                sx={{
+                    fontWeight: 800,
+                    color: "#FFD600"
+                }}>{formatMXN(payload[0].value)}</Typography>
         </Box>
     );
 }
@@ -124,11 +134,24 @@ export default function GraficaIngresos({jobs}: { jobs: Servicios[] }) {
                     gap: 2
                 }}>
                     <Box>
-                        <Typography variant="body2" fontWeight={700} mb={0.5}>Ingresos</Typography>
-                        <Typography variant="h4" fontWeight={800} color="text.primary" lineHeight={1}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontWeight: 700,
+                                mb: 0.5
+                            }}>Ingresos</Typography>
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                fontWeight: 800,
+                                color: "text.primary",
+                                lineHeight: 1
+                            }}>
                             {formatMXN(totalPeriodo)}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" sx={{
+                            color: "text.secondary"
+                        }}>
                             Total del periodo · solo trabajos finalizados
                         </Typography>
                     </Box>

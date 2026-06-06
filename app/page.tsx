@@ -52,7 +52,12 @@ export default function Index() {
             }}
         >
             <CircularProgress size={48} thickness={3} color="primary" />
-            <Typography variant="body2" color="text.secondary" letterSpacing={2}>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: "text.secondary",
+                    letterSpacing: 2
+                }}>
                 Preparando tu entorno...
             </Typography>
         </Box>

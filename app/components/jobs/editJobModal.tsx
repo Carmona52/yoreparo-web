@@ -202,9 +202,17 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
     };
 
     return (
-        <Dialog open={open} onClose={!saving ? onClose : undefined} maxWidth="sm" fullWidth
-                PaperProps={{sx: {borderRadius: 4, overflow: 'hidden'}}}>
-
+        <Dialog
+            open={open}
+            onClose={!saving ? onClose : undefined}
+            maxWidth="sm"
+            fullWidth
+            slotProps={{
+                paper: {
+                    sx: {borderRadius: 4, overflow: 'hidden'}
+                }
+            }}
+        >
             <Box sx={{
                 bgcolor: '#1A1A2E',
                 px: 3,
@@ -226,9 +234,17 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                         <BuildIcon sx={{fontSize: 17, color: '#1A1A2E'}}/>
                     </Box>
                     <Box>
-                        <Typography fontWeight={800} color="#fff" fontSize={16} lineHeight={1.2}>Editar
+                        <Typography
+                            sx={{
+                                fontWeight: 800,
+                                color: "#fff",
+                                fontSize: 16,
+                                lineHeight: 1.2
+                            }}>Editar
                             Servicio</Typography>
-                        <Typography variant="caption" color="rgba(255,255,255,0.5)">Modifica los datos del
+                        <Typography variant="caption" sx={{
+                            color: "rgba(255,255,255,0.5)"
+                        }}>Modifica los datos del
                             trabajo</Typography>
                     </Box>
                 </Box>
@@ -236,39 +252,67 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                     <CloseIcon fontSize="small"/>
                 </IconButton>
             </Box>
-
             <DialogContent sx={{p: 3}}>
                 {error && <Alert severity="error" sx={{mb: 2}}>{error}</Alert>}
                 {success && <Alert severity="success" sx={{mb: 2}} icon={<CheckIcon/>}>¡Servicio actualizado
                     exitosamente!</Alert>}
 
                 <Box sx={{display: 'flex', flexDirection: 'column', gap: 2.5}}>
-                    <TextField label="Título del trabajo" fullWidth size="small" value={form.title}
-                               onChange={(e) => setForm(p => ({...p, title: e.target.value}))}
-                               InputProps={{
-                                   startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
-                               }}/>
+                    <TextField
+                        label="Título del trabajo"
+                        fullWidth
+                        size="small"
+                        value={form.title}
+                        onChange={(e) => setForm(p => ({...p, title: e.target.value}))}
+                        slotProps={{
+                            input: {
+                                startAdornment: <BuildIcon sx={{fontSize: 17, color: '#5A5A72', mr: 1}}/>
+                            }
+                        }}
+                    />
 
-                    <TextField label="Dirección" fullWidth size="small" value={form.address}
-                               onChange={(e) => setForm(p => ({...p, address: e.target.value}))}
-                               InputProps={{
-                                   startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#F57C00', mr: 1}}/>
-                               }}/>
+                    <TextField
+                        label="Dirección"
+                        fullWidth
+                        size="small"
+                        value={form.address}
+                        onChange={(e) => setForm(p => ({...p, address: e.target.value}))}
+                        slotProps={{
+                            input: {
+                                startAdornment: <LocationOnIcon sx={{fontSize: 17, color: '#F57C00', mr: 1}}/>
+                            }
+                        }}
+                    />
 
-                    <TextField label="Precio ($)" fullWidth size="small" type="number" value={form.price}
-                               onChange={(e) => setForm(p => ({...p, price: e.target.value}))}
-                               InputProps={{
-                                   startAdornment: <AttachMoneyIcon sx={{fontSize: 17, color: '#2E7D32', mr: 1}}/>
-                               }}/>
+                    <TextField
+                        label="Precio ($)"
+                        fullWidth
+                        size="small"
+                        type="number"
+                        value={form.price}
+                        onChange={(e) => setForm(p => ({...p, price: e.target.value}))}
+                        slotProps={{
+                            input: {
+                                startAdornment: <AttachMoneyIcon sx={{fontSize: 17, color: '#2E7D32', mr: 1}}/>
+                            }
+                        }}
+                    />
 
                     <Box sx={{display: 'flex', gap: 2}}>
-                        <TextField label="Fecha" type="date" size="small" value={dateTime.date}
-                                   onChange={(e) => setDateTime(p => ({...p, date: e.target.value}))}
-                                   InputLabelProps={{shrink: true}}
-                                   InputProps={{
-                                       startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
-                                   }}
-                                   sx={{flex: 1}}/>
+                        <TextField
+                            label="Fecha"
+                            type="date"
+                            size="small"
+                            value={dateTime.date}
+                            onChange={(e) => setDateTime(p => ({...p, date: e.target.value}))}
+                            slotProps={{
+                                inputLabel: { shrink: true },
+                                input: {
+                                    startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
+                                }
+                            }}
+                            sx={{flex: 1}}
+                        />
                         <FormControl size="small" sx={{flex: 1}}>
                             <InputLabel>Hora</InputLabel>
                             <Select value={dateTime.time} label="Hora"
@@ -283,7 +327,9 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                     <Box>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1.5}}>
                             <StarIcon sx={{fontSize: 17, color: '#B8860B'}}/>
-                            <Typography variant="body2" fontWeight={700}>Líder de equipo</Typography>
+                            <Typography variant="body2" sx={{
+                                fontWeight: 700
+                            }}>Líder de equipo</Typography>
                         </Box>
 
                         {loadingTecnicos ? (
@@ -314,9 +360,13 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                                             {option.name?.charAt(0).toUpperCase()}
                                         </Avatar>
                                         <Box>
-                                            <Typography variant="body2" fontWeight={600}>{option.name}</Typography>
+                                            <Typography variant="body2" sx={{
+                                                fontWeight: 600
+                                            }}>{option.name}</Typography>
                                             <Typography variant="caption"
-                                                        color="text.secondary">{option.email}</Typography>
+                                                        sx={{
+                                                            color: "text.secondary"
+                                                        }}>{option.email}</Typography>
                                         </Box>
                                     </Box>
                                 )}
@@ -340,9 +390,13 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                                     {tecnicoLider.name?.charAt(0).toUpperCase()}
                                 </Avatar>
                                 <Box sx={{flex: 1}}>
-                                    <Typography variant="body2" fontWeight={700}>{tecnicoLider.name}</Typography>
+                                    <Typography variant="body2" sx={{
+                                        fontWeight: 700
+                                    }}>{tecnicoLider.name}</Typography>
                                     <Typography variant="caption"
-                                                color="text.secondary">{tecnicoLider.phone || 'Sin teléfono'} · {tecnicoLider.email}</Typography>
+                                                sx={{
+                                                    color: "text.secondary"
+                                                }}>{tecnicoLider.phone || 'Sin teléfono'} · {tecnicoLider.email}</Typography>
                                 </Box>
                                 <Chip label="Líder" size="small"
                                       icon={<StarIcon sx={{fontSize: 12, color: '#B8860B !important'}}/>}
@@ -360,7 +414,9 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                     {loadingAdicionales ? (
                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                             <GroupIcon sx={{fontSize: 17, color: '#5A5A72'}}/>
-                            <Typography variant="body2" color="text.secondary">Cargando equipo...</Typography>
+                            <Typography variant="body2" sx={{
+                                color: "text.secondary"
+                            }}>Cargando equipo...</Typography>
                             <CircularProgress size={14} sx={{color: '#FFD600'}}/>
                         </Box>
                     ) : (
@@ -377,7 +433,6 @@ export default function EditarServicioModal({open, onClose, onSuccess, servicio}
                                onChange={(e) => setForm(p => ({...p, description: e.target.value}))}/>
                 </Box>
             </DialogContent>
-
             <DialogActions sx={{px: 3, pb: 3, pt: 0, gap: 1}}>
                 <Button onClick={onClose} disabled={saving}
                         sx={{fontWeight: 600, color: 'text.secondary'}}>Cancelar</Button>

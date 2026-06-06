@@ -72,7 +72,6 @@ export default function RegistrarNuevaHerramienta() {
             <Button variant="contained" startIcon={<AddIcon/>} onClick={handleOpen}>
                 Añadir una nueva herramienta
             </Button>
-
             <Modal open={open} onClose={handleClose}
                    closeAfterTransition
                    slots={{backdrop: Backdrop}}
@@ -81,7 +80,9 @@ export default function RegistrarNuevaHerramienta() {
                     <Box sx={modalStyle}>
 
                         <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
-                            <Typography variant="h6" fontWeight={700}>
+                            <Typography variant="h6" sx={{
+                                fontWeight: 700
+                            }}>
                                 Registrar una nueva herramienta
                             </Typography>
                             <IconButton onClick={handleClose} size="small">

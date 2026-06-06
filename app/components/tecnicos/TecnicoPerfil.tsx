@@ -33,7 +33,12 @@ export default function TecnicoPerfil({tecnico, stats}: Props) {
                         {tecnico.name?.charAt(0).toUpperCase() ?? "T"}
                     </Avatar>
                     <Box sx={{pb: 0.5}}>
-                        <Typography variant="h5" fontWeight={800} lineHeight={1.2} >
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 800,
+                                lineHeight: 1.2
+                            }}>
                             {tecnico.name}
                         </Typography>
                         <Chip
@@ -53,22 +58,36 @@ export default function TecnicoPerfil({tecnico, stats}: Props) {
                 <Box sx={{display: "flex", flexDirection: "column", gap: 1, mb: 2}}>
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <PhoneIcon sx={{fontSize: 15, color: "#5A5A72"}}/>
-                        <Typography variant="body2" color="text.secondary">{tecnico.phone ?? "—"}</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>{tecnico.phone ?? "—"}</Typography>
                     </Box>
                     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                         <EmailIcon sx={{fontSize: 15, color: "#5A5A72"}}/>
-                        <Typography variant="body2" color="text.secondary">{tecnico.email ?? "—"}</Typography>
+                        <Typography variant="body2" sx={{
+                            color: "text.secondary"
+                        }}>{tecnico.email ?? "—"}</Typography>
                     </Box>
                 </Box>
 
                 <Divider sx={{mb: 2}}/>
 
-                <Grid container spacing={1.5} justifyContent={"center"} alignItems="center" >
+                <Grid
+                    container
+                    spacing={1.5}
+                    sx={{
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}>
                     {stats.map((s) => (
                         <Grid key={s.label} size={{xs: 6, sm: 3}}>
                             <Box sx={{textAlign: "center", bgcolor: s.bg, borderRadius: 2.5, py: 1.5}}>
-                                <Typography variant="h5" fontWeight={800} color={s.color}>{s.value}</Typography>
-                                <Typography variant="caption" color="text.secondary">{s.label}</Typography>
+                                <Typography variant="h5" color={s.color} sx={{
+                                    fontWeight: 800
+                                }}>{s.value}</Typography>
+                                <Typography variant="caption" sx={{
+                                    color: "text.secondary"
+                                }}>{s.label}</Typography>
                             </Box>
                         </Grid>
                     ))}

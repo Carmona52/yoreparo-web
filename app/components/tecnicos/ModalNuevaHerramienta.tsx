@@ -52,8 +52,11 @@ export default function ModalNuevaHerramienta({open, workerId, onClose, onCreada
     }
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth
-                PaperProps={{sx: {borderRadius: 4}}}>
+        <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth slotProps={{
+            paper: {
+                sx: {borderRadius: 4, overflow: 'hidden'}
+            }
+        }}>
             <Box sx={{bgcolor: "#1A1A2E", px: 3, py: 2.5, display: "flex", alignItems: "center", gap: 1.5}}>
                 <Box sx={{
                     width: 30,
@@ -66,11 +69,15 @@ export default function ModalNuevaHerramienta({open, workerId, onClose, onCreada
                 }}>
                     <HandymanIcon sx={{fontSize: 16, color: "#1A1A2E"}}/>
                 </Box>
-                <Typography fontWeight={800} color="#fff" fontSize={15}>
+                <Typography
+                    sx={{
+                        fontWeight: 800,
+                        color: "#fff",
+                        fontSize: 15
+                    }}>
                     Prestar herramienta
                 </Typography>
             </Box>
-
             <DialogContent sx={{pt: 3}}>
                 {error && <Alert severity="error" sx={{mb: 2}}>{error}</Alert>}
                 <TextField
@@ -81,11 +88,16 @@ export default function ModalNuevaHerramienta({open, workerId, onClose, onCreada
                     onChange={(e) => setTool(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleGuardar()}
                 />
-                <Typography variant="caption" color="text.secondary" sx={{mt: 1, display: "block"}}>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: "text.secondary",
+                        mt: 1,
+                        display: "block"
+                    }}>
                     Se registrará con estado <strong>Prestada</strong> automáticamente.
                 </Typography>
             </DialogContent>
-
             <DialogActions sx={{px: 3, pb: 3}}>
                 <Button onClick={handleClose} disabled={loading} sx={{borderRadius: 2, color: "text.secondary"}}>
                     Cancelar

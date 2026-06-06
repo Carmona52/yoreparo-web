@@ -82,10 +82,10 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
                         {!mini && (
                             <ListItemText
                                 primary={item.label}
-                                primaryTypographyProps={{
-                                    fontSize: 14,
-                                    fontWeight: isActive ? 700 : 500,
-                                    color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.85)"
+                                slotProps={{
+                                    primary: {
+                                        color: isActive ? "#1A1A2E" : "rgba(255,255,255,0.85)"
+                                    }
                                 }}
                             />
                         )}
@@ -167,7 +167,12 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
                             {(!collapsed || isMobile) && (
                                 <ListItemText
                                     primary="Cerrar sesión"
-                                    primaryTypographyProps={{fontSize: 14, fontWeight: 500, color: "#EF9F9F"}}
+                                    slotProps={{
+                                        primary:{
+                                            color: "#EF9F9F"
+                                        }
+                                    }}
+
                                 />
                             )}
                         </ListItemButton>
@@ -179,7 +184,6 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
 
     return (
         <Box sx={{display: "flex", minHeight: "100vh", bgcolor: "background.default"}}>
-
             <AppBar position="fixed" elevation={0} sx={{display: {md: "none"}, zIndex: (t) => t.zIndex.drawer + 1}}>
                 <Toolbar sx={{gap: 2}}>
                     <IconButton edge="start" onClick={() => setMobileOpen(true)} sx={{color: "#1A1A2E"}}>
@@ -192,11 +196,16 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
                             alt="Logo"
                             sx={{width: 34, height: 34, objectFit: "contain"}}
                         />
-                        <Typography variant="h2" fontWeight={700} fontSize={20} color="#1A1A2E">Yo Reparo</Typography>
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                fontWeight: 700,
+                                fontSize: 20,
+                                color: "#1A1A2E"
+                            }}>Yo Reparo</Typography>
                     </Box>
                 </Toolbar>
             </AppBar>
-
             <Drawer
                 variant="temporary"
                 open={mobileOpen}
@@ -209,7 +218,6 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
             >
                 {drawerContent}
             </Drawer>
-
             <Drawer
                 variant="permanent"
                 sx={{
@@ -228,7 +236,6 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
             >
                 {drawerContent}
             </Drawer>
-
             <Box
                 component="main"
                 sx={{

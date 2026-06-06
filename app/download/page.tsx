@@ -123,12 +123,22 @@ export default function DownloadPage() {
                     <Box sx={{px: 4, py: 3.5}}>
                         <Box sx={{display: "flex", alignItems: "center", gap: 1.5, mb: 0.5}}>
                             <AndroidIcon sx={{color: "#3DDC84", fontSize: 26}}/>
-                            <Typography variant="h5" fontWeight={800} color="text.primary">
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    fontWeight: 800,
+                                    color: "text.primary"
+                                }}>
                                 App para Android
                             </Typography>
                         </Box>
 
-                        <Typography variant="body2" color="text.secondary" mb={2.5}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "text.secondary",
+                                mb: 2.5
+                            }}>
                             Descarga la aplicación oficial de Yo Reparo para gestionar tus servicios desde cualquier
                             lugar.
                         </Typography>
@@ -161,7 +171,13 @@ export default function DownloadPage() {
                                         "& .MuiLinearProgress-bar": {bgcolor: "#FFD600"},
                                     }}
                                 />
-                                <Typography variant="caption" color="text.secondary" sx={{mt: 0.5, display: "block"}}>
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: "text.secondary",
+                                        mt: 0.5,
+                                        display: "block"
+                                    }}>
                                     Iniciando descarga...
                                 </Typography>
                             </Box>
@@ -212,7 +228,12 @@ export default function DownloadPage() {
                             }}
                         >
                             <SecurityIcon sx={{fontSize: 16, color: "#1565C0", mt: 0.2, flexShrink: 0}}/>
-                            <Typography variant="caption" color="#1565C0" lineHeight={1.5}>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: "#1565C0",
+                                    lineHeight: 1.5
+                                }}>
                                 Archivo verificado y seguro. Descarga directamente desde nuestro repositorio oficial en
                                 GitHub.
                             </Typography>
@@ -229,7 +250,13 @@ export default function DownloadPage() {
                         px: 4,
                         py: 3,
                     }}>
-                    <Typography variant="subtitle2" fontWeight={700} color="text.primary" mb={2}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            fontWeight: 700,
+                            color: "text.primary",
+                            mb: 2
+                        }}>
                         ¿Qué incluye la versión {APK_VERSION}?
                     </Typography>
                     <Box sx={{display: "flex", flexDirection: "column", gap: 2.5}}>
@@ -248,12 +275,25 @@ export default function DownloadPage() {
                                     }}>
                                     {feature.icon}
                                 </Box>
-                                <Box pt={0.2}>
-                                    <Typography variant="body2" fontWeight={700} color="text.primary" mb={0.3}>
+                                <Box sx={{
+                                    pt: 0.2
+                                }}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontWeight: 700,
+                                            color: "text.primary",
+                                            mb: 0.3
+                                        }}>
                                         {feature.title}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary" lineHeight={1.4}
-                                                display="block">
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            color: "text.secondary",
+                                            lineHeight: 1.4,
+                                            display: "block"
+                                        }}>
                                         {feature.description}
                                     </Typography>
                                 </Box>
@@ -271,7 +311,13 @@ export default function DownloadPage() {
                         px: 4,
                         py: 3,
                     }}>
-                    <Typography variant="subtitle2" fontWeight={700} color="text.primary" mb={2}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            fontWeight: 700,
+                            color: "text.primary",
+                            mb: 2
+                        }}>
                         Cómo instalar en Android
                     </Typography>
                     <Box sx={{display: "flex", flexDirection: "column", gap: 2}}>
@@ -292,7 +338,13 @@ export default function DownloadPage() {
                                         }}>
                                         {step.icon}
                                     </Box>
-                                    <Typography variant="body2" color="text.secondary" lineHeight={1.6} pt={0.3}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: "text.secondary",
+                                            lineHeight: 1.6,
+                                            pt: 0.3
+                                        }}>
                                         {step.text}
                                     </Typography>
                                 </Box>
@@ -304,7 +356,12 @@ export default function DownloadPage() {
                     </Box>
                 </Box>
 
-                <Typography variant="caption" color="text.secondary" textAlign="center">
+                <Typography
+                    variant="caption"
+                    sx={{
+                        color: "text.secondary",
+                        textAlign: "center"
+                    }}>
                     © {new Date().getFullYear()} Yo Reparo · Todos los derechos reservados
                 </Typography>
             </Box>
