@@ -30,8 +30,7 @@ export default function Navbar() {
                 scrolled
                     ? "bg-white/95 backdrop-blur shadow-sm border-b border-gray-100"
                     : "bg-transparent"
-            }`}
-        >
+            }`}>
             <div className="w-[90%] mx-auto py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <Image

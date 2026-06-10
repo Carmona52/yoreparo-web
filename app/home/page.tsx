@@ -3,8 +3,13 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import Image from "next/image";
-import {supabase} from "@/lib/supabase/supabase";
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import LightIcon from '@mui/icons-material/Light';
 import Button from "@mui/material/Button";
+import HardwareIcon from '@mui/icons-material/Hardware';
+import HandymanIcon from '@mui/icons-material/Handyman';
+import ReportIcon from '@mui/icons-material/Report';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
@@ -19,9 +24,11 @@ import SpeedIcon from "@mui/icons-material/Speed";
 import SecurityIcon from "@mui/icons-material/Security";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
-
+import Navbar from "@/components/home/NavBar";
+import Footer from "@/components/home/Footer";
 import yoReparoTitle from '@/public/Yoreparo1024.png';
 import trabajador from '@/public/trabajador.png';
+
 
 
 export default function HomePage() {
@@ -51,12 +58,60 @@ export default function HomePage() {
     ];
 
     const servicios = [
-        {icono: "💧", titulo: "Plomería", sub: "Fugas, instalaciones y mantenimiento"},
-        {icono: "⚡", titulo: "Eléctrico", sub: "Instalaciones, cortos y tableros"},
-        {icono: "🧱", titulo: "Albañilería", sub: "Acabados, pisos y remodelaciones"},
-        {icono: "❄️", titulo: "Climatización", sub: "A/C, calentadores y electrodomésticos"},
-        {icono: "🔧", titulo: "Mantenimiento", sub: "Preventivo y correctivo general"},
-        {icono: "🛠️", titulo: "Emergencias", sub: "Atención prioritaria 24/7"},
+        {
+            icono: (
+                <Box sx={{bgcolor: "#E3F2FD", borderRadius: "50%", p: 1.5, display: "inline-flex",}}>
+                    <WaterDropIcon sx={{color: "#1976D2", fontSize: 32}}/>
+                </Box>
+            ),
+            titulo: "Plomería",
+            sub: "Fugas, instalaciones y mantenimiento",
+        },
+        {
+            icono: (
+                <Box sx={{bgcolor: "#FFF3E0", borderRadius: "50%", p: 1.5, display: "inline-flex",}}>
+                    <LightIcon sx={{color: "#F57C00", fontSize: 32}}/>
+                </Box>
+            ),
+            titulo: "Eléctrico",
+            sub: "Instalaciones, cortos y tableros",
+        },
+        {
+            icono: (
+                <Box sx={{bgcolor: "#E8F5E9", borderRadius: "50%", p: 1.5, display: "inline-flex",}}>
+                    <HardwareIcon sx={{color: "#2E7D32", fontSize: 32}}/>
+                </Box>
+            ),
+            titulo: "Albañilería",
+            sub: "Acabados, pisos y remodelaciones",
+        },
+        {
+            icono: (
+                <Box sx={{bgcolor: "#E1F5FE", borderRadius: "50%", p: 1.5, display: "inline-flex",}}>
+                    <AcUnitIcon sx={{color: "#0288D1", fontSize: 32}}/>
+                </Box>
+            ),
+            titulo: "Climatización",
+            sub: "A/C, calentadores y electrodomésticos",
+        },
+        {
+            icono: (
+                <Box sx={{bgcolor: "#F3E5F5", borderRadius: "50%", p: 1.5, display: "inline-flex",}}>
+                    <HandymanIcon sx={{color: "#7B1FA2", fontSize: 32}}/>
+                </Box>
+            ),
+            titulo: "Mantenimiento",
+            sub: "Preventivo y correctivo general",
+        },
+        {
+            icono: (
+                <Box sx={{bgcolor: "#FFEBEE", borderRadius: "50%",p: 1.5,display: "inline-flex",}}>
+                    <ReportIcon sx={{color: "#D32F2F", fontSize: 32}}/>
+                </Box>
+            ),
+            titulo: "Emergencias",
+            sub: "Atención prioritaria 24/7",
+        },
     ];
 
     const porques = [
@@ -118,7 +173,7 @@ export default function HomePage() {
 
     return (
         <div>
-
+            <Navbar/>
             {/* ── HERO ── */}
             <section
                 className=" relative w-screen  flex items-center overflow-hidden bg-gradient-to-br from-[#0D47A1] via-[#1565C0] to-[#1976D2]">
@@ -128,8 +183,10 @@ export default function HomePage() {
                     backgroundSize: "32px 32px"
                 }}/>
                 {/* Círculo decorativo */}
-                <div className="absolute -right-32 -top-32 w-[600px] h-[600px] rounded-full bg-white/5 border border-white/10"/>
-                <div className="absolute -right-16 -top-16 w-[400px] h-[400px] rounded-full bg-white/5 border border-white/10"/>
+                <div
+                    className="absolute -right-32 -top-32 w-[600px] h-[600px] rounded-full bg-white/5 border border-white/10"/>
+                <div
+                    className="absolute -right-16 -top-16 w-[400px] h-[400px] rounded-full bg-white/5 border border-white/10"/>
 
                 <div className="w-[90%] relative z-10 mt-30 mx-auto">
                     <div className="flex flex-col lg:flex-row items-center">
@@ -258,14 +315,7 @@ export default function HomePage() {
                                     sx={{color: "#1976D2", fontWeight: 700, letterSpacing: "0.15em"}}>
                             Lo que hacemos
                         </Typography>
-                        <Typography
-                            variant="h3"
-                            sx={{
-                                fontWeight: 900,
-                                mt: 1,
-                                fontSize: {xs: "2.5rem", md: "3rem"},
-                            }}
-                        >
+                        <Typography variant="h3" sx={{fontWeight: 900, mt: 1, fontSize: {xs: "2.5rem", md: "3rem"}}}>
                             Servicios especializados
                         </Typography>
 
@@ -303,28 +353,27 @@ export default function HomePage() {
                 <Container maxWidth={false} sx={{width: "90%", mx: "auto"}}>
                     <div className="text-center mb-14">
                         <Typography variant="overline"
-                                    sx={{color: "#1976D2", fontWeight: 700, letterSpacing: "0.15em"}}>Flujo de
-                            trabajo</Typography>
-                        <Typography variant="h3" sx={{fontWeight: 900, mt: 1, color: "#1A1A2E"}}>De la solicitud a la
-                            entrega</Typography>
+                                    sx={{color: "#1976D2", fontWeight: 700, letterSpacing: "0.15em"}}>
+                            Flujo de trabajo
+                        </Typography>
+                        <Typography variant="h3" sx={{fontWeight: 900, mt: 1, color: "#1A1A2E"}}>
+                            De la solicitud a la entrega
+                        </Typography>
                     </div>
                     <div
-                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-0 border border-gray-100 rounded-2xl overflow-hidden">
+                        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-0 border border-gray-100 rounded-2xl overflow-hidden">
                         {pasos.map((p, i) => (
-                            <div
-                                key={i}
-                                onMouseEnter={() => setActiveStep(i)}
-                                className={`p-6 border-r border-gray-100 last:border-r-0 cursor-default transition-all duration-300 relative
-                                    ${activeStep === i ? "bg-blue-50" : "bg-white hover:bg-gray-50"}`}
-                            >
+                            <div key={i} onMouseEnter={() => setActiveStep(i)}
+                                 className={`p-6 border-r border-gray-100 last:border-r-0 cursor-default transition-all duration-300 relative${activeStep === i ? "bg-blue-50" : "bg-white hover:bg-gray-50"}`}>
                                 {activeStep === i && (
-                                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-blue-600"/>
-                                )}
-                                <p className={`text-xs font-bold tracking-widest mb-3 transition-colors ${activeStep === i ? "text-blue-600" : "text-gray-300"}`}>
+                                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-blue-600"/>)}
+                                <p className={`text font-bold tracking-widest mb-3 transition-colors ${activeStep === i ? "text-blue-600" : "text-gray-300"}`}>
                                     {p.num}
                                 </p>
-                                <p className="font-black text-sm uppercase tracking-wide text-gray-900 mb-2">{p.titulo}</p>
-                                <p className={`text-xs leading-relaxed transition-colors ${activeStep === i ? "text-gray-600" : "text-gray-400"}`}>
+                                <p className="font-black text-xl uppercase tracking-wide text-gray-900 mb-2">
+                                    {p.titulo}
+                                </p>
+                                <p className={`text-lg leading-relaxed transition-colors ${activeStep === i ? "text-gray-600" : "text-gray-400"}`}>
                                     {p.desc}
                                 </p>
                             </div>
@@ -481,7 +530,7 @@ export default function HomePage() {
                     </div>
                 </Container>
             </section>
-
+            <Footer/>
         </div>
     );
 }

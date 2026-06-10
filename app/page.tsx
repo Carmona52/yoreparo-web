@@ -2,18 +2,18 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
+import { createClient } from "@/lib/supabase/client";
 
 const ROLES_DASHBOARD = ["owner", "supervisor", "administrador"];
 
 export default function Index() {
     const router = useRouter();
-
+    const supabase = createClient();
     useEffect(() => {
-        const supabase = createClient();
 
         async function routeUser() {
             const { data: { session } } = await supabase.auth.getSession();
