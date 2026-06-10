@@ -81,7 +81,17 @@ export async function middleware(req: NextRequest) {
         .eq("id", user.id)
         .single();
 
+    if (profileError || !profile) {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
 
+    if (pathname.startsWith("/dashboard") && !isDashboardRole(profile.role)) {
+        return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+
+    if(pathname.startsWith('/home/user') && !isHomeRole(profile.role)) {
+        return NextResponse.redirect(new URL("/home", req.url));
+    }
 
 
     return res;
