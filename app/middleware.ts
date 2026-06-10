@@ -70,7 +70,7 @@ export async function middleware(req: NextRequest) {
     const {data: {user}, error: authError} = await supabase.auth.getUser();
 
     if (authError || !user) {
-        return NextResponse.redirect(new URL("/home", req.url));
+        return NextResponse.redirect(new URL("/", req.url));
     }
 
     if (isAuthRequired(pathname)) return res;

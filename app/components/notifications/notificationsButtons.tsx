@@ -18,7 +18,7 @@ export default function NotificacionesBtn() {
         idle: {
             icon: <NotificationsIcon />,
             tip: "Activar notificaciones",
-            color: "action.active", // Usa el color base del tema
+            color: "white",
             hoverBg: "action.hover",
             action: solicitarPermiso
         },
@@ -36,14 +36,14 @@ export default function NotificacionesBtn() {
                 </Badge>
             ),
             tip: "Notificaciones activas (Click para desactivar)",
-            color: "primary.main",
+            color: "yellow",
             hoverBg: "action.hover",
             action: desactivar
         },
         denegado: {
             icon: <NotificationsOffIcon />,
             tip: "Notificaciones bloqueadas en el navegador",
-            color: "error.main", // Rojo estándar de MUI
+            color: "error.main",
             hoverBg: "transparent",
             action: undefined
         },
