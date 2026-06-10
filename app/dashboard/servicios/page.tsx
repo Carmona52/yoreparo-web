@@ -20,7 +20,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ImageIcon from "@mui/icons-material/Image";
 import NewJobModalNoData from "@/components/jobs/newJobModalNoData";
 import SearchIcon from '@mui/icons-material/Search';
-import {TextField, Tabs, Tab} from "@mui/material";
+import {TextField, Tabs, Tab, FormControl, Select, MenuItem} from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import PersonIcon from "@mui/icons-material/Person";
 
@@ -51,7 +51,6 @@ function formatFecha(fecha: string) {
     });
 }
 
-
 export default function ServiciosPage() {
     const router = useRouter();
     const [servicios, setServicios] = useState<Servicios[]>([]);
@@ -59,7 +58,8 @@ export default function ServiciosPage() {
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("todos");
-    console.log(servicios)
+    const [sortOrder, setSortOrder] = useState<"prioridad" | "desc" | "asc">("desc");
+
     useEffect(() => {
         serviciosService.getAllServicios()
             .then(setServicios)
@@ -89,11 +89,17 @@ export default function ServiciosPage() {
         });
 
         return [...filtered].sort((a, b) => {
-            const prioA = PRIORITY_MAP[a.status?.toLowerCase()] ?? 99;
-            const prioB = PRIORITY_MAP[b.status?.toLowerCase()] ?? 99;
-            return prioA - prioB;
+            if (sortOrder === "prioridad") {
+                const prioA = PRIORITY_MAP[a.status?.toLowerCase()] ?? 99;
+                const prioB = PRIORITY_MAP[b.status?.toLowerCase()] ?? 99;
+                return prioA - prioB;
+            } else {
+                const dateA = new Date(a.fecha_cita || 0).getTime();
+                const dateB = new Date(b.fecha_cita || 0).getTime();
+                return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+            }
         });
-    }, [servicios, searchQuery, statusFilter]);
+    }, [servicios, searchQuery, statusFilter, sortOrder]);
 
     if (loading) return (
         <Box sx={{display: "flex", justifyContent: "center", mt: 8}}>
@@ -119,6 +125,7 @@ export default function ServiciosPage() {
                 }}>
                 {servicios.length} servicio{servicios.length !== 1 ? "s" : ""} registrados
             </Typography>
+
             <Box sx={{
                 my: 3,
                 display: "flex",
@@ -126,24 +133,37 @@ export default function ServiciosPage() {
                 justifyContent: "space-between",
                 gap: 2
             }}>
-                <TextField
-                    placeholder="Buscar por título, dirección..."
-                    size='small'
-                    value={searchQuery}
-                    onChange={event => setSearchQuery(event.target.value)}
-                    sx={{width: {xs: '100%', sm: 350}}}
-                    slotProps={{
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon/>
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
-                />
+                <Box sx={{ display: 'flex', flexGrow: 1, gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+                    <TextField
+                        placeholder="Buscar por título, dirección..."
+                        size='small'
+                        value={searchQuery}
+                        onChange={event => setSearchQuery(event.target.value)}
+                        sx={{ flexGrow: 1 }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon/>
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                    />
+                    <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 160 } }}>
+                        <Select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(e.target.value as "prioridad" | "desc" | "asc")}
+                            displayEmpty
+                        >
+                            <MenuItem value="desc">Más recientes</MenuItem>
+                            <MenuItem value="asc">Más antiguos</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
                 <NewJobModalNoData/>
             </Box>
+
             {/* Selector de Estados (Tabs) */}
             <Box sx={{borderBottom: 1, borderColor: 'divider', mb: 3}}>
                 <Tabs
@@ -164,6 +184,7 @@ export default function ServiciosPage() {
                     <Tab label="Cancelados" value="cancelado"/>
                 </Tabs>
             </Box>
+
             {filteredAndSortedServicios.length === 0 ? (
                 <Alert severity="info" sx={{borderRadius: 3}}>
                     {searchQuery || statusFilter !== "todos"

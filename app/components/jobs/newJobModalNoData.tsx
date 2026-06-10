@@ -169,14 +169,7 @@ export default function NewJobModalNoData() {
 
     return (
         <>
-            <Button variant="contained" startIcon={<AddIcon/>} onClick={() => setOpen(true)}
-                    sx={{
-                        borderRadius: 2.5,
-                        fontWeight: 800,
-                        bgcolor: '#FFD600',
-                        color: '#1A1A2E',
-                        '&:hover': {bgcolor: '#F9A800'}
-                    }}>
+            <Button variant="contained" startIcon={<AddIcon/>} onClick={() => setOpen(true)}>
                 Nuevo Trabajo
             </Button>
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth slotProps={{
@@ -271,7 +264,8 @@ export default function NewJobModalNoData() {
                                        slotProps={{
                                            inputLabel: {shrink: true},
                                            input: {
-                                               startAdornment: <CalendarTodayIcon sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
+                                               startAdornment: <CalendarTodayIcon
+                                                   sx={{fontSize: 16, color: '#1565C0', mr: 1}}/>
                                            }
                                        }}
                                        sx={{flex: 1}}/>
@@ -393,19 +387,11 @@ export default function NewJobModalNoData() {
                 </DialogContent>
 
                 <DialogActions sx={{px: 3, pb: 3, pt: 0, gap: 1}}>
-                    <Button onClick={handleClose} disabled={saving}
-                            sx={{borderRadius: 2.5, fontWeight: 600, color: 'text.secondary'}}>Cancelar</Button>
+                    <Button onClick={handleClose} disabled={saving} color='error'
+                            sx={{borderRadius: 2.5, fontWeight: 600,}}>Cancelar</Button>
                     <Button variant="contained" onClick={handleGuardar} disabled={saving || success}
                             endIcon={saving ? <CircularProgress size={16} color="inherit"/> : success ? <CheckIcon/> :
-                                <PersonIcon/>}
-                            sx={{
-                                borderRadius: 2.5,
-                                fontWeight: 800,
-                                px: 3,
-                                bgcolor: success ? '#2E7D32' : '#FFD600',
-                                color: success ? '#fff' : '#1A1A2E',
-                                '&:hover': {bgcolor: '#F9A800'}
-                            }}>
+                                <PersonIcon/>}>
                         {saving ? 'Guardando...' : success ? '¡Creado!' : 'Confirmar Trabajo'}
                     </Button>
                 </DialogActions>

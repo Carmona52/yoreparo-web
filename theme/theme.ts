@@ -1,20 +1,20 @@
 'use client';
-import {createTheme} from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({
     palette: {
         mode: "light",
         primary: {
-            main: "#FFD600",
-            dark: "#F9A800",
-            contrastText: "#1A1A1A",
+            main: "#1976D2",
+            dark: "#115293",
+            contrastText: "#ffffff",
         },
         secondary: {
             main: "#1565C0",
             contrastText: "#ffffff",
         },
-        error: {main: "#D32F2F"},
-        warning: {main: "#F57C00"},
+        error: { main: "#D32F2F" },
+        warning: { main: "#F57C00" },
         background: {
             default: "#F5F6FA",
             paper: "#FFFFFF",
@@ -28,18 +28,18 @@ export const theme = createTheme({
     typography: {
         fontFamily: "var(--font-geist-sans), sans-serif",
         fontSize: 16,
-        h4: {fontWeight: 700, color: "#1A1A2E"},
-        h5: {fontWeight: 700, color: "#1A1A2E"},
-        h6: {fontWeight: 700, color: "#1A1A2E"},
-        subtitle1: {color: "#5A5A72"},
-        body2: {color: "#5A5A72"},
-        overline: {letterSpacing: "0.1em", fontWeight: 600, color: "#5A5A72"},
+        h4: { fontWeight: 700, color: "#1A1A2E" },
+        h5: { fontWeight: 700, color: "#1A1A2E" },
+        h6: { fontWeight: 700, color: "#1A1A2E" },
+        subtitle1: { color: "#5A5A72" },
+        body2: { color: "#5A5A72" },
+        overline: { letterSpacing: "0.1em", fontWeight: 600, color: "#5A5A72" },
     },
-    shape: {borderRadius: 12},
+    shape: { borderRadius: 12 },
     components: {
         MuiCssBaseline: {
             styleOverrides: {
-                body: {backgroundColor: "#F5F6FA"},
+                body: { backgroundColor: "#F5F6FA" },
             },
         },
         MuiButton: {
@@ -51,14 +51,14 @@ export const theme = createTheme({
                     boxShadow: "none",
                     "&:hover": { boxShadow: "none" },
                     "&.MuiButton-containedPrimary": {
-                        backgroundColor: "#FFD600",
-                        color: "#1A1A1A",
-                        "&:hover": { backgroundColor: "#F9A800" },
+                        backgroundColor: "#1976D2",
+                        color: "#ffffff",
+                        "&:hover": { backgroundColor: "#115293" },
                     },
                     "&.MuiButton-outlinedPrimary": {
-                        borderColor: "#FFD600",
-                        color: "#1A1A1A",
-                        "&:hover": { backgroundColor: "rgba(255,214,0,0.08)" },
+                        borderColor: "#1976D2",
+                        color: "#1976D2",
+                        "&:hover": { backgroundColor: "rgba(25,118,210,0.08)" },
                     },
                 },
             },
@@ -95,13 +95,13 @@ export const theme = createTheme({
                 root: {
                     borderRadius: 10,
                     "&.Mui-selected": {
-                        backgroundColor: "#FFD600",
-                        color: "#1A1A2E",
-                        "& .MuiListItemIcon-root": {color: "#1A1A2E"},
-                        "& .MuiListItemText-primary": {color: "#1A1A2E", fontWeight: 700},
-                        "&:hover": {backgroundColor: "#F9A800"},
+                        backgroundColor: "#1976D2",
+                        color: "#ffffff",
+                        "& .MuiListItemIcon-root": { color: "#ffffff" },
+                        "& .MuiListItemText-primary": { color: "#ffffff", fontWeight: 700 },
+                        "&:hover": { backgroundColor: "#115293" },
                     },
-                    "&:hover": {backgroundColor: "rgba(255,214,0,0.12)"},
+                    "&:hover": { backgroundColor: "rgba(25,118,210,0.12)" },
                 },
             },
         },
@@ -111,20 +111,22 @@ export const theme = createTheme({
                     "& .MuiOutlinedInput-root": {
                         borderRadius: 10,
                         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#FFD600",
+                            borderColor: "#1976D2",
                             borderWidth: 2,
                         },
                     },
-                    "& .MuiInputLabel-root.Mui-focused": {color: "#F57C00"},
+                    // El label al enfocar sigue usando el color de warning (naranja) como en el original.
+                    // Si quieres que sea azul también, cambia "#F57C00" por "#1976D2"
+                    "& .MuiInputLabel-root.Mui-focused": { color: "#1976D2" },
                 },
             },
         },
         MuiChip: {
             styleOverrides: {
-                root: {borderRadius: 8},
+                root: { borderRadius: 8 },
                 colorPrimary: {
-                    backgroundColor: "rgba(255,214,0,0.15)",
-                    color: "#B8860B",
+                    backgroundColor: "rgba(25,118,210,0.15)",
+                    color: "#1976D2",
                 },
             },
         },

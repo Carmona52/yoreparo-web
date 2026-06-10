@@ -59,7 +59,7 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
 
     async function handleLogout() {
         await supabase.auth.signOut();
-        router.replace("/auth/login");
+        router.replace("/home");
     }
 
     function NavItem({item}: { item: typeof navItems[0] }) {

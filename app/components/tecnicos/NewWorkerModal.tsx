@@ -110,9 +110,7 @@ export default function NewWorkerModal({onWorkerCreated}: { onWorkerCreated?: ()
             <Button
                 variant="contained"
                 startIcon={<AddIcon/>}
-                onClick={handleOpen}
-                sx={{bgcolor: "#FFD600", color: "#1A1A2E", fontWeight: 700, "&:hover": {bgcolor: "#e6c100"}}}
-            >
+                onClick={handleOpen}>
                 Agregar Personal
             </Button>
             <Modal

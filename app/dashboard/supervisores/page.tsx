@@ -19,6 +19,7 @@ import Grid from "@mui/material/Grid";
 import NewWorkerModal from "@/components/tecnicos/NewWorkerModal";
 import {InputAdornment, TextField} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import {translateRole} from "@/lib/utils/translateRole";
 
 
 export default function TecnicosPage() {
@@ -120,7 +121,7 @@ export default function TecnicosPage() {
                                                     {tecnico.name ?? "Sin nombre"}
                                                 </Typography>
                                                 <Chip
-                                                    label={tecnico.role}
+                                                    label={translateRole(tecnico.role)}
                                                     size="small"
                                                     sx={{
                                                         mt: 0.5,
